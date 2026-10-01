@@ -1,0 +1,2793 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Buildva - Picking Numbers</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#eef4f8;
+color:#334155;
+padding-top:140px;
+transition:.3s;
+}
+
+/* DARK MODE */
+
+body.dark{
+background:#111827;
+color:#e5e7eb;
+}
+
+body.dark .panel,
+body.dark .score,
+body.dark .number{
+background:#1f2937;
+color:#e5e7eb;
+}
+
+body.dark .number:hover{
+background:#374151;
+}
+
+/* HEADER */
+
+header{
+position:fixed;
+top:0;
+left:0;
+right:0;
+background:#2563a8;
+color:white;
+text-align:center;
+padding:15px;
+z-index:1000;
+}
+
+header h1{
+margin:0;
+}
+
+.mode-btn{
+position:absolute;
+right:15px;
+top:15px;
+background:#ffffff33;
+color:white;
+padding:8px 12px;
+}
+
+/* MAIN */
+
+.screen{
+max-width:1000px;
+margin:auto;
+padding:10px;
+}
+
+.panel{
+background:white;
+border-radius:14px;
+padding:15px;
+margin-bottom:15px;
+box-shadow:0 3px 10px rgba(0,0,0,.12);
+}
+
+/* BUTTONS */
+
+button{
+cursor:pointer;
+border:none;
+border-radius:8px;
+}
+
+button:disabled{
+cursor:not-allowed;
+opacity:.65;
+}
+
+.main-btn{
+background:#2563eb;
+color:white;
+padding:12px 20px;
+font-size:16px;
+}
+
+.player-btn{
+background:#10b981;
+color:white;
+padding:12px 20px;
+margin:5px;
+}
+
+.player-btn:disabled{
+background:#94a3b8;
+cursor:not-allowed;
+}
+
+/* PLAYER STATUS */
+
+.player-status{
+display:flex;
+gap:10px;
+margin:15px 0;
+}
+
+.player-status-box{
+flex:1;
+padding:12px;
+border-radius:10px;
+text-align:center;
+font-weight:bold;
+background:#f1f5f9;
+border:2px solid #cbd5e1;
+}
+
+.player-status-box.ready{
+background:#dcfce7;
+border-color:#22c55e;
+color:#166534;
+}
+
+.player-status-box.waiting{
+background:#fef3c7;
+border-color:#f59e0b;
+color:#92400e;
+}
+
+body.dark .player-status-box{
+background:#374151;
+border-color:#4b5563;
+}
+
+body.dark .player-status-box.ready{
+background:#14532d;
+border-color:#22c55e;
+color:#dcfce7;
+}
+
+body.dark .player-status-box.waiting{
+background:#78350f;
+border-color:#f59e0b;
+color:#fef3c7;
+}
+
+.ready-message{
+font-weight:bold;
+text-align:center;
+margin:10px 0;
+}
+
+/* SCORE */
+
+.scoreboard{
+display:flex;
+gap:10px;
+}
+
+.score{
+flex:1;
+background:white;
+border-radius:12px;
+padding:12px;
+text-align:center;
+font-size:20px;
+}
+
+/* TARGET */
+
+.target-panel{
+position:sticky;
+top:140px;
+z-index:900;
+}
+
+.target{
+background:#facc15;
+padding:10px 20px;
+border-radius:12px;
+font-size:28px;
+font-weight:bold;
+display:inline-block;
+}
+
+/* COUNTDOWN */
+
+#countdown{
+text-align:center;
+font-size:40px;
+font-weight:bold;
+color:#2563eb;
+}
+
+/* WINNER MESSAGE */
+
+#winnerMessage{
+text-align:center;
+font-size:28px;
+color:#16a34a;
+}
+
+/* WINNER POPUP */
+
+#winnerPopup{
+display:none;
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+background:white;
+padding:30px;
+border-radius:15px;
+box-shadow:0 5px 25px rgba(0,0,0,.3);
+z-index:3000;
+text-align:center;
+font-size:22px;
+width:min(90%,450px);
+}
+
+.dark #winnerPopup{
+background:#1f2937;
+color:white;
+}
+
+/* NUMBERS */
+
+#numbers{
+display:grid;
+grid-template-columns:repeat(12,1fr);
+gap:5px;
+}
+
+.number{
+background:white;
+border:1px solid #cbd5e1;
+aspect-ratio:1;
+font-weight:bold;
+font-size:14px;
+padding:0;
+}
+
+.number:hover{
+background:#dbeafe;
+}
+
+.used{
+visibility:hidden;
+}
+
+/* VOICE CHAT */
+
+#voiceChat{
+margin-top:20px;
+text-align:center;
+}
+
+#voiceChat h3{
+margin-bottom:8px;
+}
+
+#voiceStatus{
+margin:8px 0 15px;
+font-weight:bold;
+}
+
+.voice-controls{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:10px;
+flex-wrap:wrap;
+}
+
+#voiceChat .main-btn{
+min-width:130px;
+}
+
+body.dark #voiceChat{
+background:#1e1e1e;
+}
+
+/* INPUTS */
+
+input[type="text"],
+input:not([type]){
+max-width:100%;
+}
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+body{
+padding-top:125px;
+}
+
+header{
+padding:10px;
+}
+
+header h1{
+font-size:24px;
+}
+
+.mode-btn{
+position:absolute;
+right:8px;
+top:10px;
+padding:7px 10px;
+}
+
+.screen{
+padding:8px;
+}
+
+.panel{
+padding:12px;
+}
+
+.player-status{
+flex-direction:column;
+gap:8px;
+}
+
+.scoreboard{
+gap:6px;
+}
+
+.score{
+font-size:16px;
+padding:10px 5px;
+}
+
+.target-panel{
+top:125px;
+}
+
+.target{
+font-size:22px;
+padding:8px 14px;
+}
+
+#numbers{
+grid-template-columns:repeat(8,1fr);
+gap:4px;
+}
+
+.number{
+font-size:12px;
+}
+
+.player-btn,
+.main-btn{
+padding:11px 15px;
+}
+
+#playerName,
+#gameCodeInput{
+width:100% !important;
+max-width:280px;
+}
+
+#winnerPopup{
+padding:22px 15px;
+font-size:19px;
+}
+
+.voice-controls{
+flex-direction:column;
+}
+
+#voiceChat .main-btn{
+width:90%;
+max-width:280px;
+}
+
+}
+
+/* VERY SMALL PHONES */
+
+@media(max-width:380px){
+
+#numbers{
+grid-template-columns:repeat(7,1fr);
+gap:3px;
+}
+
+.number{
+font-size:11px;
+}
+
+.score{
+font-size:14px;
+}
+
+.target{
+font-size:20px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>🎯 Buildva</h1>
+
+<div>Picking Numbers</div>
+
+<button class="mode-btn" onclick="toggleDark()">🌙</button>
+
+</header>
+
+<div class="screen">
+
+<!-- SETUP -->
+
+<div id="setup" class="panel">
+
+<h2>Create Game</h2>
+
+<p><b>Select Game Size</b></p>
+
+<label>
+<input type="radio" name="gameSize" value="50" checked>
+1 - 50
+</label>
+
+<label>
+<input type="radio" name="gameSize" value="100">
+1 - 100
+</label>
+
+<label>
+<input type="radio" name="gameSize" value="200">
+1 - 200
+</label>
+
+<br><br>
+
+<button class="main-btn" onclick="createGame()">
+🎮 Create Game
+</button>
+
+<br><br>
+
+<input
+id="gameCodeInput"
+placeholder="Game Code"
+style="padding:12px;"
+>
+
+<button class="main-btn" onclick="joinGame()">
+🚪 Join
+</button>
+
+<p id="status"></p>
+
+</div>
+
+<!-- PLAYER AREA -->
+
+<div id="playerArea" class="panel" style="display:none">
+
+<h2 id="code"></h2>
+
+<p><b>Enter your name:</b></p>
+
+<input
+id="playerName"
+placeholder="Your name"
+style="padding:12px;width:220px;"
+>
+
+<br><br>
+
+<button
+id="player1Btn"
+class="player-btn"
+onclick="choosePlayer(1)"
+>
+👤 Player 1
+</button>
+
+<button
+id="player2Btn"
+class="player-btn"
+onclick="choosePlayer(2)"
+>
+👤 Player 2
+</button>
+
+<!-- READY STATUS -->
+
+<div class="player-status">
+
+<div id="player1Status" class="player-status-box waiting">
+🟡 Player 1 — Waiting
+</div>
+
+<div id="player2Status" class="player-status-box waiting">
+🟡 Player 2 — Waiting
+</div>
+
+</div>
+
+<p id="waiting" class="ready-message"></p>
+
+<h2 id="countdown"></h2>
+
+<h2 id="winnerMessage"></h2>
+
+<br>
+
+<button class="main-btn" onclick="leaveGame()">
+🏠 Leave Game
+</button>
+
+</div>
+
+<!-- GAME AREA -->
+
+<div id="gameArea" style="display:none">
+
+<div class="scoreboard">
+
+<div class="score">
+
+<span id="name1">
+Player 1
+</span>
+
+<br>
+
+<b id="score1">0</b>
+
+</div>
+
+<div class="score">
+
+<span id="name2">
+Player 2
+</span>
+
+<br>
+
+<b id="score2">0</b>
+
+</div>
+
+</div>
+
+<div class="panel target-panel">
+
+<div class="target">
+
+🎯 FIND:
+
+<span id="target">1</span>
+
+</div>
+
+<p>
+Remaining:
+<b id="remaining">0</b>
+</p>
+
+</div>
+
+<!-- VOICE CHAT -->
+
+<div id="voiceChat" class="panel">
+
+<h3>🎙️ Voice Chat</h3>
+
+<p id="voiceStatus">
+🔴 Voice chat is off
+</p>
+
+<div class="voice-controls">
+
+<button
+id="voiceStartBtn"
+class="main-btn"
+onclick="startVoiceChat()"
+>
+🎙️ Start Voice
+</button>
+
+<button
+id="voiceMuteBtn"
+class="main-btn"
+onclick="toggleMute()"
+style="display:none"
+>
+🔇 Mute
+</button>
+
+<button
+id="voiceEndBtn"
+class="main-btn"
+onclick="endVoiceChat()"
+style="display:none"
+>
+📞 End Voice
+</button>
+
+</div>
+
+</div>
+
+<!-- NUMBER BOARD -->
+
+<div id="numbers"></div>
+
+</div>
+
+</div>
+
+<!-- WINNER POPUP -->
+
+<div id="winnerPopup">
+
+<div id="popupText"></div>
+
+<br>
+
+<button class="main-btn" onclick="playAgain()">
+🔄 Play Again
+</button>
+
+<button class="main-btn" onclick="closeWinnerPopup()">
+OK
+</button>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+
+<script>
+
+const firebaseConfig = {
+
+apiKey:"AIzaSyDUo7f1j-xdxatIP9rwWmthgMdz-maAlSU",
+
+authDomain:"buildva-9767b.firebaseapp.com",
+
+projectId:"buildva-9767b",
+
+storageBucket:"buildva-9767b.firebasestorage.app",
+
+messagingSenderId:"13159875709",
+
+appId:"1:13159875709:web:5599420e2907eb7c429d14",
+
+databaseURL:"https://buildva-9767b-default-rtdb.firebaseio.com/"
+
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db=firebase.database();
+
+let TOTAL_NUMBERS=200;
+
+let gameCode=null;
+
+let gameRef=null;
+
+let playerNumber=null;
+
+let currentGame=null;
+
+let gameStarted=false;
+
+let countdownTimer=null;
+
+let countdownStartTimer=null;
+
+let connectionRef=null;
+
+let connectionId=null;
+
+let disconnectHandlerSet=false;
+
+let leavingGame=false;
+
+
+/* =========================================================
+   GENERAL FUNCTIONS
+========================================================= */
+
+function shuffle(array){
+
+for(let i=array.length-1;i>0;i--){
+
+let j=Math.floor(Math.random()*(i+1));
+
+[array[i],array[j]]=[array[j],array[i]];
+
+}
+
+return array;
+
+}
+
+function generateGameCode(){
+
+let chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+let code="";
+
+for(let i=0;i<6;i++){
+
+code+=chars[Math.floor(Math.random()*chars.length)];
+
+}
+
+return code;
+
+}
+
+
+/* =========================================================
+   CREATE GAME
+========================================================= */
+
+async function createGame(){
+
+try{
+
+let size=document.querySelector(
+'input[name="gameSize"]:checked'
+).value;
+
+TOTAL_NUMBERS=Number(size);
+
+gameCode=generateGameCode();
+
+gameRef=db.ref("games/"+gameCode);
+
+let board=[];
+
+for(let i=1;i<=TOTAL_NUMBERS;i++){
+
+board.push(i);
+
+}
+
+shuffle(board);
+
+await gameRef.set({
+
+maxNumber:TOTAL_NUMBERS,
+
+board:board,
+
+target:1,
+
+score1:0,
+
+score2:0,
+
+finished:false,
+
+started:false,
+
+winner:null,
+
+countdown:false,
+
+countdownStart:null,
+
+playAgain1:false,
+
+playAgain2:false,
+
+players:{
+
+player1:false,
+
+player2:false
+
+}
+
+});
+
+openGame();
+
+}catch(error){
+
+console.error(error);
+
+document.getElementById("status").innerHTML=
+"❌ Could not create game.";
+
+}
+
+}
+
+
+/* =========================================================
+   JOIN GAME
+========================================================= */
+
+async function joinGame(){
+
+let code=document
+.getElementById("gameCodeInput")
+.value
+.trim()
+.toUpperCase();
+
+if(!code)return;
+
+try{
+
+gameCode=code;
+
+gameRef=db.ref("games/"+gameCode);
+
+let snap=await gameRef.once("value");
+
+if(!snap.exists()){
+
+document.getElementById("status").innerHTML=
+"❌ Game not found";
+
+return;
+
+}
+
+openGame();
+
+}catch(error){
+
+console.error(error);
+
+document.getElementById("status").innerHTML=
+"❌ Could not join game.";
+
+}
+
+}
+
+
+/* =========================================================
+   OPEN GAME
+========================================================= */
+
+function openGame(){
+
+document.getElementById("setup").style.display="none";
+
+document.getElementById("playerArea").style.display="block";
+
+let savedGame=
+localStorage.getItem("buildvaGameCode");
+
+let savedPlayer=
+localStorage.getItem("buildvaPlayerNumber");
+
+if(savedGame===gameCode && savedPlayer){
+
+playerNumber=Number(savedPlayer);
+
+}
+
+document.getElementById("code").innerHTML=
+"Game Code: "+gameCode;
+
+listenGame();
+
+watchForVoiceEnd();
+
+setupConnectionMonitoring();
+
+}
+
+
+/* =========================================================
+   LISTEN TO GAME
+========================================================= */
+
+function listenGame(){
+
+gameRef.on("value",snap=>{
+
+currentGame=snap.val();
+
+if(currentGame){
+
+if(currentGame.maxNumber){
+
+TOTAL_NUMBERS=currentGame.maxNumber;
+
+}
+
+updateScreen();
+
+}
+
+});
+
+}
+
+
+/* =========================================================
+   PLAYER SLOT CLAIMING
+========================================================= */
+
+async function choosePlayer(number){
+
+let name=document
+.getElementById("playerName")
+.value
+.trim();
+
+if(!name){
+
+alert("Please enter your name");
+
+return;
+
+}
+
+if(!gameRef || !gameCode){
+
+alert("Please create or join a game first.");
+
+return;
+
+}
+
+/*
+  If this browser already owns the opposite slot,
+  don't allow it to take another slot.
+*/
+
+if(playerNumber && playerNumber!==number){
+
+alert(
+"You are already Player "+playerNumber+
+". Leave that player slot first if you want to change."
+);
+
+return;
+
+}
+
+try{
+
+let slotRef=gameRef.child("players/player"+number);
+
+let result=await slotRef.transaction(player=>{
+
+/*
+  Slot is already occupied.
+*/
+
+if(player){
+
+/*
+  Allow the same connection to refresh
+  its own player information.
+*/
+
+if(
+playerNumber===number &&
+player.connectionId===connectionId
+){
+
+return {
+
+name:name,
+
+ready:true,
+
+connectionId:connectionId
+
+};
+
+}
+
+return;
+
+}
+
+return {
+
+name:name,
+
+ready:true,
+
+connectionId:connectionId
+
+};
+
+});
+
+if(!result.committed){
+
+alert(
+"❌ Player "+number+
+" is already taken. Please choose the other player."
+);
+
+return;
+
+}
+
+/*
+  Claim was successful.
+*/
+
+playerNumber=number;
+
+localStorage.setItem(
+"buildvaGameCode",
+gameCode
+);
+
+localStorage.setItem(
+"buildvaPlayerNumber",
+number
+);
+
+setupPlayerDisconnect(number);
+
+updateScreen();
+
+}catch(error){
+
+console.error("Player claim error:",error);
+
+alert(
+"Could not choose Player "+number+
+". Please try again."
+);
+
+}
+
+}
+
+
+/* =========================================================
+   CONNECTION / DISCONNECT HANDLING
+========================================================= */
+
+function setupConnectionMonitoring(){
+
+if(!gameRef)return;
+
+connectionRef=db.ref(".info/connected");
+
+connectionId=
+Date.now().toString()+"_"+Math.random()
+.toString(36)
+.substring(2);
+
+connectionRef.on("value",snapshot=>{
+
+if(snapshot.val()===true){
+
+/*
+  Firebase connection is active.
+  If the user already selected a player,
+  make sure the disconnect handler is active.
+*/
+
+if(playerNumber){
+
+setupPlayerDisconnect(playerNumber);
+
+}
+
+}
+
+});
+
+}
+
+
+function setupPlayerDisconnect(number){
+
+if(!gameRef || !connectionId)return;
+
+let slotRef=
+gameRef.child("players/player"+number);
+
+/*
+  When this browser disconnects,
+  remove ONLY the player slot.
+
+  The connectionId check prevents another
+  connection from accidentally being treated
+  as this player.
+*/
+
+slotRef.onDisconnect().set(false);
+
+disconnectHandlerSet=true;
+
+}
+
+
+/* =========================================================
+   START COUNTDOWN
+========================================================= */
+
+function startCountdown(){
+
+if(!currentGame)return;
+
+if(currentGame.started)return;
+
+if(currentGame.countdownStart)return;
+
+let startTime=
+firebase.database.ServerValue.TIMESTAMP;
+
+gameRef.update({
+
+countdown:true,
+
+countdownStart:startTime
+
+});
+
+}
+
+
+/*
+  Display the shared countdown based on the
+  Firebase server timestamp.
+*/
+
+function runSynchronizedCountdown(){
+
+if(!currentGame || !currentGame.countdownStart){
+
+return;
+
+}
+
+if(countdownTimer){
+
+clearInterval(countdownTimer);
+
+}
+
+const startTime=
+Number(currentGame.countdownStart);
+
+countdownTimer=setInterval(()=>{
+
+let elapsed=
+Date.now()-startTime;
+
+let remaining=
+Math.ceil((3000-elapsed)/1000);
+
+if(remaining>0){
+
+document.getElementById("countdown").innerHTML=
+remaining;
+
+}else{
+
+clearInterval(countdownTimer);
+
+document.getElementById("countdown").innerHTML=
+"🚀 GO!";
+
+/*
+  Only the database transaction that successfully
+  changes started:false to true gets to start the game.
+*/
+
+gameRef.transaction(game=>{
+
+if(!game)return game;
+
+if(game.started)return game;
+
+if(!game.players ||
+!game.players.player1 ||
+!game.players.player2){
+
+return game;
+
+}
+
+if(!game.countdownStart)return game;
+
+game.started=true;
+
+game.countdown=false;
+
+return game;
+
+});
+
+setTimeout(()=>{
+
+if(document.getElementById("countdown")){
+
+document.getElementById("countdown").innerHTML="";
+
+}
+
+},1000);
+
+}
+
+},100);
+
+}
+
+
+/* =========================================================
+   UPDATE SCREEN
+========================================================= */
+
+function updateScreen(){
+
+if(!currentGame)return;
+
+let players=currentGame.players || {};
+
+let p1=players.player1 || false;
+
+let p2=players.player2 || false;
+
+
+/* SCORE */
+
+document.getElementById("score1").innerHTML=
+currentGame.score1 || 0;
+
+document.getElementById("score2").innerHTML=
+currentGame.score2 || 0;
+
+
+/* PLAYER NAMES */
+
+document.getElementById("name1").innerHTML=
+p1 ? "👤 "+p1.name : "Player 1";
+
+document.getElementById("name2").innerHTML=
+p2 ? "👤 "+p2.name : "Player 2";
+
+
+/* PLAYER STATUS */
+
+updatePlayerStatus(1,p1);
+
+updatePlayerStatus(2,p2);
+
+
+/* TARGET */
+
+document.getElementById("target").innerHTML=
+currentGame.target || 1;
+
+
+/* REMAINING */
+
+document.getElementById("remaining").innerHTML=
+Math.max(
+0,
+TOTAL_NUMBERS-(currentGame.target || 1)+1
+);
+
+
+/* PLAYER BUTTONS */
+
+let p1Button=document.getElementById("player1Btn");
+
+let p2Button=document.getElementById("player2Btn");
+
+if(p1Button){
+
+p1Button.disabled=
+!!p1 && !(
+playerNumber===1 &&
+p1.connectionId===connectionId
+);
+
+}
+
+if(p2Button){
+
+p2Button.disabled=
+!!p2 && !(
+playerNumber===2 &&
+p2.connectionId===connectionId
+);
+
+}
+
+
+/* GAME AREA */
+
+if(p1 && p2){
+
+document.getElementById("gameArea").style.display=
+"block";
+
+/*
+  Game finished
+*/
+
+if(currentGame.finished){
+
+document.getElementById("waiting").innerHTML=
+"🏁 Round finished. Both players can choose Play Again.";
+
+renderBoard();
+
+showWinner();
+
+return;
+
+}
+
+
+/*
+  Countdown has already been started.
+*/
+
+if(
+!currentGame.started &&
+currentGame.countdownStart
+){
+
+document.getElementById("waiting").innerHTML=
+"🟢 Both players are ready!";
+
+runSynchronizedCountdown();
+
+}
+
+
+/*
+  Both players are ready but countdown
+  hasn't started yet.
+*/
+
+if(
+!currentGame.started &&
+!currentGame.countdownStart
+){
+
+document.getElementById("waiting").innerHTML=
+"🟢 Both players are ready!";
+
+startCountdown();
+
+}
+
+if(currentGame.started){
+
+document.getElementById("waiting").innerHTML=
+"🎮 Game in progress!";
+
+}
+
+renderBoard();
+
+}else{
+
+document.getElementById("gameArea").style.display=
+"none";
+
+if(!p1 && !p2){
+
+document.getElementById("waiting").innerHTML=
+"Waiting for Player 1 and Player 2...";
+
+}else if(!p1){
+
+document.getElementById("waiting").innerHTML=
+"🟢 Player 2 is ready. Waiting for Player 1...";
+
+}else{
+
+document.getElementById("waiting").innerHTML=
+"🟢 Player 1 is ready. Waiting for Player 2...";
+
+}
+
+}
+
+
+/*
+  If countdown is already stored,
+  make sure this browser displays it.
+*/
+
+if(
+p1 &&
+p2 &&
+!currentGame.started &&
+currentGame.countdownStart
+){
+
+runSynchronizedCountdown();
+
+}
+
+}
+
+
+/* =========================================================
+   PLAYER STATUS DISPLAY
+========================================================= */
+
+function updatePlayerStatus(number,player){
+
+let element=document.getElementById(
+"player"+number+"Status"
+);
+
+if(!element)return;
+
+if(player){
+
+element.className=
+"player-status-box ready";
+
+element.innerHTML=
+"🟢 Player "+number+
+" — "+player.name+
+" — Ready";
+
+}else{
+
+element.className=
+"player-status-box waiting";
+
+element.innerHTML=
+"🟡 Player "+number+
+" — Waiting";
+
+}
+
+}
+
+
+/* =========================================================
+   RENDER BOARD
+========================================================= */
+
+function renderBoard(){
+
+if(!currentGame || !currentGame.board)return;
+
+let box=document.getElementById("numbers");
+
+box.innerHTML="";
+
+currentGame.board.forEach(num=>{
+
+let button=document.createElement("button");
+
+button.className="number";
+
+button.innerHTML=num;
+
+if(num < currentGame.target){
+
+button.classList.add("used");
+
+}else if(
+!currentGame.started ||
+currentGame.finished ||
+!playerNumber
+){
+
+button.disabled=true;
+
+}else{
+
+button.onclick=function(){
+
+pickNumber(num);
+
+};
+
+}
+
+box.appendChild(button);
+
+});
+
+}
+
+
+/* =========================================================
+   PICK NUMBER
+========================================================= */
+
+async function pickNumber(num){
+
+if(!playerNumber){
+
+let savedPlayer=
+localStorage.getItem("buildvaPlayerNumber");
+
+if(savedPlayer){
+
+playerNumber=Number(savedPlayer);
+
+}
+
+}
+
+if(!playerNumber)return;
+
+await gameRef.transaction(game=>{
+
+if(!game)return game;
+
+if(!game.started)return game;
+
+if(game.finished)return game;
+
+
+/*
+  Make sure the player is still registered.
+*/
+
+if(
+!game.players ||
+!game.players["player"+playerNumber]
+){
+
+return game;
+
+}
+
+
+/*
+  Make sure this browser still owns
+  that player slot.
+*/
+
+if(
+game.players["player"+playerNumber].connectionId !==
+connectionId
+){
+
+return game;
+
+}
+
+if(num !== game.target){
+
+return game;
+
+}
+
+if(playerNumber===1){
+
+game.score1=(game.score1 || 0)+1;
+
+}else{
+
+game.score2=(game.score2 || 0)+1;
+
+}
+
+if(game.target===TOTAL_NUMBERS){
+
+game.finished=true;
+
+if(game.score1>game.score2){
+
+game.winner=1;
+
+}else if(game.score2>game.score1){
+
+game.winner=2;
+
+}else{
+
+game.winner=0;
+
+}
+
+}else{
+
+game.target++;
+
+}
+
+return game;
+
+});
+
+}
+
+
+/* =========================================================
+   WINNER
+========================================================= */
+
+function showWinner(){
+
+if(!currentGame || !currentGame.finished)return;
+
+let text="";
+
+if(currentGame.winner===1){
+
+text="🏆 "+
+(currentGame.players.player1 ?
+currentGame.players.player1.name :
+"Player 1")+
+" Wins!";
+
+}else if(currentGame.winner===2){
+
+text="🏆 "+
+(currentGame.players.player2 ?
+currentGame.players.player2.name :
+"Player 2")+
+" Wins!";
+
+}else{
+
+text="🤝 Draw Game!";
+
+}
+
+let play1=
+currentGame.playAgain1 ? "🟢 Ready" : "🟡 Waiting";
+
+let play2=
+currentGame.playAgain2 ? "🟢 Ready" : "🟡 Waiting";
+
+document.getElementById("popupText").innerHTML=
+
+text+
+
+"<br><br>"+
+
+"Score: "+
+
+currentGame.score1+
+
+" - "+
+
+currentGame.score2+
+
+"<br><br>"+
+
+"Play Again Status:<br>"+
+
+"Player 1: "+play1+
+"<br>"+
+"Player 2: "+play2;
+
+document.getElementById("winnerPopup").style.display=
+"block";
+
+}
+
+
+/* =========================================================
+   PLAY AGAIN
+========================================================= */
+
+async function playAgain(){
+
+if(!gameRef || !playerNumber)return;
+
+if(
+!currentGame ||
+!currentGame.finished
+){
+
+return;
+
+}
+
+/*
+  Mark ONLY this player as ready
+  for the next round.
+*/
+
+let field=
+"playAgain"+playerNumber;
+
+try{
+
+await gameRef.child(field).set(true);
+
+document.getElementById("winnerPopup").style.display=
+"none";
+
+document.getElementById("waiting").innerHTML=
+"🟢 You are ready for the next round. Waiting for the other player...";
+
+/*
+  The database listener will see when both
+  playAgain1 and playAgain2 become true.
+*/
+
+await gameRef.transaction(game=>{
+
+if(!game)return game;
+
+if(!game.finished)return game;
+
+if(
+game.playAgain1 &&
+game.playAgain2
+){
+
+let board=[];
+
+for(let i=1;i<=game.maxNumber;i++){
+
+board.push(i);
+
+}
+
+shuffle(board);
+
+game.board=board;
+
+game.target=1;
+
+game.score1=0;
+
+game.score2=0;
+
+game.finished=false;
+
+game.winner=null;
+
+game.started=false;
+
+game.countdown=false;
+
+game.countdownStart=null;
+
+game.playAgain1=false;
+
+game.playAgain2=false;
+
+}
+
+return game;
+
+});
+
+}catch(error){
+
+console.error("Play Again error:",error);
+
+alert(
+"Could not prepare the next round. Please try again."
+);
+
+}
+
+}
+
+
+/* =========================================================
+   LEAVE GAME
+========================================================= */
+
+async function leaveGame(){
+
+leavingGame=true;
+
+/*
+  Stop voice first.
+*/
+
+if(voiceStarted){
+
+await endVoiceChat();
+
+}
+
+/*
+  Cancel Firebase disconnect removal
+  before manually removing our player.
+*/
+
+if(
+gameRef &&
+playerNumber
+){
+
+try{
+
+let slotRef=
+gameRef.child(
+"players/player"+playerNumber
+);
+
+await slotRef.onDisconnect().cancel();
+
+await slotRef.transaction(player=>{
+
+if(
+player &&
+player.connectionId===connectionId
+){
+
+return false;
+
+}
+
+return player;
+
+});
+
+}catch(error){
+
+console.error(
+"Could not release player slot:",
+error
+);
+
+}
+
+}
+
+if(countdownTimer){
+
+clearInterval(countdownTimer);
+
+countdownTimer=null;
+
+}
+
+if(connectionRef){
+
+connectionRef.off();
+
+connectionRef=null;
+
+}
+
+if(gameRef){
+
+gameRef.off();
+
+}
+
+localStorage.removeItem("buildvaGameCode");
+
+localStorage.removeItem("buildvaPlayerNumber");
+
+gameCode=null;
+
+gameRef=null;
+
+playerNumber=null;
+
+currentGame=null;
+
+gameStarted=false;
+
+connectionId=null;
+
+disconnectHandlerSet=false;
+
+document.getElementById("playerArea").style.display=
+"none";
+
+document.getElementById("gameArea").style.display=
+"none";
+
+document.getElementById("setup").style.display=
+"block";
+
+document.getElementById("gameCodeInput").value="";
+
+document.getElementById("playerName").value="";
+
+document.getElementById("status").innerHTML="";
+
+document.getElementById("waiting").innerHTML="";
+
+document.getElementById("countdown").innerHTML="";
+
+leavingGame=false;
+
+}
+
+
+/* =========================================================
+   WINNER POPUP
+========================================================= */
+
+function closeWinnerPopup(){
+
+document.getElementById("winnerPopup").style.display=
+"none";
+
+}
+
+
+/* =========================================================
+   DARK MODE
+========================================================= */
+
+function toggleDark(){
+
+document.body.classList.toggle("dark");
+
+}
+
+
+/* =========================================================
+   VOICE CHAT
+   WebRTC + Firebase signaling
+========================================================= */
+
+let localStream = null;
+let peerConnection = null;
+let remoteAudio = null;
+let voiceListeners = [];
+let voiceStarted = false;
+let pendingRemoteCandidates = [];
+let remoteDescriptionReady = false;
+
+const voiceConfig = {
+
+iceServers: [
+
+{urls:"stun:stun.l.google.com:19302"},
+
+{urls:"stun:stun1.l.google.com:19302"}
+
+]
+
+};
+
+function setVoiceStatus(message){
+
+const status=document.getElementById("voiceStatus");
+
+if(status)status.innerHTML=message;
+
+}
+
+function setVoiceButtons(active){
+
+const start=document.getElementById("voiceStartBtn");
+
+const mute=document.getElementById("voiceMuteBtn");
+
+const end=document.getElementById("voiceEndBtn");
+
+if(start)
+start.style.display=
+active ? "none" : "inline-block";
+
+if(mute)
+mute.style.display=
+active ? "inline-block" : "none";
+
+if(end)
+end.style.display=
+active ? "inline-block" : "none";
+
+if(mute && !active)
+mute.innerHTML="🔇 Mute";
+
+}
+
+function createRemoteAudio(){
+
+if(remoteAudio)return;
+
+remoteAudio=document.createElement("audio");
+
+remoteAudio.id="remoteAudio";
+
+remoteAudio.autoplay=true;
+
+remoteAudio.playsInline=true;
+
+remoteAudio.style.display="none";
+
+document.body.appendChild(remoteAudio);
+
+}
+
+function removeVoiceListeners(){
+
+voiceListeners.forEach(item=>{
+
+try{
+
+item.ref.off(
+item.event,
+item.callback
+);
+
+}catch(error){}
+
+});
+
+voiceListeners=[];
+
+}
+
+async function flushRemoteCandidates(){
+
+if(!peerConnection ||
+!remoteDescriptionReady)return;
+
+const candidates=
+[...pendingRemoteCandidates];
+
+pendingRemoteCandidates=[];
+
+for(const candidate of candidates){
+
+try{
+
+await peerConnection.addIceCandidate(
+new RTCIceCandidate(candidate)
+);
+
+}catch(error){
+
+console.error(
+"ICE candidate error:",
+error
+);
+
+}
+
+}
+
+}
+
+function listenForRemoteCandidates(){
+
+if(!gameRef || !playerNumber)return;
+
+const otherPlayer=
+playerNumber===1 ? 2 : 1;
+
+const candidateRef=
+gameRef.child(
+"voice/candidates/player"+otherPlayer
+);
+
+const callback=async snapshot=>{
+
+const candidate=snapshot.val();
+
+if(!candidate || !peerConnection)return;
+
+if(!remoteDescriptionReady){
+
+pendingRemoteCandidates.push(candidate);
+
+return;
+
+}
+
+try{
+
+await peerConnection.addIceCandidate(
+new RTCIceCandidate(candidate)
+);
+
+}catch(error){
+
+console.error(
+"ICE candidate error:",
+error
+);
+
+}
+
+};
+
+candidateRef.on(
+"child_added",
+callback
+);
+
+voiceListeners.push({
+
+ref:candidateRef,
+
+event:"child_added",
+
+callback:callback
+
+});
+
+}
+
+function setupVoiceConnection(){
+
+peerConnection=
+new RTCPeerConnection(voiceConfig);
+
+localStream.getTracks().forEach(track=>{
+
+peerConnection.addTrack(
+track,
+localStream
+);
+
+});
+
+peerConnection.ontrack=event=>{
+
+createRemoteAudio();
+
+if(
+event.streams &&
+event.streams[0]
+){
+
+remoteAudio.srcObject=
+event.streams[0];
+
+remoteAudio.play().catch(()=>{});
+
+}
+
+setVoiceStatus(
+"🟢 Voice connected"
+);
+
+};
+
+peerConnection.onicecandidate=
+async event=>{
+
+if(
+!event.candidate ||
+!gameRef ||
+!playerNumber
+)return;
+
+try{
+
+await gameRef
+.child("voice/candidates/player"+playerNumber)
+.push(
+event.candidate.toJSON()
+);
+
+}catch(error){
+
+console.error(
+"Could not send ICE candidate:",
+error
+);
+
+}
+
+};
+
+peerConnection.onconnectionstatechange=()=>{
+
+if(!peerConnection)return;
+
+const state=
+peerConnection.connectionState;
+
+if(state==="connected"){
+
+setVoiceStatus(
+"🟢 Voice connected"
+);
+
+}else if(state==="connecting"){
+
+setVoiceStatus(
+"🟡 Connecting voice..."
+);
+
+}else if(state==="disconnected"){
+
+setVoiceStatus(
+"🟠 Voice disconnected"
+);
+
+}else if(state==="failed"){
+
+setVoiceStatus(
+"🔴 Voice connection failed"
+);
+
+}
+
+};
+
+}
+
+async function startVoiceChat(){
+
+if(!gameRef || !gameCode){
+
+alert(
+"Please join a game first."
+);
+
+return;
+
+}
+
+if(!playerNumber){
+
+alert(
+"Please choose Player 1 or Player 2 first."
+);
+
+return;
+
+}
+
+if(
+!currentGame ||
+!currentGame.players ||
+!currentGame.players.player1 ||
+!currentGame.players.player2
+){
+
+alert(
+"Both players must join the game before starting voice chat."
+);
+
+return;
+
+}
+
+if(voiceStarted)return;
+
+if(
+!navigator.mediaDevices ||
+!navigator.mediaDevices.getUserMedia
+){
+
+alert(
+"Voice chat needs a secure website (HTTPS or localhost) and a browser with microphone support."
+);
+
+return;
+
+}
+
+try{
+
+setVoiceStatus(
+"🎙️ Requesting microphone access..."
+);
+
+localStream=
+await navigator.mediaDevices.getUserMedia({
+audio:true
+});
+
+createRemoteAudio();
+
+pendingRemoteCandidates=[];
+
+remoteDescriptionReady=false;
+
+setupVoiceConnection();
+
+voiceStarted=true;
+
+setVoiceButtons(true);
+
+if(playerNumber===1){
+
+await gameRef
+.child("voice")
+.remove();
+
+const callId=
+Date.now().toString();
+
+await gameRef
+.child("voice/callId")
+.set(callId);
+
+await gameRef
+.child("voice/ended")
+.set(false);
+
+const offer=
+await peerConnection.createOffer();
+
+await peerConnection.setLocalDescription(
+offer
+);
+
+await gameRef
+.child("voice/offer")
+.set({
+
+type:offer.type,
+
+sdp:offer.sdp
+
+});
+
+setVoiceStatus(
+"🟡 Waiting for Player 2..."
+);
+
+const answerRef=
+gameRef.child("voice/answer");
+
+const answerCallback=
+async snapshot=>{
+
+const answer=
+snapshot.val();
+
+if(
+!answer ||
+!peerConnection ||
+peerConnection.currentRemoteDescription
+){
+
+return;
+
+}
+
+try{
+
+await peerConnection.setRemoteDescription(
+new RTCSessionDescription(answer)
+);
+
+remoteDescriptionReady=true;
+
+await flushRemoteCandidates();
+
+setVoiceStatus(
+"🟡 Connecting voice..."
+);
+
+}catch(error){
+
+console.error(
+"Answer error:",
+error
+);
+
+setVoiceStatus(
+"🔴 Voice connection error"
+);
+
+}
+
+};
+
+answerRef.on(
+"value",
+answerCallback
+);
+
+voiceListeners.push({
+
+ref:answerRef,
+
+event:"value",
+
+callback:answerCallback
+
+});
+
+}else{
+
+setVoiceStatus(
+"🟡 Waiting for Player 1..."
+);
+
+const offerRef=
+gameRef.child("voice/offer");
+
+const offerCallback=
+async snapshot=>{
+
+const offer=
+snapshot.val();
+
+if(
+!offer ||
+!peerConnection ||
+peerConnection.currentRemoteDescription
+){
+
+return;
+
+}
+
+try{
+
+await peerConnection.setRemoteDescription(
+new RTCSessionDescription(offer)
+);
+
+remoteDescriptionReady=true;
+
+await flushRemoteCandidates();
+
+const answer=
+await peerConnection.createAnswer();
+
+await peerConnection.setLocalDescription(
+answer
+);
+
+await gameRef
+.child("voice/answer")
+.set({
+
+type:answer.type,
+
+sdp:answer.sdp
+
+});
+
+setVoiceStatus(
+"🟡 Connecting voice..."
+);
+
+}catch(error){
+
+console.error(
+"Offer error:",
+error
+);
+
+setVoiceStatus(
+"🔴 Voice connection error"
+);
+
+}
+
+};
+
+offerRef.on(
+"value",
+offerCallback
+);
+
+voiceListeners.push({
+
+ref:offerRef,
+
+event:"value",
+
+callback:offerCallback
+
+});
+
+}
+
+listenForRemoteCandidates();
+
+}catch(error){
+
+console.error(
+"Voice chat error:",
+error
+);
+
+voiceStarted=false;
+
+setVoiceButtons(false);
+
+if(localStream){
+
+localStream
+.getTracks()
+.forEach(track=>track.stop());
+
+localStream=null;
+
+}
+
+if(peerConnection){
+
+try{
+
+peerConnection.close();
+
+}catch(error){}
+
+peerConnection=null;
+
+}
+
+setVoiceStatus(
+"🔴 Microphone access failed"
+);
+
+alert(
+"Could not access your microphone. Please allow microphone access in your browser."
+);
+
+}
+
+}
+
+function toggleMute(){
+
+if(!localStream)return;
+
+const audioTracks=
+localStream.getAudioTracks();
+
+if(audioTracks.length===0)return;
+
+const currentlyEnabled=
+audioTracks[0].enabled;
+
+audioTracks.forEach(track=>{
+
+track.enabled=
+!currentlyEnabled;
+
+});
+
+const button=
+document.getElementById(
+"voiceMuteBtn"
+);
+
+if(currentlyEnabled){
+
+button.innerHTML=
+"🔊 Unmute";
+
+setVoiceStatus(
+"🔇 Microphone muted"
+);
+
+}else{
+
+button.innerHTML=
+"🔇 Mute";
+
+setVoiceStatus(
+"🟢 Voice connected"
+);
+
+}
+
+}
+
+async function endVoiceChat(){
+
+removeVoiceListeners();
+
+if(localStream){
+
+localStream
+.getTracks()
+.forEach(track=>track.stop());
+
+localStream=null;
+
+}
+
+if(peerConnection){
+
+try{
+
+peerConnection.close();
+
+}catch(error){}
+
+peerConnection=null;
+
+}
+
+pendingRemoteCandidates=[];
+
+remoteDescriptionReady=false;
+
+if(remoteAudio){
+
+remoteAudio.srcObject=null;
+
+remoteAudio.remove();
+
+remoteAudio=null;
+
+}
+
+if(gameRef){
+
+try{
+
+await gameRef
+.child("voice")
+.remove();
+
+}catch(error){
+
+console.error(
+"Could not clear voice data:",
+error
+);
+
+}
+
+}
+
+voiceStarted=false;
+
+setVoiceButtons(false);
+
+setVoiceStatus(
+"🔴 Voice chat is off"
+);
+
+}
+
+function watchForVoiceEnd(){
+
+if(!gameRef)return;
+
+const voiceRef=
+gameRef.child("voice");
+
+let voiceWasPresent=false;
+
+const callback=snapshot=>{
+
+if(snapshot.exists()){
+
+voiceWasPresent=true;
+
+return;
+
+}
+
+if(
+voiceWasPresent &&
+voiceStarted
+){
+
+removeVoiceListeners();
+
+if(localStream){
+
+localStream
+.getTracks()
+.forEach(track=>track.stop());
+
+localStream=null;
+
+}
+
+if(peerConnection){
+
+try{
+
+peerConnection.close();
+
+}catch(error){}
+
+peerConnection=null;
+
+}
+
+pendingRemoteCandidates=[];
+
+remoteDescriptionReady=false;
+
+if(remoteAudio){
+
+remoteAudio.srcObject=null;
+
+remoteAudio.remove();
+
+remoteAudio=null;
+
+}
+
+voiceStarted=false;
+
+setVoiceButtons(false);
+
+setVoiceStatus(
+"🔴 Other player ended voice chat"
+);
+
+}
+
+};
+
+voiceRef.on(
+"value",
+callback
+);
+
+voiceListeners.push({
+
+ref:voiceRef,
+
+event:"value",
+
+callback:callback
+
+});
+
+}
+
+
+/* =========================================================
+   BEFORE UNLOAD
+========================================================= */
+
+window.addEventListener(
+"beforeunload",
+()=>{
+
+/*
+  Firebase onDisconnect handles
+  releasing the player slot.
+*/
+
+if(localStream){
+
+localStream
+.getTracks()
+.forEach(track=>track.stop());
+
+}
+
+if(peerConnection){
+
+try{
+
+peerConnection.close();
+
+}catch(error){}
+
+}
+
+}
+);
+
+</script>
+
+</body>
+
+</html>
