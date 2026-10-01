@@ -1,4 +1,5 @@
 {
+  "id": "/buildva/",
   "name": "Buildva - Picking Numbers",
   "short_name": "Buildva",
   "description": "A fast multiplayer number-picking game.",
@@ -11,11 +12,19 @@
   "icons": [
     {
       "src": "buildva-logo.png",
+      "sizes": "1254x1254",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "buildva-logo.png",
+      "sizes": "1254x1254",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "buildva-favicon.png",
+      "sizes": "any",
       "type": "image/png",
       "purpose": "any"
     }
