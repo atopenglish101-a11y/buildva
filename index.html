@@ -1759,7 +1759,6 @@ Waiting for both players to join...
 
 </div>
 
-
 </div>
 
 
@@ -1855,7 +1854,6 @@ Waiting for both players to join...
 
 </div>
 
-
 </div>
 
 </div>
@@ -1887,8 +1885,12 @@ Waiting for both players to join...
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
 
 
-
 <script>
+
+
+/* ==========================================
+   FIREBASE CONFIGURATION
+========================================== */
 
 const firebaseConfig = {
 
@@ -1919,113 +1921,12 @@ const auth=firebase.auth();
 
 
 /* ==========================================
-   FIREBASE ANONYMOUS AUTHENTICATION
+   GLOBAL VARIABLES
 ========================================== */
-
 
 let myPlayerId=null;
 
 let firebaseAuthReady=null;
-
-
-function updateFirebaseAuthStatus(authenticated){
-
-const badge=document.getElementById("firebaseHealth");
-
-if(!badge)return;
-
-
-if(authenticated){
-
-badge.title="Firebase connected • Anonymous authentication active";
-
-}else{
-
-badge.title="Firebase connection active • Authentication pending";
-
-}
-
-}
-
-
-
-async function ensureFirebaseAuth(){
-
-if(auth.currentUser){
-
-myPlayerId=auth.currentUser.uid;
-
-updateFirebaseAuthStatus(true);
-
-return auth.currentUser;
-
-}
-
-
-if(!firebaseAuthReady){
-
-firebaseAuthReady=auth.signInAnonymously();
-
-}
-
-
-try{
-
-const credential=await firebaseAuthReady;
-
-myPlayerId=credential.user.uid;
-
-console.log(
-"Buildva anonymous authentication successful:",
-myPlayerId
-);
-
-updateFirebaseAuthStatus(true);
-
-return credential.user;
-
-}catch(error){
-
-console.error(
-"Buildva anonymous authentication failed:",
-error
-);
-
-firebaseAuthReady=null;
-
-updateFirebaseAuthStatus(false);
-
-throw error;
-
-}
-
-}
-
-
-
-auth.onAuthStateChanged(user=>{
-
-if(user){
-
-myPlayerId=user.uid;
-
-console.log(
-"Buildva authenticated UID:",
-user.uid
-);
-
-updateFirebaseAuthStatus(true);
-
-}
-
-});
-
-
-
-/* ==========================================
-   GAME VARIABLES
-========================================== */
-
 
 let TOTAL_NUMBERS=200;
 
@@ -2049,8 +1950,6 @@ let voiceCallId=null;
 
 let voiceMuted=false;
 
-let voiceOfferListener=null;
-
 let voiceAnswerListener=null;
 
 let voiceIceListener=null;
@@ -2062,45 +1961,164 @@ let lastLeft="";
 
 
 /* ==========================================
-   LOCAL PLAYER DATA
+   FIREBASE AUTHENTICATION
 ========================================== */
 
+function updateFirebaseAuthStatus(authenticated){
 
-function getStoredPlayerNumber(){
+const badge=document.getElementById("firebaseHealth");
 
-const value=localStorage.getItem("buildvaPlayerNumber");
+if(!badge)return;
 
-if(value==="1" || value==="2"){
 
-return Number(value);
+if(authenticated){
+
+badge.title=
+"Firebase connected • Anonymous authentication active";
+
+}else{
+
+badge.title=
+"Firebase connected • Authentication pending";
 
 }
-
-return null;
-
-}
-
-
-playerNumber=getStoredPlayerNumber();
-
-
-
-function getStoredPlayerName(){
-
-return localStorage.getItem("buildvaPlayerName") || "";
 
 }
 
 
 
-document.getElementById("playerName").value=getStoredPlayerName();
+async function ensureFirebaseAuth(){
+
+if(auth.currentUser){
+
+myPlayerId=auth.currentUser.uid;
+
+updateFirebaseAuthStatus(true);
+
+return auth.currentUser;
+
+}
+
+
+if(firebaseAuthReady){
+
+return firebaseAuthReady;
+
+}
+
+
+firebaseAuthReady=(async()=>{
+
+try{
+
+/*
+   Keep anonymous authentication persistent
+   in this browser when Firebase supports it.
+*/
+
+try{
+
+await auth.setPersistence(
+firebase.auth.Auth.Persistence.LOCAL
+);
+
+}catch(persistenceError){
+
+console.warn(
+"Firebase auth persistence could not be set:",
+persistenceError
+);
+
+}
+
+
+/*
+   Check again after persistence setup.
+*/
+
+if(auth.currentUser){
+
+myPlayerId=auth.currentUser.uid;
+
+updateFirebaseAuthStatus(true);
+
+return auth.currentUser;
+
+}
+
+
+const credential=
+await auth.signInAnonymously();
+
+
+myPlayerId=
+credential.user.uid;
+
+
+console.log(
+"Buildva anonymous authentication successful:",
+myPlayerId
+);
+
+
+updateFirebaseAuthStatus(true);
+
+
+return credential.user;
+
+
+}catch(error){
+
+firebaseAuthReady=null;
+
+updateFirebaseAuthStatus(false);
+
+console.error(
+"Buildva anonymous authentication failed:",
+error
+);
+
+throw error;
+
+}
+
+})();
+
+
+return firebaseAuthReady;
+
+}
+
+
+
+auth.onAuthStateChanged(user=>{
+
+if(user){
+
+myPlayerId=user.uid;
+
+updateFirebaseAuthStatus(true);
+
+console.log(
+"Buildva authenticated UID:",
+user.uid
+);
+
+}else{
+
+myPlayerId=null;
+
+updateFirebaseAuthStatus(false);
+
+}
+
+});
 
 
 
 /* ==========================================
    DARK MODE
 ========================================== */
-
 
 function toggleDarkMode(){
 
@@ -2110,15 +2128,18 @@ localStorage.setItem(
 
 "buildvaDarkMode",
 
-document.body.classList.contains("dark") ? "1" : "0"
+document.body.classList.contains("dark")
+? "1"
+: "0"
 
 );
 
 }
 
 
-
-if(localStorage.getItem("buildvaDarkMode")==="1"){
+if(
+localStorage.getItem("buildvaDarkMode")==="1"
+){
 
 document.body.classList.add("dark");
 
@@ -2127,24 +2148,88 @@ document.body.classList.add("dark");
 
 
 /* ==========================================
+   STORED PLAYER DATA
+========================================== */
+
+function getStoredPlayerNumber(){
+
+const value=
+localStorage.getItem(
+"buildvaPlayerNumber"
+);
+
+
+if(
+value==="1" ||
+value==="2"
+){
+
+return Number(value);
+
+}
+
+
+return null;
+
+}
+
+
+playerNumber=
+getStoredPlayerNumber();
+
+
+
+function getStoredPlayerName(){
+
+return localStorage.getItem(
+"buildvaPlayerName"
+) || "";
+
+}
+
+
+
+document.getElementById(
+"playerName"
+).value=
+getStoredPlayerName();
+
+
+
+/* ==========================================
    FIREBASE CONNECTION MONITOR
 ========================================== */
 
-
 function monitorFirebaseConnection(){
 
-const badge=document.getElementById("firebaseHealth");
+const badge=
+document.getElementById(
+"firebaseHealth"
+);
 
-const connectedRef=db.ref(".info/connected");
+
+const connectedRef=
+db.ref(".info/connected");
 
 
-connectedRef.on("value",snapshot=>{
+connectedRef.on(
+"value",
+snapshot=>{
 
-if(snapshot.val()===true){
+if(
+snapshot.val()===true
+){
 
-badge.classList.remove("offline");
+badge.classList.remove(
+"offline"
+);
 
-badge.querySelector("span:last-child").textContent="Firebase";
+
+badge.querySelector(
+"span:last-child"
+).textContent=
+"Firebase";
+
 
 if(auth.currentUser){
 
@@ -2158,13 +2243,22 @@ badge.title=
 
 }
 
+
 }else{
 
-badge.classList.add("offline");
+badge.classList.add(
+"offline"
+);
 
-badge.querySelector("span:last-child").textContent="Offline";
 
-badge.title="Firebase connection lost";
+badge.querySelector(
+"span:last-child"
+).textContent=
+"Offline";
+
+
+badge.title=
+"Firebase connection lost";
 
 }
 
@@ -2181,7 +2275,6 @@ monitorFirebaseConnection();
    CREATE GAME
 ========================================== */
 
-
 async function createGame(){
 
 try{
@@ -2190,41 +2283,65 @@ await ensureFirebaseAuth();
 
 }catch(error){
 
-alert(
-"Firebase authentication is not available. Please make sure Anonymous Authentication is enabled in Firebase Console."
+console.error(
+"Create game authentication error:",
+error
 );
+
+
+alert(
+"Firebase authentication is not available.\n\nPlease make sure Anonymous Authentication is enabled in Firebase Console."
+);
+
 
 return;
 
 }
 
 
-const selected=document.querySelector(
+const selected=
+document.querySelector(
 'input[name="gameSize"]:checked'
 );
 
-TOTAL_NUMBERS=Number(selected.value);
+
+if(!selected)return;
 
 
-gameCode=Math.random()
+TOTAL_NUMBERS=
+Number(selected.value);
+
+
+gameCode=
+Math.random()
 .toString(36)
 .substring(2,8)
 .toUpperCase();
 
 
-gameRef=db.ref("games/"+gameCode);
+gameRef=
+db.ref(
+"games/"+gameCode
+);
 
 
 const numbers=[];
 
-for(let i=1;i<=TOTAL_NUMBERS;i++){
+
+for(
+let i=1;
+i<=TOTAL_NUMBERS;
+i++
+){
 
 numbers.push(i);
 
 }
 
 
-numbers.sort(()=>Math.random()-0.5);
+numbers.sort(
+()=>Math.random()-0.5
+);
 
 
 const gameData={
@@ -2249,6 +2366,8 @@ countdown:false,
 
 countdownStartedAt:null,
 
+createdBy:myPlayerId,
+
 players:{
 
 player1:false,
@@ -2262,15 +2381,31 @@ player2:false
 
 try{
 
-await gameRef.set(gameData);
+await gameRef.set(
+gameData
+);
+
+
+localStorage.setItem(
+"buildvaGameCode",
+gameCode
+);
+
 
 await openGame();
 
+
 }catch(error){
 
-console.error(error);
+console.error(
+"Could not create game:",
+error
+);
 
-alert("Could not create the game. Please try again.");
+
+alert(
+"Could not create the game. Please try again."
+);
 
 }
 
@@ -2282,19 +2417,27 @@ alert("Could not create the game. Please try again.");
    JOIN GAME
 ========================================== */
 
-
 async function joinGame(){
 
-const input=document.getElementById("joinCode");
+const input=
+document.getElementById(
+"joinCode"
+);
 
-const code=input.value.trim().toUpperCase();
+
+const code=
+input.value
+.trim()
+.toUpperCase();
 
 
 if(!code){
 
-document.getElementById("joinStatus").innerHTML=
-
+document.getElementById(
+"joinStatus"
+).innerHTML=
 '<span class="status-pill">⚠️ Enter a game code.</span>';
+
 
 return;
 
@@ -2307,37 +2450,59 @@ await ensureFirebaseAuth();
 
 }catch(error){
 
-alert(
-"Firebase authentication is not available. Please make sure Anonymous Authentication is enabled in Firebase Console."
+console.error(
+"Join authentication error:",
+error
 );
+
+
+alert(
+"Firebase authentication is not available.\n\nPlease make sure Anonymous Authentication is enabled in Firebase Console."
+);
+
 
 return;
 
 }
 
 
-const ref=db.ref("games/"+code);
+const ref=
+db.ref(
+"games/"+code
+);
 
 
 try{
 
-const snapshot=await ref.once("value");
+const snapshot=
+await ref.once("value");
 
 
 if(!snapshot.exists()){
 
-document.getElementById("joinStatus").innerHTML=
-
+document.getElementById(
+"joinStatus"
+).innerHTML=
 '<span class="status-pill">❌ Game not found.</span>';
+
 
 return;
 
 }
 
 
-gameCode=code;
+gameCode=
+code;
 
-gameRef=ref;
+
+gameRef=
+ref;
+
+
+localStorage.setItem(
+"buildvaGameCode",
+gameCode
+);
 
 
 await openGame();
@@ -2345,10 +2510,15 @@ await openGame();
 
 }catch(error){
 
-console.error(error);
+console.error(
+"Could not join game:",
+error
+);
 
-document.getElementById("joinStatus").innerHTML=
 
+document.getElementById(
+"joinStatus"
+).innerHTML=
 '<span class="status-pill">❌ Could not join the game.</span>';
 
 }
@@ -2361,7 +2531,6 @@ document.getElementById("joinStatus").innerHTML=
    OPEN GAME
 ========================================== */
 
-
 async function openGame(){
 
 try{
@@ -2370,8 +2539,26 @@ await ensureFirebaseAuth();
 
 }catch(error){
 
+console.error(
+"Open game authentication error:",
+error
+);
+
+
 alert(
-"Could not authenticate with Firebase. Please enable Anonymous Authentication."
+"Could not authenticate with Firebase.\n\nPlease enable Anonymous Authentication in Firebase Console."
+);
+
+
+return;
+
+}
+
+
+if(!gameRef){
+
+console.error(
+"openGame called without a game reference."
 );
 
 return;
@@ -2379,35 +2566,67 @@ return;
 }
 
 
-document.getElementById("setupArea").classList.add("hidden");
+document.getElementById(
+"setupArea"
+).classList.add(
+"hidden"
+);
 
-document.getElementById("homeHero").classList.add("hidden");
 
-document.getElementById("gameArea").classList.remove("hidden");
+document.getElementById(
+"homeHero"
+).classList.add(
+"hidden"
+);
 
-document.getElementById("playerArea").classList.remove("hidden");
 
-document.getElementById("gameCodeDisplay").textContent=gameCode;
+document.getElementById(
+"gameArea"
+).classList.remove(
+"hidden"
+);
+
+
+document.getElementById(
+"playerArea"
+).classList.remove(
+"hidden"
+);
+
+
+document.getElementById(
+"gameCodeDisplay"
+).textContent=
+gameCode;
+
+
+localStorage.setItem(
+"buildvaGameCode",
+gameCode
+);
 
 
 listenGame();
+
 
 watchForVoiceEnd();
 
 }
 
 
+
 /* ==========================================
    LISTEN TO GAME
 ========================================== */
-
 
 function listenGame(){
 
 if(!gameRef)return;
 
 
-gameRef.on("value",snapshot=>{
+gameRef.on(
+"value",
+snapshot=>{
 
 if(!snapshot.exists()){
 
@@ -2416,7 +2635,20 @@ return;
 }
 
 
-currentGame=snapshot.val();
+currentGame=
+snapshot.val();
+
+
+if(
+currentGame.maxNumber
+){
+
+TOTAL_NUMBERS=
+Number(
+currentGame.maxNumber
+);
+
+}
 
 
 updateScreen();
@@ -2426,22 +2658,26 @@ updateScreen();
 }
 
 
+
 /* ==========================================
    UPDATE SCREEN
 ========================================== */
-
 
 function updateScreen(){
 
 if(!currentGame)return;
 
 
-const players=currentGame.players || {};
+const players=
+currentGame.players || {};
 
 
-const p1=players.player1;
+const p1=
+players.player1;
 
-const p2=players.player2;
+
+const p2=
+players.player2;
 
 
 updatePlayerCard(
@@ -2458,21 +2694,37 @@ p2
 );
 
 
+/*
+   Determine our player position from
+   the authenticated Firebase UID.
+*/
 
-if(p1 && p1.playerId===myPlayerId){
+if(
+p1 &&
+p1.playerId===myPlayerId
+){
 
 playerNumber=1;
 
-localStorage.setItem("buildvaPlayerNumber","1");
+localStorage.setItem(
+"buildvaPlayerNumber",
+"1"
+);
 
 }
 
 
-if(p2 && p2.playerId===myPlayerId){
+if(
+p2 &&
+p2.playerId===myPlayerId
+){
 
 playerNumber=2;
 
-localStorage.setItem("buildvaPlayerNumber","2");
+localStorage.setItem(
+"buildvaPlayerNumber",
+"2"
+);
 
 }
 
@@ -2480,40 +2732,71 @@ localStorage.setItem("buildvaPlayerNumber","2");
 
 /* GAME CODE */
 
-document.getElementById("gameCodeDisplay").textContent=gameCode;
+document.getElementById(
+"gameCodeDisplay"
+).textContent=
+gameCode;
 
 
 
 /* SCORE */
 
-document.getElementById("score1").textContent=
+document.getElementById(
+"score1"
+).textContent=
 currentGame.score1 || 0;
 
-document.getElementById("score2").textContent=
+
+document.getElementById(
+"score2"
+).textContent=
 currentGame.score2 || 0;
 
 
-document.getElementById("name1").textContent=
-p1 && p1.name ? p1.name : "Player 1";
+document.getElementById(
+"name1"
+).textContent=
+p1 && p1.name
+? p1.name
+: "Player 1";
 
-document.getElementById("name2").textContent=
-p2 && p2.name ? p2.name : "Player 2";
+
+document.getElementById(
+"name2"
+).textContent=
+p2 && p2.name
+? p2.name
+: "Player 2";
 
 
 
 /* TARGET */
 
-const target=currentGame.target || 1;
-
-document.getElementById("target").textContent=target;
-
-
-const max=currentGame.maxNumber || TOTAL_NUMBERS;
-
-const remaining=Math.max(0,max-target+1);
+const target=
+currentGame.target || 1;
 
 
-document.getElementById("remaining").textContent=
+document.getElementById(
+"target"
+).textContent=
+target;
+
+
+const max=
+currentGame.maxNumber ||
+TOTAL_NUMBERS;
+
+
+const remaining=
+Math.max(
+0,
+max-target+1
+);
+
+
+document.getElementById(
+"remaining"
+).textContent=
 
 remaining===1
 
@@ -2531,38 +2814,58 @@ renderBoard();
 
 /* WAITING / START */
 
-if(!currentGame.started && !currentGame.finished){
+if(
+!currentGame.started &&
+!currentGame.finished
+){
 
-document.getElementById("playerArea")
-.classList.remove("hidden");
+document.getElementById(
+"playerArea"
+).classList.remove(
+"hidden"
+);
 
 
-if(p1 && p2){
+if(
+p1 &&
+p2
+){
 
-document.getElementById("waiting").textContent=
+document.getElementById(
+"waiting"
+).textContent=
 "Both players are ready. Starting game...";
+
 
 startCountdown();
 
+
 }else{
 
-document.getElementById("waiting").textContent=
+document.getElementById(
+"waiting"
+).textContent=
 "Waiting for both players to join...";
 
 }
 
 }else{
 
-document.getElementById("playerArea")
-.classList.add("hidden");
+document.getElementById(
+"playerArea"
+).classList.add(
+"hidden"
+);
 
 }
 
 
 
-/* FINISHED */
+/* GAME STATE */
 
-if(currentGame.finished){
+if(
+currentGame.finished
+){
 
 gameStarted=false;
 
@@ -2575,24 +2878,34 @@ hideWinner();
 }
 
 
-
-if(currentGame.started){
+if(
+currentGame.started
+){
 
 gameStarted=true;
 
 }
 
+
+updateVoiceBar();
+
 }
+
 
 
 /* ==========================================
    PLAYER CARD
 ========================================== */
 
+function updatePlayerCard(
+id,
+title,
+player
+){
 
-function updatePlayerCard(id,title,player){
+const card=
+document.getElementById(id);
 
-const card=document.getElementById(id);
 
 if(!card)return;
 
@@ -2625,20 +2938,34 @@ Waiting...
    ESCAPE HTML
 ========================================== */
 
-
 function escapeHtml(value){
 
 return String(value)
 
-.replace(/&/g,"&amp;")
+.replace(
+/&/g,
+"&amp;"
+)
 
-.replace(/</g,"&lt;")
+.replace(
+/</g,
+"&lt;"
+)
 
-.replace(/>/g,"&gt;")
+.replace(
+/>/g,
+"&gt;"
+)
 
-.replace(/"/g,"&quot;")
+.replace(
+/"/g,
+"&quot;"
+)
 
-.replace(/'/g,"&#039;");
+.replace(
+/'/g,
+"&#039;"
+);
 
 }
 
@@ -2646,9 +2973,7 @@ return String(value)
 
 /* ==========================================
    AUTOMATIC PLAYER ASSIGNMENT
-   PART 1
 ========================================== */
-
 
 async function assignMe(){
 
@@ -2658,27 +2983,42 @@ await ensureFirebaseAuth();
 
 }catch(error){
 
-alert(
-"Firebase authentication failed. Please enable Anonymous Authentication."
+console.error(
+"Assignment authentication error:",
+error
 );
+
+
+alert(
+"Firebase authentication failed.\n\nPlease make sure Anonymous Authentication is enabled."
+);
+
 
 return;
 
 }
 
 
-const nameInput=document.getElementById("playerName");
+const nameInput=
+document.getElementById(
+"playerName"
+);
 
-const name=nameInput.value.trim();
+
+const name=
+nameInput.value.trim();
 
 
 if(!name){
 
-document.getElementById("assignmentStatus").innerHTML=
-
+document.getElementById(
+"assignmentStatus"
+).innerHTML=
 '<span class="status-pill">⚠️ Enter your name first.</span>';
 
+
 nameInput.focus();
+
 
 return;
 
@@ -2687,21 +3027,27 @@ return;
 
 if(!gameRef){
 
-document.getElementById("assignmentStatus").innerHTML=
-
+document.getElementById(
+"assignmentStatus"
+).innerHTML=
 '<span class="status-pill">⚠️ Please create or join a game first.</span>';
+
 
 return;
 
 }
 
 
-localStorage.setItem("buildvaPlayerName",name);
+localStorage.setItem(
+"buildvaPlayerName",
+name
+);
 
 
 try{
 
-await gameRef.transaction(game=>{
+await gameRef.transaction(
+game=>{
 
 if(!game){
 
@@ -2717,28 +3063,37 @@ game.players={};
 }
 
 
-const p1=game.players.player1;
+const p1=
+game.players.player1;
 
-const p2=game.players.player2;
+
+const p2=
+game.players.player2;
 
 
 /* Already assigned */
 
-if(p1 && p1.playerId===myPlayerId){
+if(
+p1 &&
+p1.playerId===myPlayerId
+){
 
 return game;
 
 }
 
 
-if(p2 && p2.playerId===myPlayerId){
+if(
+p2 &&
+p2.playerId===myPlayerId
+){
 
 return game;
 
 }
 
 
-/* Assign Player 1 if empty */
+/* Assign Player 1 */
 
 if(!p1){
 
@@ -2752,12 +3107,13 @@ ready:true
 
 };
 
+
 return game;
 
 }
 
 
-/* Otherwise assign Player 2 */
+/* Assign Player 2 */
 
 if(!p2){
 
@@ -2771,61 +3127,81 @@ ready:true
 
 };
 
+
 return game;
 
 }
 
 
-/* Both positions occupied */
+/* Both occupied */
 
 return;
 
 });
 
 
-const snapshot=await gameRef.once("value");
+const snapshot=
+await gameRef.once(
+"value"
+);
 
-const game=snapshot.val();
+
+const game=
+snapshot.val();
 
 
-if(game && game.players){
+if(
+game &&
+game.players
+){
 
 if(
 game.players.player1 &&
-game.players.player1.playerId===myPlayerId
+game.players.player1.playerId===
+myPlayerId
 ){
 
 playerNumber=1;
+
 
 localStorage.setItem(
 "buildvaPlayerNumber",
 "1"
 );
 
-document.getElementById("assignmentStatus").innerHTML=
 
+document.getElementById(
+"assignmentStatus"
+).innerHTML=
 '<span class="status-pill">🎲 You are Player 1.</span>';
+
 
 }else if(
 game.players.player2 &&
-game.players.player2.playerId===myPlayerId
+game.players.player2.playerId===
+myPlayerId
 ){
 
 playerNumber=2;
+
 
 localStorage.setItem(
 "buildvaPlayerNumber",
 "2"
 );
 
-document.getElementById("assignmentStatus").innerHTML=
 
+document.getElementById(
+"assignmentStatus"
+).innerHTML=
 '<span class="status-pill">🎲 You are Player 2.</span>';
+
 
 }else{
 
-document.getElementById("assignmentStatus").innerHTML=
-
+document.getElementById(
+"assignmentStatus"
+).innerHTML=
 '<span class="status-pill">⏳ Both player positions are occupied.</span>';
 
 }
@@ -2835,10 +3211,15 @@ document.getElementById("assignmentStatus").innerHTML=
 
 }catch(error){
 
-console.error(error);
+console.error(
+"Could not assign player:",
+error
+);
 
-document.getElementById("assignmentStatus").innerHTML=
 
+document.getElementById(
+"assignmentStatus"
+).innerHTML=
 '<span class="status-pill">❌ Could not assign player.</span>';
 
 }
@@ -2851,10 +3232,12 @@ document.getElementById("assignmentStatus").innerHTML=
    START COUNTDOWN
 ========================================== */
 
-
 async function startCountdown(){
 
-if(!gameRef || !currentGame)return;
+if(
+!gameRef ||
+!currentGame
+)return;
 
 
 try{
@@ -2863,29 +3246,46 @@ await ensureFirebaseAuth();
 
 }catch(error){
 
-console.error("Authentication required for countdown:",error);
+console.error(
+"Authentication required for countdown:",
+error
+);
+
 
 return;
 
 }
 
 
-if(currentGame.countdownStartedAt)return;
-
-if(currentGame.started)return;
-
-if(currentGame.finished)return;
+if(
+currentGame.countdownStartedAt
+)return;
 
 
-const players=currentGame.players || {};
+if(
+currentGame.started
+)return;
 
 
-if(!players.player1 || !players.player2)return;
+if(
+currentGame.finished
+)return;
+
+
+const players=
+currentGame.players || {};
+
+
+if(
+!players.player1 ||
+!players.player2
+)return;
 
 
 try{
 
-await gameRef.transaction(game=>{
+await gameRef.transaction(
+game=>{
 
 if(!game)return game;
 
@@ -2893,7 +3293,9 @@ if(game.started)return game;
 
 if(game.finished)return game;
 
-if(game.countdownStartedAt)return game;
+if(game.countdownStartedAt)
+return game;
+
 
 if(
 !game.players ||
@@ -2909,7 +3311,9 @@ return game;
 game.countdownStartedAt=
 firebase.database.ServerValue.TIMESTAMP;
 
+
 game.countdown=true;
+
 
 return game;
 
@@ -2917,7 +3321,11 @@ return game;
 
 }catch(error){
 
-console.error(error);
+console.error(
+"Could not start countdown:",
+error
+);
+
 
 return;
 
@@ -2934,17 +3342,21 @@ showStartCountdown();
    COUNTDOWN DISPLAY
 ========================================== */
 
-
 function showStartCountdown(){
 
-clearInterval(countdownTimer);
+clearInterval(
+countdownTimer
+);
 
 
-const popup=document.getElementById(
+const popup=
+document.getElementById(
 "startCountdownPopup"
 );
 
-const number=document.getElementById(
+
+const number=
+document.getElementById(
 "countdownPopupNumber"
 );
 
@@ -2954,35 +3366,51 @@ popup.style.display="flex";
 
 let seconds=3;
 
-number.textContent=seconds;
+
+number.textContent=
+seconds;
 
 
-countdownTimer=setInterval(()=>{
+countdownTimer=
+setInterval(
+()=>{
 
 seconds--;
 
 
-if(seconds>0){
+if(
+seconds>0
+){
 
-number.textContent=seconds;
+number.textContent=
+seconds;
 
 }else{
 
-number.textContent="GO!";
+number.textContent=
+"GO!";
 
 
-setTimeout(()=>{
+setTimeout(
+()=>{
 
-popup.style.display="none";
+popup.style.display=
+"none";
 
-},700);
+},
+700
+);
 
 
-clearInterval(countdownTimer);
+clearInterval(
+countdownTimer
+);
 
 }
 
-},1000);
+},
+1000
+);
 
 }
 
@@ -2992,7 +3420,6 @@ clearInterval(countdownTimer);
    COUNTDOWN SYNC
 ========================================== */
 
-
 function syncCountdown(){
 
 if(!currentGame)return;
@@ -3001,18 +3428,24 @@ if(currentGame.started)return;
 
 if(currentGame.finished)return;
 
-if(!currentGame.countdownStartedAt)return;
+if(
+!currentGame.countdownStartedAt
+)return;
 
 
-const startedAt=Number(
+const startedAt=
+Number(
 currentGame.countdownStartedAt
 );
 
 
-const elapsed=Date.now()-startedAt;
+const elapsed=
+Date.now()-startedAt;
 
 
-if(elapsed>=4000){
+if(
+elapsed>=4000
+){
 
 gameRef.update({
 
@@ -3020,7 +3453,8 @@ started:true,
 
 countdown:false
 
-}).catch(error=>{
+}).catch(
+error=>{
 
 console.error(
 "Could not start game:",
@@ -3039,56 +3473,84 @@ error
    BOARD RENDER
 ========================================== */
 
-
 function renderBoard(){
 
 if(!currentGame)return;
 
 
-const container=document.getElementById("numbers");
+const container=
+document.getElementById(
+"numbers"
+);
 
-const max=currentGame.maxNumber || TOTAL_NUMBERS;
 
-const target=currentGame.target || 1;
+const max=
+currentGame.maxNumber ||
+TOTAL_NUMBERS;
+
+
+const target=
+currentGame.target ||
+1;
 
 
 container.innerHTML="";
 
 
-const board=currentGame.board || [];
+const board=
+currentGame.board || [];
 
 
-board.forEach(num=>{
+board.forEach(
+num=>{
 
-const div=document.createElement("div");
+const div=
+document.createElement(
+"div"
+);
 
-div.className="number";
+
+div.className=
+"number";
 
 
-if(num<target){
+if(
+num<target
+){
 
-div.classList.add("used");
+div.classList.add(
+"used"
+);
 
 }
 
 
-div.textContent=num;
+div.textContent=
+num;
 
 
-if(num>=target){
+if(
+num>=target &&
+currentGame.started &&
+!currentGame.finished
+){
 
-div.onclick=()=>pickNumber(num);
+div.onclick=
+()=>pickNumber(num);
 
 }
 
 
-container.appendChild(div);
+container.appendChild(
+div
+);
 
 });
 
 
-
-if(currentGame.countdownStartedAt){
+if(
+currentGame.countdownStartedAt
+){
 
 syncCountdown();
 
@@ -3101,7 +3563,6 @@ syncCountdown();
 /* ==========================================
    PICK NUMBER
 ========================================== */
-
 
 async function pickNumber(num){
 
@@ -3127,6 +3588,7 @@ console.error(
 error
 );
 
+
 return;
 
 }
@@ -3134,7 +3596,8 @@ return;
 
 try{
 
-await gameRef.transaction(game=>{
+await gameRef.transaction(
+game=>{
 
 if(!game)return game;
 
@@ -3143,53 +3606,90 @@ if(!game.started)return game;
 if(game.finished)return game;
 
 
-/* Make sure this Firebase user
-   actually owns the player slot */
+/*
+   Make sure this Firebase UID owns
+   the selected player position.
+*/
 
 const slot=
 game.players &&
-game.players["player"+playerNumber];
+game.players[
+"player"+playerNumber
+];
 
 
 if(!slot)return game;
 
-if(slot.playerId!==myPlayerId)return game;
 
+if(
+slot.playerId!==myPlayerId
+){
 
-/* Only the current target is valid */
-
-if(num!==game.target)return game;
-
-
-/* Award point */
-
-if(playerNumber===1){
-
-game.score1=(game.score1 || 0)+1;
-
-}else{
-
-game.score2=(game.score2 || 0)+1;
+return game;
 
 }
 
 
-/* Final number */
+/*
+   Only the current target is valid.
+*/
 
-if(num>=game.maxNumber){
+if(
+num!==game.target
+){
 
-game.target=game.maxNumber;
+return game;
+
+}
+
+
+/*
+   Award point.
+*/
+
+if(
+playerNumber===1
+){
+
+game.score1=
+(game.score1 || 0)+1;
+
+}else{
+
+game.score2=
+(game.score2 || 0)+1;
+
+}
+
+
+/*
+   Final number.
+*/
+
+if(
+num>=game.maxNumber
+){
+
+game.target=
+game.maxNumber;
+
 
 game.finished=true;
 
 
-/* Determine winner */
+/*
+   Determine winner.
+*/
 
-if(game.score1>game.score2){
+if(
+game.score1>game.score2
+){
 
 game.winner=1;
 
-}else if(game.score2>game.score1){
+}else if(
+game.score2>game.score1
+){
 
 game.winner=2;
 
@@ -3201,7 +3701,8 @@ game.winner=0;
 
 }else{
 
-game.target=num+1;
+game.target=
+num+1;
 
 }
 
@@ -3227,62 +3728,92 @@ error
    WINNER
 ========================================== */
 
-
 function showWinner(){
 
 if(!currentGame)return;
 
 
-const popup=document.getElementById("winnerPopup");
+const popup=
+document.getElementById(
+"winnerPopup"
+);
 
-const text=document.getElementById("popupText");
+
+const text=
+document.getElementById(
+"popupText"
+);
 
 
-const score1=currentGame.score1 || 0;
+const score1=
+currentGame.score1 || 0;
 
-const score2=currentGame.score2 || 0;
+
+const score2=
+currentGame.score2 || 0;
 
 
 let message="";
 
 
-if(currentGame.winner===0){
+if(
+currentGame.winner===0
+){
 
 message=
 "It's a draw! 🤝<br><br>"+
 "Player 1: "+score1+
 " &nbsp; | &nbsp; Player 2: "+score2;
 
-}else if(currentGame.winner===1){
+}else if(
+currentGame.winner===1
+){
 
 message=
-"🏆 "+escapeHtml(
+"🏆 "+
+escapeHtml(
 currentGame.players &&
 currentGame.players.player1 &&
 currentGame.players.player1.name
-? currentGame.players.player1.name
-: "Player 1"
-)+" wins!<br><br>"+
-"Score: "+score1+" – "+score2;
+?
+currentGame.players.player1.name
+:
+"Player 1"
+)+
+" wins!<br><br>"+
+"Score: "+
+score1+
+" – "+
+score2;
 
 }else{
 
 message=
-"🏆 "+escapeHtml(
+"🏆 "+
+escapeHtml(
 currentGame.players &&
 currentGame.players.player2 &&
 currentGame.players.player2.name
-? currentGame.players.player2.name
-: "Player 2"
-)+" wins!<br><br>"+
-"Score: "+score2+" – "+score1;
+?
+currentGame.players.player2.name
+:
+"Player 2"
+)+
+" wins!<br><br>"+
+"Score: "+
+score2+
+" – "+
+score1;
 
 }
 
 
-text.innerHTML=message;
+text.innerHTML=
+message;
 
-popup.style.display="flex";
+
+popup.style.display=
+"flex";
 
 }
 
@@ -3292,7 +3823,8 @@ function hideWinner(){
 
 document.getElementById(
 "winnerPopup"
-).style.display="none";
+).style.display=
+"none";
 
 }
 
@@ -3302,7 +3834,6 @@ document.getElementById(
    COPY GAME CODE
 ========================================== */
 
-
 async function copyGameCode(){
 
 if(!gameCode)return;
@@ -3310,13 +3841,22 @@ if(!gameCode)return;
 
 try{
 
-await navigator.clipboard.writeText(gameCode);
+await navigator.clipboard.writeText(
+gameCode
+);
 
-alert("Game code copied: "+gameCode);
+
+alert(
+"Game code copied: "+
+gameCode
+);
 
 }catch(error){
 
-alert("Your game code is: "+gameCode);
+alert(
+"Your game code is: "+
+gameCode
+);
 
 }
 
@@ -3328,7 +3868,6 @@ alert("Your game code is: "+gameCode);
    SHARE GAME
 ========================================== */
 
-
 async function shareGame(){
 
 if(!gameCode)return;
@@ -3336,24 +3875,31 @@ if(!gameCode)return;
 
 const shareText=
 "Join my Buildva - Picking Numbers game! 🎮\n\n"+
-"Game Code: "+gameCode;
+"Game Code: "+
+gameCode;
 
 
-if(navigator.share){
+if(
+navigator.share
+){
 
 try{
 
 await navigator.share({
 
-title:"Buildva - Picking Numbers",
+title:
+"Buildva - Picking Numbers",
 
-text:shareText
+text:
+shareText
 
 });
 
 }catch(error){
 
-console.log("Share cancelled.");
+console.log(
+"Share cancelled."
+);
 
 }
 
@@ -3361,19 +3907,27 @@ console.log("Share cancelled.");
 
 try{
 
-await navigator.clipboard.writeText(shareText);
+await navigator.clipboard.writeText(
+shareText
+);
 
-alert("Game invitation copied!");
+
+alert(
+"Game invitation copied!"
+);
 
 }catch(error){
 
-alert(shareText);
+alert(
+shareText
+);
 
 }
 
 }
 
 }
+
 
 
 /* ==========================================
@@ -3395,6 +3949,19 @@ alert(
 "Firebase authentication failed. Please try again."
 );
 
+
+return;
+
+}
+
+
+if(!playerNumber){
+
+alert(
+"You are not assigned to a player position."
+);
+
+
 return;
 
 }
@@ -3402,26 +3969,41 @@ return;
 
 try{
 
-await gameRef.transaction(game=>{
+await gameRef.transaction(
+game=>{
 
 if(!game)return game;
 
 
-/* Only an assigned player can restart */
+/*
+   Only an assigned player can restart.
+*/
 
 const me=
 game.players &&
-game.players["player"+playerNumber];
+game.players[
+"player"+playerNumber
+];
 
 
 if(!me)return game;
 
-if(me.playerId!==myPlayerId)return game;
+
+if(
+me.playerId!==myPlayerId
+){
+
+return game;
+
+}
 
 
-/* Reset the game */
+/*
+   Reset board.
+*/
 
 const numbers=[];
+
 
 for(
 let i=1;
@@ -3434,44 +4016,67 @@ numbers.push(i);
 }
 
 
-numbers.sort(()=>Math.random()-0.5);
+numbers.sort(
+()=>Math.random()-0.5
+);
 
 
-game.board=numbers;
+game.board=
+numbers;
 
-game.target=1;
 
-game.score1=0;
+game.target=
+1;
 
-game.score2=0;
 
-game.finished=false;
+game.score1=
+0;
 
-game.started=false;
 
-game.winner=null;
+game.score2=
+0;
 
-game.countdown=false;
 
-game.countdownStartedAt=null;
+game.finished=
+false;
+
+
+game.started=
+false;
+
+
+game.winner=
+null;
+
+
+game.countdown=
+false;
+
+
+game.countdownStartedAt=
+null;
 
 
 /*
-Keep both players assigned.
-They do not need to choose
-their player positions again.
+   Keep both players assigned.
 */
 
-if(game.players.player1){
+if(
+game.players.player1
+){
 
-game.players.player1.ready=true;
+game.players.player1.ready=
+true;
 
 }
 
 
-if(game.players.player2){
+if(
+game.players.player2
+){
 
-game.players.player2.ready=true;
+game.players.player2.ready=
+true;
 
 }
 
@@ -3483,7 +4088,8 @@ return game;
 
 document.getElementById(
 "winnerPopup"
-).style.display="none";
+).style.display=
+"none";
 
 
 }catch(error){
@@ -3492,6 +4098,7 @@ console.error(
 "Could not restart game:",
 error
 );
+
 
 alert(
 "Could not start a new game. Please try again."
@@ -3529,7 +4136,9 @@ console.error(
 error
 );
 
+
 location.reload();
+
 
 return;
 
@@ -3545,7 +4154,8 @@ return;
 }
 
 
-const confirmed=confirm(
+const confirmed=
+confirm(
 "Are you sure you want to leave this game?"
 );
 
@@ -3555,34 +4165,35 @@ if(!confirmed)return;
 
 try{
 
-await gameRef.transaction(game=>{
+await gameRef.transaction(
+game=>{
 
 if(!game)return game;
 
 
-const slotName="player"+playerNumber;
+const slotName=
+"player"+playerNumber;
+
 
 const me=
 game.players &&
 game.players[slotName];
 
 
-if(me && me.playerId===myPlayerId){
+if(
+me &&
+me.playerId===myPlayerId
+){
 
 game.players[slotName]=false;
 
+
+if(me.name){
+
+game.lastLeft=
+me.name;
+
 }
-
-
-/*
-If Player 1 leaves, remember the
-name so the other player can see
-who left.
-*/
-
-if(me && me.name){
-
-game.lastLeft=me.name;
 
 }
 
@@ -3602,7 +4213,9 @@ error
 }
 
 
-/* Stop voice chat */
+/*
+   Stop voice chat.
+*/
 
 try{
 
@@ -3618,22 +4231,38 @@ error
 }
 
 
-/* Clear local player assignment */
+/*
+   Clear local assignment.
+*/
 
 localStorage.removeItem(
 "buildvaPlayerNumber"
 );
 
-playerNumber=null;
+localStorage.removeItem(
+"buildvaGameCode"
+);
 
-gameRef=null;
-
-currentGame=null;
-
-gameCode="";
+localStorage.removeItem(
+"buildvaPlayerName"
+);
 
 
-/* Return to home */
+playerNumber=
+null;
+
+
+gameRef=
+null;
+
+
+currentGame=
+null;
+
+
+gameCode=
+"";
+
 
 location.reload();
 
@@ -3645,17 +4274,18 @@ location.reload();
    VOICE CHAT
 ========================================== */
 
-
 const voiceServers={
 
 iceServers:[
 
 {
-urls:"stun:stun.l.google.com:19302"
+urls:
+"stun:stun.l.google.com:19302"
 },
 
 {
-urls:"stun:stun1.l.google.com:19302"
+urls:
+"stun:stun1.l.google.com:19302"
 }
 
 ]
@@ -3681,12 +4311,15 @@ alert(
 "Firebase authentication is required for voice chat."
 );
 
+
 return;
 
 }
 
 
-if(voicePeerConnection){
+if(
+voicePeerConnection
+){
 
 return;
 
@@ -3706,12 +4339,15 @@ video:false
 
 
 voicePeerConnection=
-new RTCPeerConnection(voiceServers);
+new RTCPeerConnection(
+voiceServers
+);
 
 
 voiceLocalStream
 .getTracks()
-.forEach(track=>{
+.forEach(
+track=>{
 
 voicePeerConnection.addTrack(
 track,
@@ -3721,34 +4357,51 @@ voiceLocalStream
 });
 
 
-voicePeerConnection.ontrack=event=>{
+voicePeerConnection.ontrack=
+event=>{
 
 let audio=
-document.getElementById("remoteAudio");
+document.getElementById(
+"remoteAudio"
+);
 
 
 if(!audio){
 
-audio=document.createElement("audio");
+audio=
+document.createElement(
+"audio"
+);
 
-audio.id="remoteAudio";
 
-audio.autoplay=true;
+audio.id=
+"remoteAudio";
 
-audio.playsInline=true;
 
-document.body.appendChild(audio);
+audio.autoplay=
+true;
+
+
+audio.playsInline=
+true;
+
+
+document.body.appendChild(
+audio
+);
 
 }
 
 
-audio.srcObject=event.streams[0];
+audio.srcObject=
+event.streams[0];
 
 };
 
 
 
-voicePeerConnection.onicecandidate=async event=>{
+voicePeerConnection.onicecandidate=
+async event=>{
 
 if(!event.candidate)return;
 
@@ -3766,10 +4419,14 @@ await gameRef
 .child(voiceCallId)
 .child(
 playerNumber===1
-? "callerCandidates"
-: "calleeCandidates"
+?
+"callerCandidates"
+:
+"calleeCandidates"
 )
-.push(candidateData);
+.push(
+candidateData
+);
 
 }catch(error){
 
@@ -3785,29 +4442,39 @@ error
 
 
 /*
-Player 1 creates the voice call.
+   Player 1 creates the voice call.
 */
 
-if(playerNumber===1){
+if(
+playerNumber===1
+){
 
 voiceCallId=
-"call_"+Date.now().toString(36);
+"call_"+
+Date.now()
+.toString(36);
 
 
-await gameRef.child("voice").set({
+await gameRef
+.child("voice")
+.set({
 
-callId:voiceCallId,
+callId:
+voiceCallId,
 
-ended:false
+ended:
+false
 
 });
 
 
 const offer=
-await voicePeerConnection.createOffer();
+await voicePeerConnection
+.createOffer();
 
 
-await voicePeerConnection.setLocalDescription(
+await voicePeerConnection
+.setLocalDescription(
 offer
 );
 
@@ -3819,9 +4486,11 @@ await gameRef
 
 offer:{
 
-type:offer.type,
+type:
+offer.type,
 
-sdp:offer.sdp
+sdp:
+offer.sdp
 
 }
 
@@ -3832,6 +4501,7 @@ listenForVoiceAnswer(
 voiceCallId
 );
 
+
 listenForVoiceIce(
 voiceCallId,
 "calleeCandidates"
@@ -3841,15 +4511,17 @@ voiceCallId,
 
 
 /*
-Player 2 looks for the current
-voice call from Player 1.
+   Player 2 looks for the current call.
 */
 
 const voiceSnapshot=
-await gameRef.child("voice").once("value");
+await gameRef
+.child("voice")
+.once("value");
 
 
-const voiceData=voiceSnapshot.val();
+const voiceData=
+voiceSnapshot.val();
 
 
 if(
@@ -3869,10 +4541,12 @@ return;
 }
 
 
-voiceCallId=voiceData.callId;
+voiceCallId=
+voiceData.callId;
 
 
-await voicePeerConnection.setRemoteDescription(
+await voicePeerConnection
+.setRemoteDescription(
 
 new RTCSessionDescription(
 voiceData.offer
@@ -3882,10 +4556,12 @@ voiceData.offer
 
 
 const answer=
-await voicePeerConnection.createAnswer();
+await voicePeerConnection
+.createAnswer();
 
 
-await voicePeerConnection.setLocalDescription(
+await voicePeerConnection
+.setLocalDescription(
 answer
 );
 
@@ -3897,9 +4573,11 @@ await gameRef
 
 answer:{
 
-type:answer.type,
+type:
+answer.type,
 
-sdp:answer.sdp
+sdp:
+answer.sdp
 
 }
 
@@ -3922,17 +4600,20 @@ document.getElementById(
 
 document.getElementById(
 "voiceBarStart"
-).style.display="none";
+).style.display=
+"none";
 
 
 document.getElementById(
 "voiceBarMute"
-).style.display="inline-block";
+).style.display=
+"inline-block";
 
 
 document.getElementById(
 "voiceBarEnd"
-).style.display="inline-block";
+).style.display=
+"inline-block";
 
 
 }catch(error){
@@ -3972,13 +4653,16 @@ cleanupVoiceChat();
    LISTEN FOR VOICE ANSWER
 ========================================== */
 
-
-function listenForVoiceAnswer(callId){
+function listenForVoiceAnswer(
+callId
+){
 
 if(!gameRef)return;
 
 
-if(voiceAnswerListener){
+if(
+voiceAnswerListener
+){
 
 gameRef
 .child("voice")
@@ -3995,7 +4679,8 @@ voiceAnswerListener
 voiceAnswerListener=
 snapshot=>{
 
-const answer=snapshot.val();
+const answer=
+snapshot.val();
 
 
 if(!answer)return;
@@ -4006,10 +4691,13 @@ if(!voicePeerConnection)return;
 voicePeerConnection
 .setRemoteDescription(
 
-new RTCSessionDescription(answer)
+new RTCSessionDescription(
+answer
+)
 
 )
-.catch(error=>{
+.catch(
+error=>{
 
 console.error(
 "Could not set voice answer:",
@@ -4038,7 +4726,6 @@ voiceAnswerListener
    LISTEN FOR VOICE ICE
 ========================================== */
 
-
 function listenForVoiceIce(
 callId,
 path
@@ -4050,9 +4737,11 @@ if(!gameRef)return;
 voiceIceListener=
 snapshot=>{
 
-snapshot.forEach(child=>{
+snapshot.forEach(
+child=>{
 
-const candidate=child.val();
+const candidate=
+child.val();
 
 
 if(
@@ -4062,9 +4751,12 @@ voicePeerConnection
 
 voicePeerConnection
 .addIceCandidate(
-new RTCIceCandidate(candidate)
+new RTCIceCandidate(
+candidate
 )
-.catch(error=>{
+)
+.catch(
+error=>{
 
 console.error(
 "Could not add ICE candidate:",
@@ -4097,13 +4789,14 @@ voiceIceListener
    WATCH FOR VOICE END
 ========================================== */
 
-
 function watchForVoiceEnd(){
 
 if(!gameRef)return;
 
 
-if(voiceEndListener){
+if(
+voiceEndListener
+){
 
 gameRef
 .child("voice")
@@ -4118,7 +4811,8 @@ voiceEndListener
 voiceEndListener=
 snapshot=>{
 
-const voice=snapshot.val();
+const voice=
+snapshot.val();
 
 
 if(
@@ -4148,20 +4842,22 @@ voiceEndListener
    MUTE / UNMUTE
 ========================================== */
 
-
 function toggleMute(){
 
 if(!voiceLocalStream)return;
 
 
-voiceMuted=!voiceMuted;
+voiceMuted=
+!voiceMuted;
 
 
 voiceLocalStream
 .getAudioTracks()
-.forEach(track=>{
+.forEach(
+track=>{
 
-track.enabled=!voiceMuted;
+track.enabled=
+!voiceMuted;
 
 });
 
@@ -4172,9 +4868,13 @@ document.getElementById(
 );
 
 
-if(voiceMuted){
+if(
+voiceMuted
+){
 
-button.textContent="🔊 Unmute";
+button.textContent=
+"🔊 Unmute";
+
 
 document.getElementById(
 "voiceBarStatus"
@@ -4183,7 +4883,9 @@ document.getElementById(
 
 }else{
 
-button.textContent="🔇 Mute";
+button.textContent=
+"🔇 Mute";
+
 
 document.getElementById(
 "voiceBarStatus"
@@ -4200,10 +4902,12 @@ document.getElementById(
    END VOICE CHAT
 ========================================== */
 
-
 async function endVoiceChat(){
 
-if(gameRef && voiceCallId){
+if(
+gameRef &&
+voiceCallId
+){
 
 try{
 
@@ -4238,10 +4942,13 @@ cleanupVoiceChat();
    CLEANUP VOICE CHAT
 ========================================== */
 
-
 function cleanupVoiceChat(){
 
-if(voiceAnswerListener && gameRef && voiceCallId){
+if(
+voiceAnswerListener &&
+gameRef &&
+voiceCallId
+){
 
 gameRef
 .child("voice")
@@ -4255,15 +4962,21 @@ voiceAnswerListener
 }
 
 
-if(voiceIceListener && gameRef && voiceCallId){
+if(
+voiceIceListener &&
+gameRef &&
+voiceCallId
+){
 
 gameRef
 .child("voice")
 .child(voiceCallId)
 .child(
 playerNumber===1
-? "calleeCandidates"
-: "callerCandidates"
+?
+"calleeCandidates"
+:
+"callerCandidates"
 )
 .off(
 "value",
@@ -4273,7 +4986,9 @@ voiceIceListener
 }
 
 
-if(voicePeerConnection){
+if(
+voicePeerConnection
+){
 
 try{
 
@@ -4288,26 +5003,41 @@ console.log(error);
 }
 
 
-if(voiceLocalStream){
+if(
+voiceLocalStream
+){
 
 voiceLocalStream
 .getTracks()
-.forEach(track=>track.stop());
+.forEach(
+track=>track.stop()
+);
 
 }
 
 
-voicePeerConnection=null;
+voicePeerConnection=
+null;
 
-voiceLocalStream=null;
 
-voiceCallId=null;
+voiceLocalStream=
+null;
 
-voiceAnswerListener=null;
 
-voiceIceListener=null;
+voiceCallId=
+null;
 
-voiceMuted=false;
+
+voiceAnswerListener=
+null;
+
+
+voiceIceListener=
+null;
+
+
+voiceMuted=
+false;
 
 
 const muteButton=
@@ -4315,9 +5045,11 @@ document.getElementById(
 "voiceBarMute"
 );
 
+
 if(muteButton){
 
-muteButton.textContent="🔇 Mute";
+muteButton.textContent=
+"🔇 Mute";
 
 }
 
@@ -4327,9 +5059,11 @@ document.getElementById(
 "voiceBarStatus"
 );
 
+
 if(status){
 
-status.textContent="Voice chat";
+status.textContent=
+"Voice chat";
 
 }
 
@@ -4339,9 +5073,11 @@ document.getElementById(
 "voiceBarStart"
 );
 
+
 if(startButton){
 
-startButton.style.display="inline-block";
+startButton.style.display=
+"inline-block";
 
 }
 
@@ -4351,9 +5087,11 @@ document.getElementById(
 "voiceBarMute"
 );
 
+
 if(muteBtn){
 
-muteBtn.style.display="none";
+muteBtn.style.display=
+"none";
 
 }
 
@@ -4363,15 +5101,19 @@ document.getElementById(
 "voiceBarEnd"
 );
 
+
 if(endBtn){
 
-endBtn.style.display="none";
+endBtn.style.display=
+"none";
 
 }
 
 
 const remoteAudio=
-document.getElementById("remoteAudio");
+document.getElementById(
+"remoteAudio"
+);
 
 
 if(remoteAudio){
@@ -4387,7 +5129,6 @@ remoteAudio.remove();
 /* ==========================================
    SHOW VOICE BAR
 ========================================== */
-
 
 function updateVoiceBar(){
 
@@ -4406,11 +5147,13 @@ currentGame &&
 !currentGame.finished
 ){
 
-bar.style.display="flex";
+bar.style.display=
+"flex";
 
 }else{
 
-bar.style.display="none";
+bar.style.display=
+"none";
 
 }
 
@@ -4419,9 +5162,8 @@ bar.style.display="none";
 
 
 /* ==========================================
-   EXTRA GAME SCREEN SYNC
+   GAME STATE SYNC
 ========================================== */
-
 
 function syncGameState(){
 
@@ -4431,13 +5173,19 @@ if(!currentGame)return;
 updateVoiceBar();
 
 
-if(currentGame.finished){
+if(
+currentGame.finished
+){
 
-gameStarted=false;
+gameStarted=
+false;
 
-}else if(currentGame.started){
+}else if(
+currentGame.started
+){
 
-gameStarted=true;
+gameStarted=
+true;
 
 }
 
@@ -4449,13 +5197,13 @@ gameStarted=true;
    PLAYER LEFT NOTICE
 ========================================== */
 
-
 function checkPlayerLeft(){
 
 if(!currentGame)return;
 
 
-const left=currentGame.lastLeft;
+const left=
+currentGame.lastLeft;
 
 
 if(
@@ -4463,7 +5211,8 @@ left &&
 left!==lastLeft
 ){
 
-lastLeft=left;
+lastLeft=
+left;
 
 
 const notice=
@@ -4478,11 +5227,13 @@ escapeHtml(left)+
 "</strong> has left the game.";
 
 
-notice.style.display="block";
+notice.style.display=
+"block";
 
 }else if(!left){
 
-lastLeft="";
+lastLeft=
+"";
 
 }
 
@@ -4494,8 +5245,8 @@ lastLeft="";
    PERIODIC SCREEN SYNC
 ========================================== */
 
-
-setInterval(()=>{
+setInterval(
+()=>{
 
 if(currentGame){
 
@@ -4505,14 +5256,15 @@ checkPlayerLeft();
 
 }
 
-},500);
+},
+500
+);
 
 
 
 /* ==========================================
    PAGE VISIBILITY
 ========================================== */
-
 
 document.addEventListener(
 "visibilitychange",
@@ -4524,7 +5276,8 @@ gameRef
 ){
 
 gameRef.once("value")
-.catch(error=>{
+.catch(
+error=>{
 
 console.error(
 "Could not refresh game:",
@@ -4543,21 +5296,26 @@ error
    BEFORE UNLOAD
 ========================================== */
 
-
 window.addEventListener(
 "beforeunload",
 ()=>{
 
-if(voiceLocalStream){
+if(
+voiceLocalStream
+){
 
 voiceLocalStream
 .getTracks()
-.forEach(track=>track.stop());
+.forEach(
+track=>track.stop()
+);
 
 }
 
 
-if(voicePeerConnection){
+if(
+voicePeerConnection
+){
 
 try{
 
@@ -4576,157 +5334,20 @@ console.log(error);
 
 
 /* ==========================================
-   AUTHENTICATION STARTUP
-========================================== */
-
-
-ensureFirebaseAuth()
-
-.then(user=>{
-
-console.log(
-"Buildva is ready. Authenticated UID:",
-user.uid
-);
-
-})
-
-.catch(error=>{
-
-console.error(
-"Buildva authentication startup failed:",
-error
-);
-
-
-const status=
-document.getElementById("status");
-
-
-if(status){
-
-status.innerHTML=
-
-'<span class="status-pill">'+
-'⚠️ Firebase authentication is unavailable. '+
-'Enable Anonymous Authentication in Firebase Console.'+
-'</span>';
-
-}
-
-});
-
-
-</script>
-
-<!-- ==========================================
-     FINAL BUILDVA INITIALIZATION
-========================================== -->
-
-<script>
-
-/*
-   Make sure the voice bar is synchronized
-   whenever the game screen changes.
-*/
-
-if(typeof updateVoiceBar === "function"){
-
-updateVoiceBar();
-
-}
-
-
-/*
-   If a player already has a saved game code
-   and player number, keep the local information
-   available after refresh.
-*/
-
-const savedGameCode=
-localStorage.getItem("buildvaGameCode");
-
-const savedPlayerName=
-localStorage.getItem("buildvaPlayerName");
-
-
-if(savedPlayerName){
-
-const nameInput=
-document.getElementById("playerName");
-
-if(nameInput){
-
-nameInput.value=savedPlayerName;
-
-}
-
-}
-
-
-/*
-   Save the game code whenever it changes.
-*/
-
-function saveGameCode(){
-
-if(gameCode){
-
-localStorage.setItem(
-"buildvaGameCode",
-gameCode
-);
-
-}
-
-}
-
-
-/*
-   Keep game code saved after creation/joining.
-*/
-
-const originalOpenGame=openGame;
-
-
-openGame=async function(){
-
-await originalOpenGame();
-
-saveGameCode();
-
-};
-
-
-
-/*
-   Automatically restore the game code field
-   if the user previously entered one.
-*/
-
-const joinInput=
-document.getElementById("joinCode");
-
-
-if(joinInput && savedGameCode){
-
-joinInput.placeholder=
-"Game code: "+savedGameCode;
-
-}
-
-
-
-/* ==========================================
    ENTER KEY SUPPORT
 ========================================== */
 
-
 document
-.getElementById("joinCode")
-.addEventListener("keydown",event=>{
+.getElementById(
+"joinCode"
+)
+.addEventListener(
+"keydown",
+event=>{
 
-if(event.key==="Enter"){
+if(
+event.key==="Enter"
+){
 
 joinGame();
 
@@ -4736,10 +5357,16 @@ joinGame();
 
 
 document
-.getElementById("playerName")
-.addEventListener("keydown",event=>{
+.getElementById(
+"playerName"
+)
+.addEventListener(
+"keydown",
+event=>{
 
-if(event.key==="Enter"){
+if(
+event.key==="Enter"
+){
 
 assignMe();
 
@@ -4750,76 +5377,152 @@ assignMe();
 
 
 /* ==========================================
-   FINAL AUTH CHECK
+   INITIAL UI STATE
 ========================================== */
 
+document
+.getElementById(
+"voiceBarMute"
+)
+.style.display=
+"none";
 
-auth.onAuthStateChanged(user=>{
 
-if(!user){
+document
+.getElementById(
+"voiceBarEnd"
+)
+.style.display=
+"none";
 
-console.warn(
-"Buildva: no authenticated Firebase user."
+
+document
+.getElementById(
+"voiceCallBar"
+)
+.style.display=
+"none";
+
+
+/* Restore saved name */
+
+const savedPlayerName=
+localStorage.getItem(
+"buildvaPlayerName"
 );
 
-return;
+
+if(
+savedPlayerName
+){
+
+document.getElementById(
+"playerName"
+).value=
+savedPlayerName;
 
 }
 
 
-myPlayerId=user.uid;
+/* Restore saved game code as placeholder */
 
+const savedGameCode=
+localStorage.getItem(
+"buildvaGameCode"
+);
+
+
+const joinInput=
+document.getElementById(
+"joinCode"
+);
+
+
+if(
+joinInput &&
+savedGameCode
+){
+
+joinInput.placeholder=
+"Game code: "+
+savedGameCode;
+
+}
+
+
+
+/* ==========================================
+   AUTHENTICATION STARTUP
+========================================== */
+
+ensureFirebaseAuth()
+
+.then(
+user=>{
 
 console.log(
-"Buildva Firebase UID:",
-myPlayerId
+"======================================"
+);
+
+console.log(
+"Buildva - Picking Numbers"
+);
+
+console.log(
+"Firebase Anonymous Authentication: ENABLED"
+);
+
+console.log(
+"Player ID source: Firebase Auth UID"
+);
+
+console.log(
+"Authenticated UID:",
+user.uid
+);
+
+console.log(
+"======================================"
+);
+
+})
+.catch(
+error=>{
+
+console.error(
+"Buildva authentication startup failed:",
+error
 );
 
 
-/*
-   If the user was previously assigned to a
-   player position, verify that position.
-*/
+const status=
+document.getElementById(
+"status"
+);
 
-if(gameRef && currentGame){
 
-const p1=
-currentGame.players &&
-currentGame.players.player1;
+if(status){
 
-const p2=
-currentGame.players &&
-currentGame.players.player2;
+let message=
+"⚠️ Firebase authentication is unavailable.";
 
 
 if(
-p1 &&
-p1.playerId===myPlayerId
+error &&
+error.code
 ){
 
-playerNumber=1;
-
-localStorage.setItem(
-"buildvaPlayerNumber",
-"1"
-);
+message+=
+" Error: "+
+error.code;
 
 }
 
 
-if(
-p2 &&
-p2.playerId===myPlayerId
-){
-
-playerNumber=2;
-
-localStorage.setItem(
-"buildvaPlayerNumber",
-"2"
-);
-
-}
+status.innerHTML=
+'<span class="status-pill">'+
+message+
+"</span>";
 
 }
 
@@ -4830,7 +5533,6 @@ localStorage.setItem(
 /* ==========================================
    HANDLE AUTHENTICATION ERRORS
 ========================================== */
-
 
 window.addEventListener(
 "unhandledrejection",
@@ -4855,54 +5557,7 @@ event.reason
 
 
 
-/* ==========================================
-   INITIAL UI STATE
-========================================== */
-
-
-document
-.getElementById("voiceBarMute")
-.style.display="none";
-
-
-document
-.getElementById("voiceBarEnd")
-.style.display="none";
-
-
-document
-.getElementById("voiceCallBar")
-.style.display="none";
-
-
-
-/* ==========================================
-   BUILDVA READY
-========================================== */
-
-
-console.log(
-"======================================"
-);
-
-console.log(
-"Buildva - Picking Numbers"
-);
-
-console.log(
-"Firebase Anonymous Authentication: ENABLED"
-);
-
-console.log(
-"Player ID source: Firebase Auth UID"
-);
-
-console.log(
-"======================================"
-);
-
 </script>
-
 
 </body>
 
