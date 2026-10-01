@@ -680,6 +680,14 @@ body.dark .final-score .final-player{background:#111827;}
   .size-options{grid-template-columns:1fr;}
 }
 
+
+/* Firebase connection health indicator */
+.firebase-health{display:inline-flex;align-items:center;gap:7px;margin-top:7px;padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.16);color:#fff;font-size:11px;font-weight:800;letter-spacing:.02em;}
+.firebase-health-dot{width:8px;height:8px;border-radius:50%;background:#fbbf24;box-shadow:0 0 0 3px rgba(251,191,36,.16);}
+.firebase-health.connected .firebase-health-dot{background:#4ade80;box-shadow:0 0 0 3px rgba(74,222,128,.16);}
+.firebase-health.disconnected .firebase-health-dot{background:#f87171;box-shadow:0 0 0 3px rgba(248,113,113,.16);}
+@media(max-width:600px){.firebase-health{font-size:10px;margin-top:5px;padding:4px 8px;}}
+
 </style>
 
 
@@ -699,7 +707,10 @@ body.dark .final-score .final-player{background:#111827;}
 <div>Picking Numbers</div>
 </div>
 </div>
-
+<div id="firebaseHealth" class="firebase-health" role="status" aria-live="polite" title="Shows this device’s connection to Firebase, not total players online">
+  <span class="firebase-health-dot"></span>
+  <span id="firebaseHealthText">Checking server connection…</span>
+</div>
 
 <button class="mode-btn" onclick="toggleDark()">
 
@@ -1023,6 +1034,31 @@ firebase.initializeApp(firebaseConfig);
 
 
 const db=firebase.database();
+
+/*
+  Lightweight client-side health monitor.
+  This reports whether THIS browser is connected to Firebase.
+  Global connection counts, bandwidth, storage and billing are
+  available in Firebase/Google Cloud Console, not from the public client.
+*/
+(function monitorFirebaseConnection(){
+  const badge=document.getElementById("firebaseHealth");
+  const label=document.getElementById("firebaseHealthText");
+  if(!badge || !label) return;
+  const connectedRef=db.ref(".info/connected");
+  connectedRef.on("value",snapshot=>{
+    const connected=snapshot.val()===true;
+    badge.classList.toggle("connected",connected);
+    badge.classList.toggle("disconnected",!connected);
+    label.textContent=connected ? "Server connected" : "Reconnecting to server…";
+    if(!connected) console.warn("Buildva: Firebase connection unavailable; waiting to reconnect.");
+  },error=>{
+    badge.classList.remove("connected");
+    badge.classList.add("disconnected");
+    label.textContent="Connection status unavailable";
+    console.error("Buildva Firebase connection monitor error:",error);
+  });
+})();
 
 
 
