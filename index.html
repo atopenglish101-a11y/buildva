@@ -704,6 +704,8 @@ color:#f8fafc;
 }
 
 
+/* PLAYER CARDS */
+
 .player-cards{
 display:grid;
 grid-template-columns:1fr 1fr;
@@ -768,6 +770,50 @@ background:#1e3a8a;
 color:#bfdbfe;
 }
 
+
+/* =========================
+   IN-GAME LEAVE BUTTON
+========================= */
+
+.game-top-bar{
+display:flex;
+justify-content:flex-end;
+align-items:center;
+margin-bottom:10px;
+}
+
+.game-leave-btn{
+background:#ef4444;
+color:white;
+padding:9px 14px;
+border-radius:9px;
+font-weight:800;
+border:none;
+cursor:pointer;
+box-shadow:0 3px 8px rgba(239,68,68,.20);
+transition:.15s;
+}
+
+.game-leave-btn:hover{
+background:#dc2626;
+transform:translateY(-1px);
+}
+
+.game-leave-btn:active{
+transform:translateY(0);
+}
+
+
+/* =========================
+   HIDE LOBBY AFTER GAME STARTS
+========================= */
+
+#playerArea.game-running{
+display:none !important;
+}
+
+
+/* SCORE */
 
 .scoreboard{
 position:sticky;
@@ -1149,6 +1195,14 @@ font-size:12px;
 align-items:flex-start;
 }
 
+.game-top-bar{
+margin-bottom:8px;
+}
+
+.game-leave-btn{
+width:100%;
+}
+
 }
 
 
@@ -1420,7 +1474,7 @@ Join Game
 
 
 
-<!-- PLAYER AREA -->
+<!-- PLAYER AREA / LOBBY -->
 
 <div id="playerArea"
 class="panel"
@@ -1608,6 +1662,21 @@ class="game-code-notice">
 
 <div id="gameArea"
 style="display:none">
+
+
+<!-- LEAVE BUTTON REMAINS AVAILABLE DURING GAME -->
+
+<div class="game-top-bar">
+
+<button class="game-leave-btn"
+onclick="leaveGame()">
+
+🏠 Leave Game
+
+</button>
+
+</div>
+
 
 
 <div class="scoreboard">
@@ -1833,7 +1902,7 @@ Close
 
 const firebaseConfig = {
 
-apiKey:"AIzaSyDUo7f1j-xdxatIP9rwWmthgMdz-maAlSU",
+apiKey:"AIzaSyDU7o7f1j-xdxatIP9rwWmthgMdz-maAlSU",
 
 authDomain:"buildva-9767b.firebaseapp.com",
 
@@ -1935,12 +2004,6 @@ let leavingGame=false;
 =========================================================
 UNIQUE PLAYER ID
 =========================================================
-
-Every browser gets its own permanent random ID.
-
-This is important because two different people can have
-the same name, and we must NEVER use the name to decide
-who is Player 1 or Player 2.
 */
 
 function getPlayerId(){
@@ -2187,6 +2250,10 @@ document.getElementById("setup")
 
 document.getElementById("playerArea")
 .style.display="block";
+
+
+document.getElementById("playerArea")
+.classList.remove("game-running");
 
 
 document.getElementById("playerLeftNotice")
@@ -2527,27 +2594,7 @@ waiting.innerHTML=
 
 
 
-/*
-=========================================================
-FIXED PLAYER ASSIGNMENT
-=========================================================
-
-This is the important fix.
-
-We use the browser's unique playerId rather than
-the player's name.
-
-Firebase transaction guarantees that two people cannot
-both reserve Player 1.
-
-Player 1 gets:
-
-playerId = browser A
-
-Player 2 gets:
-
-playerId = browser B
-*/
+/* PLAYER ASSIGNMENT */
 
 async function assignMe(){
 
@@ -2593,10 +2640,6 @@ return;
 
 }
 
-
-/*
-Check whether THIS browser is already assigned.
-*/
 
 if(
 currentGame &&
@@ -2692,11 +2735,6 @@ player2:false
 }
 
 
-/*
-If this browser is already inside the game,
-do not create another player.
-*/
-
 if(
 game.players.player1 &&
 game.players.player1.playerId
@@ -2719,10 +2757,6 @@ return game;
 }
 
 
-/*
-FIRST FREE SLOT = PLAYER 1
-*/
-
 if(!game.players.player1){
 
 game.players.player1={
@@ -2740,10 +2774,6 @@ return game;
 
 }
 
-
-/*
-SECOND FREE SLOT = PLAYER 2
-*/
 
 if(!game.players.player2){
 
@@ -2763,20 +2793,10 @@ return game;
 }
 
 
-/*
-Both slots occupied.
-Cancel transaction.
-*/
-
 return;
 
 });
 
-
-/*
-Transaction failed because the game is full
-or another browser took the slot first.
-*/
 
 if(!result.committed){
 
@@ -2792,11 +2812,6 @@ latest.players &&
 latest.players.player1 &&
 latest.players.player2
 ){
-
-/*
-Check if this browser actually got a slot
-during a race.
-*/
 
 if(
 latest.players.player1.playerId
@@ -2849,13 +2864,6 @@ return;
 }
 
 
-/*
-Read the FINAL Firebase state.
-
-This is important because another player may have
-joined at exactly the same time.
-*/
-
 const saved=
 result.snapshot.val();
 
@@ -2884,11 +2892,6 @@ assignedSlot=2;
 
 }
 
-
-/*
-Extra verification from Firebase in case the
-transaction result changed during a race.
-*/
 
 if(!assignedSlot){
 
@@ -2933,10 +2936,6 @@ throw new Error(
 
 }
 
-
-/*
-Save our assigned slot locally.
-*/
 
 playerNumber=
 assignedSlot;
@@ -3419,6 +3418,13 @@ document.getElementById(
 "none";
 
 
+document.getElementById(
+"playerArea"
+).classList.remove(
+"game-running"
+);
+
+
 hideStartCountdown();
 
 }
@@ -3449,6 +3455,19 @@ document.getElementById(
 
 if(!currentGame.started){
 
+/*
+GAME HAS NOT STARTED YET.
+
+Keep the lobby visible.
+*/
+
+document.getElementById(
+"playerArea"
+).classList.remove(
+"game-running"
+);
+
+
 if(
 !currentGame.countdownStartedAt
 ){
@@ -3463,6 +3482,22 @@ syncCountdown();
 
 }else{
 
+/*
+=========================================================
+GAME HAS STARTED
+=========================================================
+
+Hide the entire lobby, but keep the separate
+Leave Game button inside gameArea visible.
+*/
+
+document.getElementById(
+"playerArea"
+).classList.add(
+"game-running"
+);
+
+
 hideStartCountdown();
 
 }
@@ -3471,6 +3506,19 @@ hideStartCountdown();
 renderBoard();
 
 }else{
+
+/*
+Only one player is present.
+
+Make sure the lobby is visible.
+*/
+
+document.getElementById(
+"playerArea"
+).classList.remove(
+"game-running"
+);
+
 
 document.getElementById(
 "waiting"
@@ -3482,6 +3530,17 @@ document.getElementById(
 
 
 if(currentGame.finished){
+
+/*
+When the game finishes, keep the game screen visible.
+The winner popup appears on top.
+*/
+
+document.getElementById(
+"playerArea"
+).classList.add(
+"game-running"
+);
 
 showWinner();
 
@@ -3784,6 +3843,18 @@ document.getElementById(
 "none";
 
 
+/*
+Show the lobby again while the new game
+is preparing/counting down.
+*/
+
+document.getElementById(
+"playerArea"
+).classList.remove(
+"game-running"
+);
+
+
 let board=[];
 
 
@@ -4006,6 +4077,13 @@ document.getElementById(
 "playerArea"
 ).style.display=
 "none";
+
+
+document.getElementById(
+"playerArea"
+).classList.remove(
+"game-running"
+);
 
 
 document.getElementById(
