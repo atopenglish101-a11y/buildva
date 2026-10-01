@@ -500,6 +500,186 @@ body.dark #voiceChat{
   }
 }
 
+
+
+/* =========================
+   BUILDVA 2.0 POLISH
+========================= */
+:root{
+  --brand:#2563eb;
+  --brand-dark:#1d4ed8;
+  --accent:#10b981;
+  --gold:#facc15;
+  --surface:#ffffff;
+  --muted:#64748b;
+  --border:#dbe4ee;
+}
+
+html{scroll-behavior:smooth;}
+body{
+  background:
+    radial-gradient(circle at 10% 10%,rgba(37,99,235,.10),transparent 28%),
+    radial-gradient(circle at 90% 20%,rgba(16,185,129,.10),transparent 26%),
+    #eef4f8;
+}
+body.dark{
+  background:
+    radial-gradient(circle at 10% 10%,rgba(37,99,235,.18),transparent 28%),
+    radial-gradient(circle at 90% 20%,rgba(16,185,129,.12),transparent 26%),
+    #0b1220;
+}
+
+header{
+  background:linear-gradient(135deg,#1d4ed8,#2563a8 55%,#0f766e);
+  box-shadow:0 4px 18px rgba(15,23,42,.20);
+  padding:10px 15px;
+}
+.brand{text-align:left;}
+.brand-copy h1{font-size:25px;line-height:1;margin:0 0 4px;}
+.brand-copy div{font-size:13px;opacity:.9;}
+
+.screen{max-width:1050px;padding:18px 12px 40px;}
+
+.home-hero{
+  position:relative;
+  overflow:hidden;
+  padding:30px 24px;
+  margin-bottom:16px;
+  border-radius:20px;
+  background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(239,246,255,.96));
+  border:1px solid rgba(148,163,184,.22);
+  box-shadow:0 10px 30px rgba(15,23,42,.10);
+}
+body.dark .home-hero{background:linear-gradient(135deg,#172033,#111827);}
+.home-hero::after{
+  content:"";
+  position:absolute;
+  width:180px;height:180px;
+  border-radius:50%;
+  right:-70px;top:-70px;
+  background:rgba(37,99,235,.12);
+}
+.hero-content{position:relative;z-index:1;max-width:700px;}
+.hero-kicker{font-weight:800;color:var(--brand);letter-spacing:.08em;text-transform:uppercase;font-size:12px;}
+.hero-title{font-size:clamp(30px,6vw,52px);line-height:1.02;margin:8px 0 10px;color:#0f172a;}
+body.dark .hero-title{color:#f8fafc;}
+.hero-subtitle{font-size:17px;line-height:1.5;color:var(--muted);max-width:620px;margin:0;}
+body.dark .hero-subtitle{color:#cbd5e1;}
+.feature-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px;}
+.feature-card{padding:13px;border-radius:14px;background:rgba(255,255,255,.75);border:1px solid var(--border);font-size:13px;font-weight:700;}
+body.dark .feature-card{background:#1f2937;border-color:#334155;}
+.feature-card span{display:block;font-size:22px;margin-bottom:4px;}
+
+#setup.panel{padding:20px;}
+.setup-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;}
+.setup-card{padding:18px;border:1px solid var(--border);border-radius:16px;background:rgba(248,250,252,.72);}
+body.dark .setup-card{background:#111827;border-color:#334155;}
+.setup-card h3{margin-top:0;}
+.size-options{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.size-option{display:block;cursor:pointer;}
+.size-option input{position:absolute;opacity:0;pointer-events:none;}
+.size-option span{display:block;text-align:center;padding:13px 8px;border:2px solid var(--border);border-radius:12px;font-weight:800;background:var(--surface);transition:.2s;}
+.size-option input:checked + span{border-color:var(--brand);background:#eff6ff;color:var(--brand);box-shadow:0 0 0 3px rgba(37,99,235,.10);}
+body.dark .size-option span{background:#1f2937;border-color:#475569;}
+body.dark .size-option input:checked + span{background:#172554;color:#93c5fd;border-color:#60a5fa;}
+.join-row{display:flex;gap:8px;align-items:stretch;}
+.join-row input{flex:1;min-width:0;padding:12px;border:1px solid var(--border);border-radius:9px;font-size:16px;text-transform:uppercase;}
+body.dark input{background:#111827;color:#f8fafc;border-color:#475569;}
+.main-btn,.player-btn{transition:transform .15s,box-shadow .15s,filter .15s;}
+.main-btn:hover,.player-btn:hover{transform:translateY(-1px);box-shadow:0 5px 14px rgba(15,23,42,.14);filter:brightness(1.03);}
+.main-btn:active,.player-btn:active{transform:translateY(0);}
+.main-btn.secondary{background:#475569;}
+.main-btn.success{background:#059669;}
+.status-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#ecfdf5;color:#047857;font-size:12px;font-weight:800;}
+body.dark .status-pill{background:#064e3b;color:#a7f3d0;}
+
+#playerArea{padding:20px;}
+.game-code-box{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:14px;border-radius:15px;background:#eff6ff;border:1px solid #bfdbfe;margin-bottom:15px;}
+body.dark .game-code-box{background:#172554;border-color:#1e40af;}
+.game-code{font-size:26px;font-weight:900;letter-spacing:.14em;color:var(--brand);}
+body.dark .game-code{color:#93c5fd;}
+.code-actions{display:flex;gap:7px;flex-wrap:wrap;}
+.small-btn{padding:9px 12px;border-radius:8px;border:none;background:#e2e8f0;color:#0f172a;font-weight:700;cursor:pointer;}
+body.dark .small-btn{background:#334155;color:#f8fafc;}
+.player-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:15px 0;}
+.player-card{padding:14px;border-radius:14px;border:1px solid var(--border);background:var(--surface);display:flex;align-items:center;gap:12px;}
+.player-avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#dbeafe;font-size:21px;flex:0 0 auto;}
+body.dark .player-avatar{background:#1e3a8a;}
+.player-info{min-width:0;flex:1;}
+.player-name{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.player-state{font-size:12px;color:var(--muted);margin-top:3px;}
+.you-badge{font-size:10px;font-weight:900;padding:4px 7px;border-radius:999px;background:#dbeafe;color:#1d4ed8;}
+body.dark .you-badge{background:#1e3a8a;color:#bfdbfe;}
+
+.scoreboard{position:sticky;top:112px;z-index:850;}
+.score{border:1px solid var(--border);box-shadow:0 3px 10px rgba(0,0,0,.06);}
+.score.active-player{outline:3px solid rgba(37,99,235,.20);}
+.score-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:800;}
+.score-number{font-size:32px;line-height:1.1;display:block;margin-top:3px;}
+.target-panel{text-align:center;box-shadow:0 6px 18px rgba(15,23,42,.10);}
+.target-label{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#92400e;font-weight:900;margin-bottom:4px;}
+.target{min-width:90px;}
+#remaining{font-size:20px;}
+
+#numbers{gap:6px;padding-bottom:20px;}
+.number{border-radius:8px;box-shadow:0 1px 2px rgba(15,23,42,.06);transition:.12s;}
+.number:not(:disabled):hover{transform:scale(1.04);border-color:#60a5fa;}
+.number:disabled{cursor:not-allowed;opacity:.75;}
+
+/* Voice upgrade */
+#voiceChat{border:1px solid var(--border);}
+.voice-head{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.voice-live{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:900;padding:5px 9px;border-radius:999px;background:#f1f5f9;color:#475569;}
+.voice-live.on{background:#dcfce7;color:#166534;}
+.voice-dot{width:8px;height:8px;border-radius:50%;background:#94a3b8;}
+.voice-live.on .voice-dot{background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.15);}
+
+#winnerPopup{width:min(92vw,430px);padding:28px 22px;border:1px solid var(--border);}
+.winner-icon{font-size:52px;}
+.winner-title{font-size:30px;font-weight:900;margin:7px 0;}
+.final-score{display:flex;justify-content:center;align-items:center;gap:18px;margin:15px 0 20px;}
+.final-score .final-player{padding:12px 16px;border-radius:12px;background:#f8fafc;border:1px solid var(--border);min-width:110px;}
+body.dark .final-score .final-player{background:#111827;}
+.final-score strong{font-size:28px;display:block;}
+.popup-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+
+.share-note{font-size:12px;color:var(--muted);margin-top:9px;}
+
+@media(max-width:700px){
+  body{padding-top:105px;}
+  header{padding:7px 10px;}
+  .brand-copy h1{font-size:21px;}
+  .buildva-logo{width:42px;height:42px;border-radius:10px;}
+  .mode-btn{right:8px;top:8px;padding:7px 9px;}
+  .screen{padding:10px 8px 28px;}
+  .home-hero{padding:22px 17px;border-radius:16px;}
+  .hero-title{font-size:34px;}
+  .hero-subtitle{font-size:15px;}
+  .feature-row{grid-template-columns:1fr;gap:7px;}
+  .feature-card{padding:10px;display:flex;align-items:center;gap:9px;}
+  .feature-card span{margin:0;font-size:20px;}
+  .setup-grid{grid-template-columns:1fr;}
+  .size-options{grid-template-columns:1fr 1fr 1fr;}
+  .join-row{flex-direction:column;}
+  .join-row .main-btn{width:100%;}
+  .player-cards{grid-template-columns:1fr;}
+  .game-code{font-size:22px;}
+  .code-actions{width:100%;}
+  .code-actions .small-btn{flex:1;}
+  .scoreboard{top:84px;}
+  .score{padding:9px;font-size:16px;}
+  .score-number{font-size:27px;}
+  .target-panel{top:142px;}
+  #numbers{grid-template-columns:repeat(8,1fr);gap:4px;}
+  .number{font-size:12px;}
+  .voice-head{align-items:flex-start;}
+}
+@media(max-width:380px){
+  #numbers{grid-template-columns:repeat(7,1fr);}
+  .number{font-size:11px;}
+  .size-options{grid-template-columns:1fr;}
+}
+
 </style>
 
 
@@ -514,7 +694,7 @@ body.dark #voiceChat{
 
 <div class="brand">
 <img src="buildva-logo.png" alt="Buildva logo" class="buildva-logo">
-<div>
+<div class="brand-copy">
 <h1>Buildva</h1>
 <div>Picking Numbers</div>
 </div>
@@ -542,182 +722,87 @@ body.dark #voiceChat{
 
 
 
-<!-- SETUP -->
-
-
-<div id="setup" class="panel">
-
-
-
-<h2>Create Game</h2>
-
-
-
-
-<p><b>Select Game Size</b></p>
-
-
-
-
-
-<label>
-
-<input type="radio" name="gameSize" value="50" checked>
-
-1 - 50
-
-</label>
-
-
-
-
-<label>
-
-<input type="radio" name="gameSize" value="100">
-
-1 - 100
-
-</label>
-
-
-
-
-<label>
-
-<input type="radio" name="gameSize" value="200">
-
-1 - 200
-
-</label>
-
-
-
-
-
-
-<br><br>
-
-
-
-
-
-<button class="main-btn" onclick="createGame()">
-
-🎮 Create Game
-
-</button>
-
-
-
-
-
-<br><br>
-
-
-
-
-
-<input id="gameCodeInput"
-
-placeholder="Game Code"
-
-style="padding:12px;">
-
-
-
-
-
-<button class="main-btn" onclick="joinGame()">
-
-🚪 Join
-
-</button>
-
-
-
-
-
-<p id="status"></p>
-
-
-
-
+<!-- HOME / SETUP -->
+<div id="setup">
+  <section class="home-hero">
+    <div class="hero-content">
+      <div class="hero-kicker">🎯 Fast • Simple • Multiplayer</div>
+      <h2 class="hero-title">Pick the numbers. Beat your opponent.</h2>
+      <p class="hero-subtitle">Create a game, invite a friend with a code, and race to find the numbers in order. Play from your phone or computer.</p>
+      <div class="feature-row">
+        <div class="feature-card"><span>⚡</span><div>Race in real time</div></div>
+        <div class="feature-card"><span>🎙️</span><div>Talk with voice chat</div></div>
+        <div class="feature-card"><span>🏆</span><div>Score and rematch</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="panel">
+    <div class="setup-grid">
+      <div class="setup-card">
+        <h3>🎮 Create a Game</h3>
+        <p>Select how many numbers you want to play with.</p>
+        <div class="size-options">
+          <label class="size-option"><input type="radio" name="gameSize" value="50" checked><span>1–50</span></label>
+          <label class="size-option"><input type="radio" name="gameSize" value="100"><span>1–100</span></label>
+          <label class="size-option"><input type="radio" name="gameSize" value="200"><span>1–200</span></label>
+        </div>
+        <br>
+        <button class="main-btn success" onclick="createGame()">🎮 Create Game</button>
+        <p class="share-note">After creating, share the 6-character game code with your opponent.</p>
+      </div>
+
+      <div class="setup-card">
+        <h3>🚪 Join a Game</h3>
+        <p>Enter the game code your friend sent you.</p>
+        <div class="join-row">
+          <input id="gameCodeInput" placeholder="GAME CODE" maxlength="6" autocomplete="off">
+          <button class="main-btn" onclick="joinGame()">Join Game</button>
+        </div>
+        <p id="status"></p>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- PLAYER AREA -->
-
-
 <div id="playerArea" class="panel" style="display:none">
+  <div class="game-code-box">
+    <div>
+      <div style="font-size:12px;font-weight:800;color:var(--muted);">GAME CODE</div>
+      <div id="code" class="game-code">------</div>
+    </div>
+    <div class="code-actions">
+      <button class="small-btn" onclick="copyGameCode()">📋 Copy Code</button>
+      <button class="small-btn" onclick="shareGame()">📤 Share</button>
+      <button class="small-btn" onclick="leaveGame()">🏠 Leave</button>
+    </div>
+  </div>
 
+  <h3>👥 Players</h3>
+  <div class="player-cards">
+    <div class="player-card" id="lobbyPlayer1">
+      <div class="player-avatar">👤</div>
+      <div class="player-info"><div class="player-name">Player 1</div><div class="player-state">Waiting to join…</div></div>
+    </div>
+    <div class="player-card" id="lobbyPlayer2">
+      <div class="player-avatar">👤</div>
+      <div class="player-info"><div class="player-name">Player 2</div><div class="player-state">Waiting to join…</div></div>
+    </div>
+  </div>
 
-<h2 id="code"></h2>
+  <div class="setup-card">
+    <p><b>Choose your player</b></p>
+    <input id="playerName" placeholder="Your name" maxlength="20" autocomplete="name" style="padding:12px;width:min(100%,280px);">
+    <br><br>
+    <button class="player-btn" onclick="choosePlayer(1)">👤 Player 1</button>
+    <button class="player-btn" onclick="choosePlayer(2)">👤 Player 2</button>
+    <p id="waiting"><span class="status-pill">🟡 Waiting for another player…</span></p>
+  </div>
 
-
-
-<p><b>Enter your name:</b></p>
-
-
-<input id="playerName"
-
-placeholder="Your name"
-
-style="padding:12px;width:220px;">
-
-
-
-<br><br>
-
-
-
-<button class="player-btn" onclick="choosePlayer(1)">
-
-👤 Player 1
-
-</button>
-
-
-
-
-<button class="player-btn" onclick="choosePlayer(2)">
-
-👤 Player 2
-
-</button>
-
-
-
-
-<p id="waiting"></p>
-
-
-
-<h2 id="countdown"></h2>
-
-
-
-<h2 id="winnerMessage"></h2>
-
-
-
-<br>
-
-
-
-<button class="main-btn" onclick="leaveGame()">
-
-🏠 Leave Game
-
-</button>
-
-
-
+  <h2 id="countdown"></h2>
+  <h2 id="winnerMessage"></h2>
 </div>
-
-
-
-
-
-
 
 <!-- GAME AREA -->
 
@@ -733,17 +818,13 @@ style="padding:12px;width:220px;">
 <div class="score">
 
 
-<span id="name1">
-
-Player 1
-
-</span>
+<span class="score-label">PLAYER 1</span><span id="name1">Player 1</span>
 
 
 <br>
 
 
-<b id="score1">0</b>
+<b id="score1" class="score-number">0</b>
 
 
 
@@ -756,17 +837,13 @@ Player 1
 <div class="score">
 
 
-<span id="name2">
-
-Player 2
-
-</span>
+<span class="score-label">PLAYER 2</span><span id="name2">Player 2</span>
 
 
 <br>
 
 
-<b id="score2">0</b>
+<b id="score2" class="score-number">0</b>
 
 
 
@@ -787,10 +864,8 @@ Player 2
 
 
 
-<div class="target">
-
-
-🎯 FIND:
+<div class="target-label">Find this number</div><div class="target">
+🎯 
 
 
 <span id="target">1</span>
@@ -826,7 +901,7 @@ Remaining:
 <!-- VOICE CHAT -->
 <div id="voiceChat" class="panel">
 
-  <h3>🎙️ Voice Chat</h3>
+  <div class="voice-head"><h3>🎙️ Voice Chat</h3><span id="voiceLive" class="voice-live"><span class="voice-dot"></span> OFF</span></div>
 
   <p id="voiceStatus">
     🔴 Voice chat is off
@@ -884,35 +959,12 @@ Remaining:
 
 
 <div id="winnerPopup">
-
-
-
-<div id="popupText"></div>
-
-
-
-<br>
-
-
-
-
-<button class="main-btn" onclick="playAgain()">
-
-🔄 Play Again
-
-</button>
-
-
-
-
-<button class="main-btn" onclick="closeWinnerPopup()">
-
-OK
-
-</button>
-
-
-
+  <div class="winner-icon">🏆</div>
+  <div id="popupText"></div>
+  <div class="popup-actions">
+    <button class="main-btn success" onclick="playAgain()">🔄 Play Again</button>
+    <button class="main-btn secondary" onclick="closeWinnerPopup()">Close</button>
+  </div>
 </div>
 
 
@@ -1215,7 +1267,15 @@ let code=document
 
 
 
-if(!code)return;
+if(!code){
+  document.getElementById("status").innerHTML="⚠️ Enter a game code.";
+  return;
+}
+
+if(code.length!==6){
+  document.getElementById("status").innerHTML="⚠️ Game codes are 6 characters.";
+  return;
+}
 
 
 
@@ -1392,6 +1452,77 @@ updateScreen();
 
 
 
+
+
+function updateLobbyPlayers(){
+  if(!currentGame || !currentGame.players) return;
+  [1,2].forEach(n=>{
+    const card=document.getElementById("lobbyPlayer"+n);
+    if(!card) return;
+    const player=currentGame.players["player"+n];
+    const nameEl=card.querySelector(".player-name");
+    const stateEl=card.querySelector(".player-state");
+    if(player){
+      nameEl.textContent=player.name || ("Player "+n);
+      stateEl.textContent=(player.ready ? "🟢 Ready" : "🟡 Joined");
+      if(playerNumber===n){
+        if(!card.querySelector(".you-badge")){
+          const badge=document.createElement("span");
+          badge.className="you-badge";
+          badge.textContent="YOU";
+          card.appendChild(badge);
+        }
+      }
+    }else{
+      nameEl.textContent="Player "+n;
+      stateEl.textContent="Waiting to join…";
+      const badge=card.querySelector(".you-badge");
+      if(badge) badge.remove();
+    }
+  });
+}
+
+async function copyGameCode(){
+  if(!gameCode) return;
+  try{
+    await navigator.clipboard.writeText(gameCode);
+    setLobbyMessage("✅ Game code copied!");
+  }catch(error){
+    const temp=document.createElement("input");
+    temp.value=gameCode;
+    document.body.appendChild(temp);
+    temp.select();
+    document.execCommand("copy");
+    temp.remove();
+    setLobbyMessage("✅ Game code copied!");
+  }
+}
+
+async function shareGame(){
+  if(!gameCode) return;
+  const shareData={title:"Join my Buildva game",text:"Join my Buildva game with code: "+gameCode,url:window.location.href};
+  try{
+    if(navigator.share){
+      await navigator.share(shareData);
+      return;
+    }
+    await navigator.clipboard.writeText(gameCode);
+    setLobbyMessage("📤 Game code copied — send it to your opponent!");
+  }catch(error){
+    if(error && error.name==="AbortError") return;
+    setLobbyMessage("📤 Game code: "+gameCode);
+  }
+}
+
+function setLobbyMessage(message){
+  const waiting=document.getElementById("waiting");
+  if(waiting) waiting.innerHTML='<span class="status-pill">'+message+'</span>';
+  setTimeout(()=>{
+    if(waiting && currentGame && !(currentGame.players && currentGame.players.player1 && currentGame.players.player2)){
+      waiting.innerHTML='<span class="status-pill">🟡 Waiting for another player…</span>';
+    }
+  },2200);
+}
 
 async function choosePlayer(number){
 
@@ -1620,6 +1751,11 @@ document.getElementById("name2").innerHTML=
 document.getElementById("target").innerHTML=
 
 currentGame.target;
+
+const scoreOne=document.querySelector(".scoreboard .score:first-child");
+const scoreTwo=document.querySelector(".scoreboard .score:last-child");
+if(scoreOne) scoreOne.classList.toggle("active-player", playerNumber===1);
+if(scoreTwo) scoreTwo.classList.toggle("active-player", playerNumber===2);
 
 
 
@@ -1982,91 +2118,28 @@ return game;
 
 
 function showWinner(){
+  let title="";
+  let icon="🏆";
+  if(currentGame.winner===1){
+    title=(currentGame.players.player1?.name || "Player 1")+" Wins!";
+  }else if(currentGame.winner===2){
+    title=(currentGame.players.player2?.name || "Player 2")+" Wins!";
+  }else{
+    icon="🤝";
+    title="Draw Game!";
+  }
 
+  document.querySelector("#winnerPopup .winner-icon").textContent=icon;
+  document.getElementById("popupText").innerHTML=
+    '<div class="winner-title">'+title+'</div>'+
+    '<div class="final-score">'+
+      '<div class="final-player">'+(currentGame.players.player1?.name || "Player 1")+'<strong>'+currentGame.score1+'</strong></div>'+
+      '<div style="font-weight:900;color:var(--muted)">VS</div>'+
+      '<div class="final-player">'+(currentGame.players.player2?.name || "Player 2")+'<strong>'+currentGame.score2+'</strong></div>'+
+    '</div>';
 
-
-let text="";
-
-
-
-
-
-
-if(currentGame.winner===1){
-
-
-
-text="🏆 "+
-
-currentGame.players.player1.name+
-
-" Wins!";
-
-
-
+  document.getElementById("winnerPopup").style.display="block";
 }
-
-
-
-else if(currentGame.winner===2){
-
-
-
-text="🏆 "+
-
-currentGame.players.player2.name+
-
-" Wins!";
-
-
-
-}
-
-
-
-else{
-
-
-text="🤝 Draw Game!";
-
-
-}
-
-
-
-
-
-
-document.getElementById("popupText").innerHTML=
-
-text+
-
-"<br><br>"+
-
-"Score: "+
-
-currentGame.score1+
-
-" - "+
-
-currentGame.score2;
-
-
-
-
-
-
-document.getElementById("winnerPopup").style.display="block";
-
-
-
-}
-
-
-
-
-
-
 
 // PLAY AGAIN
 
@@ -2252,12 +2325,11 @@ document.getElementById("winnerPopup").style.display="none";
 
 
 function toggleDark(){
-
-
-document.body.classList.toggle("dark");
-
-
+  document.body.classList.toggle("dark");
+  localStorage.setItem("buildvaDark",document.body.classList.contains("dark") ? "1" : "0");
 }
+
+if(localStorage.getItem("buildvaDark")==="1") document.body.classList.add("dark");
 
 
 /* =========================================================
@@ -2284,6 +2356,12 @@ const voiceConfig = {
 function setVoiceStatus(message){
   const status=document.getElementById("voiceStatus");
   if(status) status.innerHTML=message;
+  const live=document.getElementById("voiceLive");
+  if(live){
+    const active=/connected|connecting|waiting/i.test(message) && !/off|ended|failed|muted/i.test(message);
+    live.classList.toggle("on",active);
+    live.innerHTML='<span class="voice-dot"></span> '+(active ? "ON" : "OFF");
+  }
 }
 
 function setVoiceButtons(active){
