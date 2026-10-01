@@ -31,10 +31,7 @@ margin:0;
 font-family:Arial,sans-serif;
 background:#eef4f8;
 color:#334155;
-
-/* FIX: Extra space below the fixed header */
-padding-top:175px;
-
+padding-top:140px;
 transition:.3s;
 
 }
@@ -263,10 +260,7 @@ font-size:20px;
 
 .target-panel{
   position:sticky;
-
-  /* FIX: Keep target below fixed header */
-  top:175px;
-
+  top:140px;
   z-index:900;
 }
 
@@ -528,9 +522,6 @@ body{
     radial-gradient(circle at 10% 10%,rgba(37,99,235,.10),transparent 28%),
     radial-gradient(circle at 90% 20%,rgba(16,185,129,.10),transparent 26%),
     #eef4f8;
-
-  /* FIX: Main header clearance */
-  padding-top:175px;
 }
 
 body.dark{
@@ -794,6 +785,26 @@ body.dark .status-pill{
   padding:20px;
 }
 
+/* PLAYER LEFT GAME MESSAGE */
+#playerLeftNotice{
+  display:none;
+  margin:0 0 15px;
+  padding:13px 15px;
+  border-radius:12px;
+  background:#fef2f2;
+  border:1px solid #fecaca;
+  color:#b91c1c;
+  font-weight:800;
+  text-align:center;
+}
+
+body.dark #playerLeftNotice{
+  background:#450a0a;
+  border-color:#991b1b;
+  color:#fecaca;
+}
+
+/* GAME CODE NOW AT THE BOTTOM */
 .game-code-box{
   display:flex;
   align-items:center;
@@ -804,7 +815,7 @@ body.dark .status-pill{
   border-radius:15px;
   background:#eff6ff;
   border:1px solid #bfdbfe;
-  margin-bottom:15px;
+  margin-top:20px;
 }
 
 body.dark .game-code-box{
@@ -826,7 +837,7 @@ body.dark .game-code{
 .game-code-notice{
   display:block;
   width:100%;
-  margin:-6px 0 15px;
+  margin:10px 0 0;
   padding:11px 14px;
   border-radius:11px;
   background:#fef3c7;
@@ -931,10 +942,7 @@ body.dark .you-badge{
 
 .scoreboard{
   position:sticky;
-
-  /* FIX: Keep scoreboard below fixed header */
-  top:175px;
-
+  top:112px;
   z-index:850;
 }
 
@@ -984,6 +992,28 @@ body.dark .you-badge{
   font-size:20px;
 }
 
+#numbers{
+  gap:6px;
+  padding-bottom:20px;
+}
+
+.number{
+  border-radius:8px;
+  box-shadow:0 1px 2px rgba(15,23,42,.06);
+  transition:.12s;
+}
+
+.number:not(:disabled):hover{
+  transform:scale(1.04);
+  border-color:#60a5fa;
+}
+
+.number:disabled{
+  cursor:not-allowed;
+  opacity:.75;
+}
+
+
 /* Voice upgrade */
 
 #voiceChat{
@@ -1025,6 +1055,7 @@ body.dark .you-badge{
   background:#22c55e;
   box-shadow:0 0 0 4px rgba(34,197,94,.15);
 }
+
 
 /* Start countdown popup */
 
@@ -1084,7 +1115,6 @@ body.dark .countdown-card{
     opacity:0;
     transform:scale(.78)
   }
-
   to{
     opacity:1;
     transform:scale(1)
@@ -1096,16 +1126,15 @@ body.dark .countdown-card{
     transform:scale(.7);
     opacity:.3
   }
-
   55%{
     transform:scale(1.08);
     opacity:1
   }
-
   100%{
     transform:scale(1)
   }
 }
+
 
 #winnerPopup{
   width:min(92vw,430px);
@@ -1161,11 +1190,11 @@ body.dark .final-score .final-player{
   margin-top:9px;
 }
 
+
 @media(max-width:700px){
 
-  /* FIX: More header clearance on mobile */
   body{
-    padding-top:135px;
+    padding-top:105px;
   }
 
   header{
@@ -1254,9 +1283,8 @@ body.dark .final-score .final-player{
     flex:1;
   }
 
-  /* FIX: Mobile scoreboard stays below header */
   .scoreboard{
-    top:135px;
+    top:84px;
   }
 
   .score{
@@ -1268,9 +1296,8 @@ body.dark .final-score .final-player{
     font-size:27px;
   }
 
-  /* FIX: Mobile target stays below header */
   .target-panel{
-    top:135px;
+    top:142px;
   }
 
   #numbers{
@@ -1285,7 +1312,9 @@ body.dark .final-score .final-player{
   .voice-head{
     align-items:flex-start;
   }
+
 }
+
 
 @media(max-width:380px){
 
@@ -1300,6 +1329,7 @@ body.dark .final-score .final-player{
   .size-options{
     grid-template-columns:1fr;
   }
+
 }
 
 
@@ -1338,11 +1368,13 @@ body.dark .final-score .final-player{
 }
 
 @media(max-width:600px){
+
   .firebase-health{
     font-size:10px;
     margin-top:5px;
     padding:4px 8px;
   }
+
 }
 
 </style>
@@ -1354,12 +1386,13 @@ body.dark .final-score .final-player{
 <body>
 
 
-
 <header>
 
 <div class="brand">
 
-<img src="buildva-logo.png" alt="Buildva logo" class="buildva-logo">
+<img src="buildva-logo.png"
+     alt="Buildva logo"
+     class="buildva-logo">
 
 <div class="brand-copy">
 
@@ -1371,15 +1404,24 @@ body.dark .final-score .final-player{
 
 </div>
 
-<div id="firebaseHealth" class="firebase-health" role="status" aria-live="polite" title="Shows this device’s connection to Firebase, not total players online">
+
+<div id="firebaseHealth"
+     class="firebase-health"
+     role="status"
+     aria-live="polite"
+     title="Shows this device’s connection to Firebase, not total players online">
 
 <span class="firebase-health-dot"></span>
 
-<span id="firebaseHealthText">Checking server connection…</span>
+<span id="firebaseHealthText">
+Checking server connection…
+</span>
 
 </div>
 
-<button class="mode-btn" onclick="toggleDark()">
+
+<button class="mode-btn"
+        onclick="toggleDark()">
 
 🌙
 
@@ -1390,14 +1432,7 @@ body.dark .final-score .final-player{
 
 
 
-
-
-
 <div class="screen">
-
-
-
-
 
 
 <!-- HOME / SETUP -->
@@ -1449,36 +1484,64 @@ Create a game, invite a friend with a code, and race to find the numbers in orde
 
 <div class="setup-grid">
 
+
 <div class="setup-card">
 
 <h3>🎮 Create a Game</h3>
 
-<p>Select how many numbers you want to play with.</p>
+<p>
+Select how many numbers you want to play with.
+</p>
+
 
 <div class="size-options">
 
 <label class="size-option">
-<input type="radio" name="gameSize" value="50" checked>
+
+<input type="radio"
+       name="gameSize"
+       value="50"
+       checked>
+
 <span>1–50</span>
+
 </label>
 
+
 <label class="size-option">
-<input type="radio" name="gameSize" value="100">
+
+<input type="radio"
+       name="gameSize"
+       value="100">
+
 <span>1–100</span>
+
 </label>
 
+
 <label class="size-option">
-<input type="radio" name="gameSize" value="200">
+
+<input type="radio"
+       name="gameSize"
+       value="200">
+
 <span>1–200</span>
+
 </label>
 
 </div>
 
+
 <br>
 
-<button class="main-btn success" onclick="createGame()">
+
+<button class="main-btn success"
+        onclick="createGame()">
+
 🎮 Create Game
+
 </button>
+
 
 <p class="share-note">
 After creating, share the 6-character game code with your opponent.
@@ -1492,78 +1555,62 @@ After creating, share the 6-character game code with your opponent.
 
 <h3>🚪 Join a Game</h3>
 
-<p>Enter the game code your friend sent you.</p>
+<p>
+Enter the game code your friend sent you.
+</p>
+
 
 <div class="join-row">
 
-<input
-id="gameCodeInput"
-placeholder="GAME CODE"
-maxlength="6"
-autocomplete="off"
->
+<input id="gameCodeInput"
+       placeholder="GAME CODE"
+       maxlength="6"
+       autocomplete="off">
 
-<button class="main-btn" onclick="joinGame()">
+
+<button class="main-btn"
+        onclick="joinGame()">
+
 Join Game
+
 </button>
 
 </div>
+
 
 <p id="status"></p>
 
 </div>
 
-</div>
 
 </div>
 
 </div>
+
+</div>
+
+
 
 <!-- PLAYER AREA -->
 
-<div id="playerArea" class="panel" style="display:none">
+<div id="playerArea"
+     class="panel"
+     style="display:none">
 
-<div class="game-code-box">
 
-<div>
+<!-- PLAYER LEFT NOTICE -->
 
-<div style="font-size:12px;font-weight:800;color:var(--muted);">
-GAME CODE
-</div>
+<div id="playerLeftNotice"></div>
 
-<div id="code" class="game-code">
-------
-</div>
-
-</div>
-
-<div class="code-actions">
-
-<button class="small-btn" onclick="copyGameCode()">
-📋 Copy Code
-</button>
-
-<button class="small-btn" onclick="shareGame()">
-📤 Share
-</button>
-
-<button class="small-btn" onclick="leaveGame()">
-🏠 Leave
-</button>
-
-</div>
-
-</div>
-
-<div id="gameCodeNotice" class="game-code-notice">
-📢 Share this 6-character game code with your opponent so they can join.
-</div>
 
 <h3>👥 Players</h3>
 
+
 <div class="player-cards">
 
-<div class="player-card" id="lobbyPlayer1">
+
+<div class="player-card"
+     id="lobbyPlayer1">
 
 <div class="player-avatar">
 👤
@@ -1585,7 +1632,8 @@ Waiting to join…
 
 
 
-<div class="player-card" id="lobbyPlayer2">
+<div class="player-card"
+     id="lobbyPlayer2">
 
 <div class="player-avatar">
 👤
@@ -1605,6 +1653,7 @@ Waiting to join…
 
 </div>
 
+
 </div>
 
 
@@ -1616,44 +1665,127 @@ Waiting to join…
 </p>
 
 <p style="margin-top:0;color:var(--muted);font-size:13px;">
+
 Enter your name and Buildva will automatically assign you the first available player slot.
+
 </p>
 
-<input
-id="playerName"
-placeholder="Your name"
-maxlength="20"
-autocomplete="name"
-style="padding:12px;width:min(100%,280px);"
->
 
-<br><br>
+<input id="playerName"
+       placeholder="Your name"
+       maxlength="20"
+       autocomplete="name"
+       style="padding:12px;width:min(100%,280px);">
 
-<button id="assignMeBtn" class="player-btn" onclick="assignMe()">
+
+<br>
+<br>
+
+
+<button id="assignMeBtn"
+        class="player-btn"
+        onclick="assignMe()">
+
 🎯 Assign Me
+
 </button>
+
 
 <p id="assignmentStatus"></p>
 
+
 <p id="waiting">
+
 <span class="status-pill">
 🟡 Waiting for another player…
 </span>
+
 </p>
 
 </div>
+
+
 
 <h2 id="countdown"></h2>
 
 <h2 id="winnerMessage"></h2>
 
+
+
+<!-- GAME CODE AT BOTTOM -->
+
+<div class="game-code-box">
+
+<div>
+
+<div style="font-size:12px;font-weight:800;color:var(--muted);">
+
+GAME CODE
+
 </div>
+
+
+<div id="code"
+     class="game-code">
+
+------
+
+</div>
+
+</div>
+
+
+<div class="code-actions">
+
+<button class="small-btn"
+        onclick="copyGameCode()">
+
+📋 Copy Code
+
+</button>
+
+
+<button class="small-btn"
+        onclick="shareGame()">
+
+📤 Share
+
+</button>
+
+
+<button class="small-btn"
+        onclick="leaveGame()">
+
+🏠 Leave
+
+</button>
+
+</div>
+
+
+</div>
+
+
+<div id="gameCodeNotice"
+     class="game-code-notice">
+
+📢 Share this 6-character game code with your opponent so they can join.
+
+</div>
+
+
+</div>
+
+
 
 <!-- GAME AREA -->
 
-<div id="gameArea" style="display:none">
+<div id="gameArea"
+     style="display:none">
+
 
 <div class="scoreboard">
+
 
 <div class="score">
 
@@ -1667,8 +1799,11 @@ Player 1
 
 <br>
 
-<b id="score1" class="score-number">
+<b id="score1"
+   class="score-number">
+
 0
+
 </b>
 
 </div>
@@ -1687,11 +1822,15 @@ Player 2
 
 <br>
 
-<b id="score2" class="score-number">
+<b id="score2"
+   class="score-number">
+
 0
+
 </b>
 
 </div>
+
 
 </div>
 
@@ -1713,6 +1852,7 @@ Find this number
 
 </div>
 
+
 <p>
 
 Remaining:
@@ -1729,7 +1869,8 @@ Remaining:
 
 <!-- VOICE CHAT -->
 
-<div id="voiceChat" class="panel">
+<div id="voiceChat"
+     class="panel">
 
 <div class="voice-head">
 
@@ -1737,7 +1878,8 @@ Remaining:
 🎙️ Voice Chat
 </h3>
 
-<span id="voiceLive" class="voice-live">
+<span id="voiceLive"
+      class="voice-live">
 
 <span class="voice-dot"></span>
 
@@ -1747,62 +1889,69 @@ OFF
 
 </div>
 
+
 <p id="voiceStatus">
+
 🔴 Voice chat is off
+
 </p>
+
 
 <div class="voice-controls">
 
-<button
-id="voiceStartBtn"
-class="main-btn"
-onclick="startVoiceChat()"
->
+
+<button id="voiceStartBtn"
+        class="main-btn"
+        onclick="startVoiceChat()">
+
 🎙️ Start Voice
+
 </button>
 
-<button
-id="voiceMuteBtn"
-class="main-btn"
-onclick="toggleMute()"
-style="display:none"
->
+
+<button id="voiceMuteBtn"
+        class="main-btn"
+        onclick="toggleMute()"
+        style="display:none">
+
 🔇 Mute
+
 </button>
 
-<button
-id="voiceEndBtn"
-class="main-btn"
-onclick="endVoiceChat()"
-style="display:none"
->
+
+<button id="voiceEndBtn"
+        class="main-btn"
+        onclick="endVoiceChat()"
+        style="display:none">
+
 📞 End Voice
+
 </button>
 
+
 </div>
 
 </div>
+
 
 
 <!-- NUMBER BOARD -->
 
 <div id="numbers"></div>
 
-</div>
-
 
 </div>
 
 
-
-
-
+</div>
 
 
 
 <!-- START COUNTDOWN POPUP -->
 
-<div id="startCountdownPopup" aria-live="assertive" aria-atomic="true">
+<div id="startCountdownPopup"
+     aria-live="assertive"
+     aria-atomic="true">
 
 <div class="countdown-card">
 
@@ -1822,6 +1971,8 @@ The game is starting…
 
 </div>
 
+
+
 <!-- WINNER POPUP -->
 
 <div id="winnerPopup">
@@ -1832,35 +1983,33 @@ The game is starting…
 
 <div id="popupText"></div>
 
+
 <div class="popup-actions">
 
-<button class="main-btn success" onclick="playAgain()">
+<button class="main-btn success"
+        onclick="playAgain()">
+
 🔄 Play Again
+
 </button>
 
-<button class="main-btn secondary" onclick="closeWinnerPopup()">
+
+<button class="main-btn secondary"
+        onclick="closeWinnerPopup()">
+
 Close
+
 </button>
 
 </div>
 
 </div>
-
-
-
-
-
 
 
 
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
-
-
-
-
-
 
 
 <script>
@@ -1891,59 +2040,56 @@ firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
 
 
-/*
-  Lightweight client-side health monitor.
-  This reports whether THIS browser is connected to Firebase.
-  Global connection counts, bandwidth, storage and billing are
-  available in Firebase/Google Cloud Console, not from the public client.
-*/
+
+/* Firebase connection monitor */
 
 (function monitorFirebaseConnection(){
 
-  const badge=document.getElementById("firebaseHealth");
+const badge=document.getElementById("firebaseHealth");
 
-  const label=document.getElementById("firebaseHealthText");
+const label=document.getElementById("firebaseHealthText");
 
-  if(!badge || !label) return;
+if(!badge || !label) return;
 
-  const connectedRef=db.ref(".info/connected");
+const connectedRef=db.ref(".info/connected");
 
-  connectedRef.on("value",snapshot=>{
+connectedRef.on("value",snapshot=>{
 
-    const connected=snapshot.val()===true;
+const connected=snapshot.val()===true;
 
-    badge.classList.toggle("connected",connected);
+badge.classList.toggle("connected",connected);
 
-    badge.classList.toggle("disconnected",!connected);
+badge.classList.toggle("disconnected",!connected);
 
-    label.textContent=connected
-      ? "Server connected"
-      : "Reconnecting to server…";
+label.textContent=connected
+? "Server connected"
+: "Reconnecting to server…";
 
-    if(!connected){
+if(!connected){
 
-      console.warn(
-        "Buildva: Firebase connection unavailable; waiting to reconnect."
-      );
+console.warn(
+"Buildva: Firebase connection unavailable; waiting to reconnect."
+);
 
-    }
+}
 
-  },error=>{
+},error=>{
 
-    badge.classList.remove("connected");
+badge.classList.remove("connected");
 
-    badge.classList.add("disconnected");
+badge.classList.add("disconnected");
 
-    label.textContent="Connection status unavailable";
+label.textContent="Connection status unavailable";
 
-    console.error(
-      "Buildva Firebase connection monitor error:",
-      error
-    );
+console.error(
+"Buildva Firebase connection monitor error:",
+error
+);
 
-  });
+});
 
 })();
+
 
 
 let TOTAL_NUMBERS=200;
@@ -1958,2454 +2104,2784 @@ let currentGame=null;
 
 let gameStarted=false;
 
+let countdownTimer=null;
+
+let leavingGame=false;
+
+
 
 function shuffle(array){
 
-  for(let i=array.length-1;i>0;i--){
+for(let i=array.length-1;i>0;i--){
 
-    let j=Math.floor(Math.random()*(i+1));
+let j=Math.floor(Math.random()*(i+1));
 
-    [array[i],array[j]]=[array[j],array[i]];
-
-  }
-
-  return array;
+[array[i],array[j]]=[array[j],array[i]];
 
 }
+
+return array;
+
+}
+
 
 
 function generateGameCode(){
 
-  let chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+let chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
-  let code="";
+let code="";
 
-  for(let i=0;i<6;i++){
+for(let i=0;i<6;i++){
 
-    code+=chars[
-      Math.floor(Math.random()*chars.length)
-    ];
-
-  }
-
-  return code;
+code+=chars[
+Math.floor(Math.random()*chars.length)
+];
 
 }
+
+return code;
+
+}
+
 
 
 async function createGame(){
 
-  let size=document.querySelector(
-    'input[name="gameSize"]:checked'
-  ).value;
+let size=document.querySelector(
+'input[name="gameSize"]:checked'
+).value;
 
-  TOTAL_NUMBERS=Number(size);
+TOTAL_NUMBERS=Number(size);
 
-  gameCode=generateGameCode();
+gameCode=generateGameCode();
 
-  gameRef=db.ref("games/"+gameCode);
+gameRef=db.ref("games/"+gameCode);
 
-  let board=[];
+let board=[];
 
-  for(let i=1;i<=TOTAL_NUMBERS;i++){
+for(let i=1;i<=TOTAL_NUMBERS;i++){
 
-    board.push(i);
-
-  }
-
-  shuffle(board);
-
-
-  await gameRef.set({
-
-    maxNumber:TOTAL_NUMBERS,
-
-    board:board,
-
-    target:1,
-
-    score1:0,
-
-    score2:0,
-
-    finished:false,
-
-    started:false,
-
-    winner:null,
-
-    countdown:false,
-
-    players:{
-
-      player1:false,
-
-      player2:false
-
-    }
-
-  });
-
-
-  openGame();
+board.push(i);
 
 }
+
+shuffle(board);
+
+
+await gameRef.set({
+
+maxNumber:TOTAL_NUMBERS,
+
+board:board,
+
+target:1,
+
+score1:0,
+
+score2:0,
+
+finished:false,
+
+started:false,
+
+winner:null,
+
+countdown:false,
+
+players:{
+player1:false,
+player2:false
+},
+
+lastLeft:null
+
+});
+
+
+openGame();
+
+}
+
 
 
 async function joinGame(){
 
-  let code=document
-    .getElementById("gameCodeInput")
-    .value
-    .trim()
-    .toUpperCase();
+let code=document
+.getElementById("gameCodeInput")
+.value
+.trim()
+.toUpperCase();
 
 
-  if(!code){
+if(!code){
 
-    document.getElementById("status").innerHTML=
-      "⚠️ Enter a game code.";
+document.getElementById("status").innerHTML=
+"⚠️ Enter a game code.";
 
-    return;
-
-  }
-
-
-  if(code.length!==6){
-
-    document.getElementById("status").innerHTML=
-      "⚠️ Game codes are 6 characters.";
-
-    return;
-
-  }
-
-
-  gameCode=code;
-
-  gameRef=db.ref("games/"+gameCode);
-
-
-  let snap=await gameRef.once("value");
-
-
-  if(!snap.exists()){
-
-    document.getElementById("status").innerHTML=
-      "❌ Game not found";
-
-    return;
-
-  }
-
-
-  openGame();
+return;
 
 }
+
+
+if(code.length!==6){
+
+document.getElementById("status").innerHTML=
+"⚠️ Game codes are 6 characters.";
+
+return;
+
+}
+
+
+gameCode=code;
+
+gameRef=db.ref("games/"+gameCode);
+
+
+let snap=await gameRef.once("value");
+
+
+if(!snap.exists()){
+
+document.getElementById("status").innerHTML=
+"❌ Game not found";
+
+return;
+
+}
+
+
+openGame();
+
+}
+
 
 
 function openGame(){
 
-  document.getElementById("setup").style.display="none";
+document.getElementById("setup").style.display="none";
 
-  document.getElementById("playerArea").style.display="block";
+document.getElementById("playerArea").style.display="block";
 
-
-  let savedGame=
-    localStorage.getItem("buildvaGameCode");
-
-  let savedPlayer=
-    localStorage.getItem("buildvaPlayerNumber");
+document.getElementById("playerLeftNotice").style.display="none";
 
 
-  if(savedGame===gameCode && savedPlayer){
+let savedGame=
+localStorage.getItem("buildvaGameCode");
 
-    playerNumber=Number(savedPlayer);
-
-  }
-
-
-  document.getElementById("code").innerHTML=
-    "Game Code: "+gameCode;
+let savedPlayer=
+localStorage.getItem("buildvaPlayerNumber");
 
 
-  listenGame();
+if(savedGame===gameCode && savedPlayer){
 
-  watchForVoiceEnd();
+playerNumber=Number(savedPlayer);
 
 }
+
+
+document.getElementById("code").innerHTML=
+gameCode;
+
+
+listenGame();
+
+watchForVoiceEnd();
+
+}
+
 
 
 function listenGame(){
 
-  gameRef.on("value",snap=>{
+gameRef.on("value",snap=>{
 
-    currentGame=snap.val();
+currentGame=snap.val();
 
 
-    if(currentGame){
+if(currentGame){
 
-      if(currentGame.maxNumber){
+if(currentGame.maxNumber){
 
-        TOTAL_NUMBERS=currentGame.maxNumber;
-
-      }
-
-      updateScreen();
-
-    }
-
-  });
+TOTAL_NUMBERS=currentGame.maxNumber;
 
 }
+
+updateScreen();
+
+}
+
+});
+
+}
+
 
 
 function updateLobbyPlayers(){
 
-  if(!currentGame || !currentGame.players) return;
-
-  [1,2].forEach(n=>{
-
-    const card=document.getElementById("lobbyPlayer"+n);
-
-    if(!card) return;
-
-    const player=currentGame.players["player"+n];
-
-    const nameEl=card.querySelector(".player-name");
-
-    const stateEl=card.querySelector(".player-state");
+if(!currentGame || !currentGame.players) return;
 
 
-    if(player){
+[1,2].forEach(n=>{
 
-      nameEl.textContent=
-        player.name || ("Player "+n);
+const card=document.getElementById(
+"lobbyPlayer"+n
+);
 
-      stateEl.textContent=
-        player.ready ? "🟢 Ready" : "🟡 Joined";
+if(!card) return;
 
 
-      if(playerNumber===n){
+const player=
+currentGame.players["player"+n];
 
-        if(!card.querySelector(".you-badge")){
 
-          const badge=document.createElement("span");
+const nameEl=
+card.querySelector(".player-name");
 
-          badge.className="you-badge";
 
-          badge.textContent="YOU";
+const stateEl=
+card.querySelector(".player-state");
 
-          card.appendChild(badge);
 
-        }
+if(player){
 
-      }
+nameEl.textContent=
+player.name || ("Player "+n);
 
-    }else{
 
-      nameEl.textContent="Player "+n;
+stateEl.textContent=
+player.ready
+? "🟢 Ready"
+: "🟡 Joined";
 
-      stateEl.textContent="Waiting to join…";
 
-      const badge=card.querySelector(".you-badge");
+if(playerNumber===n){
 
-      if(badge) badge.remove();
+if(!card.querySelector(".you-badge")){
 
-    }
+const badge=
+document.createElement("span");
 
-  });
+badge.className="you-badge";
+
+badge.textContent="YOU";
+
+card.appendChild(badge);
 
 }
+
+}
+
+}else{
+
+nameEl.textContent=
+"Player "+n;
+
+stateEl.textContent=
+"Waiting to join…";
+
+
+const badge=
+card.querySelector(".you-badge");
+
+if(badge) badge.remove();
+
+}
+
+});
+
+}
+
 
 
 async function copyGameCode(){
 
-  if(!gameCode) return;
+if(!gameCode) return;
 
-  try{
 
-    await navigator.clipboard.writeText(gameCode);
+try{
 
-    setLobbyMessage("✅ Game code copied!");
+await navigator.clipboard.writeText(gameCode);
 
-  }catch(error){
+setLobbyMessage("✅ Game code copied!");
 
-    const temp=document.createElement("input");
+}catch(error){
 
-    temp.value=gameCode;
+const temp=document.createElement("input");
 
-    document.body.appendChild(temp);
+temp.value=gameCode;
 
-    temp.select();
+document.body.appendChild(temp);
 
-    document.execCommand("copy");
+temp.select();
 
-    temp.remove();
+document.execCommand("copy");
 
-    setLobbyMessage("✅ Game code copied!");
+temp.remove();
 
-  }
+setLobbyMessage("✅ Game code copied!");
 
 }
+
+}
+
 
 
 async function shareGame(){
 
-  if(!gameCode) return;
+if(!gameCode) return;
 
-  const shareData={
-    title:"Join my Buildva game",
-    text:"Join my Buildva game with code: "+gameCode,
-    url:window.location.href
-  };
 
-  try{
+const shareData={
+title:"Join my Buildva game",
+text:"Join my Buildva game with code: "+gameCode,
+url:window.location.href
+};
 
-    if(navigator.share){
 
-      await navigator.share(shareData);
+try{
 
-      return;
+if(navigator.share){
 
-    }
+await navigator.share(shareData);
 
-    await navigator.clipboard.writeText(gameCode);
-
-    setLobbyMessage(
-      "📤 Game code copied — send it to your opponent!"
-    );
-
-  }catch(error){
-
-    if(error && error.name==="AbortError") return;
-
-    setLobbyMessage(
-      "📤 Game code: "+gameCode
-    );
-
-  }
+return;
 
 }
+
+await navigator.clipboard.writeText(gameCode);
+
+setLobbyMessage(
+"📤 Game code copied — send it to your opponent!"
+);
+
+}catch(error){
+
+if(error && error.name==="AbortError") return;
+
+setLobbyMessage(
+"📤 Game code: "+gameCode
+);
+
+}
+
+}
+
 
 
 function setLobbyMessage(message){
 
-  const waiting=document.getElementById("waiting");
+const waiting=
+document.getElementById("waiting");
 
-  if(waiting){
 
-    waiting.innerHTML=
-      '<span class="status-pill">'+
-      message+
-      '</span>';
+if(waiting){
 
-  }
-
-  setTimeout(()=>{
-
-    if(
-      waiting &&
-      currentGame &&
-      !(
-        currentGame.players &&
-        currentGame.players.player1 &&
-        currentGame.players.player2
-      )
-    ){
-
-      waiting.innerHTML=
-        '<span class="status-pill">'+
-        '🟡 Waiting for another player…'+
-        '</span>';
-
-    }
-
-  },2200);
+waiting.innerHTML=
+'<span class="status-pill">'+
+message+
+'</span>';
 
 }
 
+setTimeout(()=>{
+
+if(
+waiting &&
+currentGame &&
+!(
+currentGame.players &&
+currentGame.players.player1 &&
+currentGame.players.player2
+)
+){
+
+waiting.innerHTML=
+'<span class="status-pill">'+
+'🟡 Waiting for another player…'+
+'</span>';
+
+}
+
+},2200);
+
+}
+
+
+
+/* ================================
+   PLAYER ASSIGNMENT
+================================ */
 
 async function assignMe(){
 
-  if(!gameRef || !gameCode) return;
+if(!gameRef || !gameCode) return;
 
 
-  const nameInput=
-    document.getElementById("playerName");
+const nameInput=
+document.getElementById("playerName");
 
-  const name=
-    (nameInput.value || "").trim();
 
-  const status=
-    document.getElementById("assignmentStatus");
+const name=
+(nameInput.value || "").trim();
 
-  const button=
-    document.getElementById("assignMeBtn");
 
+const status=
+document.getElementById("assignmentStatus");
 
-  if(!name){
 
-    alert("Please enter your name");
+const button=
+document.getElementById("assignMeBtn");
 
-    nameInput.focus();
 
-    return;
+if(!name){
 
-  }
+alert("Please enter your name");
 
+nameInput.focus();
 
-  if(
-    playerNumber &&
-    currentGame &&
-    currentGame.players &&
-    currentGame.players["player"+playerNumber]
-  ){
-
-    if(status){
-
-      status.innerHTML=
-        '<span class="status-pill">'+
-        '🟢 You are Player '+playerNumber+
-        '</span>';
-
-    }
-
-    return;
-
-  }
-
-
-  if(button){
-
-    button.disabled=true;
-
-    button.textContent="⏳ Assigning…";
-
-  }
-
-  if(status){
-
-    status.innerHTML=
-      '<span class="status-pill">'+
-      '🔄 Finding an available player slot…'+
-      '</span>';
-
-  }
-
-
-  let assignedSlot=null;
-
-  const normalizedName=
-    name.toLowerCase();
-
-
-  try{
-
-    const result=
-      await gameRef.transaction(game=>{
-
-        if(!game) return game;
-
-        if(!game.players){
-
-          game.players={
-            player1:false,
-            player2:false
-          };
-
-        }
-
-
-        const p1=game.players.player1;
-
-        const p2=game.players.player2;
-
-
-        if(
-          (p1 &&
-           (p1.name || "").trim().toLowerCase()===normalizedName)
-          ||
-          (p2 &&
-           (p2.name || "").trim().toLowerCase()===normalizedName)
-        ){
-
-          return;
-
-        }
-
-
-        if(!p1){
-
-          game.players.player1={
-            name:name,
-            ready:true
-          };
-
-          return game;
-
-        }
-
-
-        if(!p2){
-
-          game.players.player2={
-            name:name,
-            ready:true
-          };
-
-          return game;
-
-        }
-
-
-        return;
-
-      });
-
-
-    if(!result.committed){
-
-      const latest=
-        (await gameRef.once("value")).val();
-
-
-      if(
-        latest &&
-        latest.players &&
-        latest.players.player1 &&
-        latest.players.player2
-      ){
-
-        if(status){
-
-          status.innerHTML=
-            '<span class="status-pill">'+
-            '🔴 Both player slots are already taken.'+
-            '</span>';
-
-        }
-
-      }else{
-
-        if(status){
-
-          status.innerHTML=
-            '<span class="status-pill">'+
-            '⚠️ That name is already being used.'+
-            '</span>';
-
-        }
-
-      }
-
-      return;
-
-    }
-
-
-    const saved=result.snapshot.val();
-
-
-    if(saved && saved.players){
-
-      if(
-        saved.players.player1 &&
-        saved.players.player1.name===name
-      ){
-
-        assignedSlot=1;
-
-      }
-
-      if(
-        saved.players.player2 &&
-        saved.players.player2.name===name
-      ){
-
-        assignedSlot=2;
-
-      }
-
-    }
-
-
-    if(!assignedSlot){
-
-      if(
-        saved.players.player1 &&
-        saved.players.player1.name===name
-      ){
-
-        assignedSlot=1;
-
-      }else if(
-        saved.players.player2 &&
-        saved.players.player2.name===name
-      ){
-
-        assignedSlot=2;
-
-      }
-
-    }
-
-
-    if(!assignedSlot){
-
-      throw new Error(
-        "Could not determine assigned player slot."
-      );
-
-    }
-
-
-    playerNumber=assignedSlot;
-
-    localStorage.setItem(
-      "buildvaGameCode",
-      gameCode
-    );
-
-    localStorage.setItem(
-      "buildvaPlayerNumber",
-      String(assignedSlot)
-    );
-
-    localStorage.setItem(
-      "buildvaPlayerName",
-      name
-    );
-
-
-    if(status){
-
-      status.innerHTML=
-        '<span class="status-pill">'+
-        '🟢 You are Player '+assignedSlot+
-        '</span>';
-
-    }
-
-
-    if(button){
-
-      button.textContent=
-        "✅ Player "+assignedSlot;
-
-    }
-
-
-    updateLobbyPlayers();
-
-
-  }catch(error){
-
-    console.error(
-      "Buildva player assignment error:",
-      error
-    );
-
-    if(status){
-
-      status.innerHTML=
-        '<span class="status-pill">'+
-        '⚠️ Assignment failed. Please try again.'+
-        '</span>';
-
-    }
-
-  }finally{
-
-    if(button && !playerNumber){
-
-      button.disabled=false;
-
-    }
-
-  }
-
-}
-
-
-// Kept for compatibility with any older saved page state.
-
-async function choosePlayer(number){
-
-  return assignMe();
-
-}
-
-
-let countdownTimer=null;
-
-
-function hideStartCountdown(){
-
-  const popup=
-    document.getElementById(
-      "startCountdownPopup"
-    );
-
-  if(popup){
-
-    popup.style.display="none";
-
-  }
-
-
-  if(countdownTimer){
-
-    clearInterval(countdownTimer);
-
-    countdownTimer=null;
-
-  }
-
-}
-
-
-function renderCountdownNumber(value){
-
-  const popup=
-    document.getElementById(
-      "startCountdownPopup"
-    );
-
-  const numberEl=
-    document.getElementById(
-      "countdownPopupNumber"
-    );
-
-
-  if(!popup || !numberEl) return;
-
-
-  numberEl.textContent=value;
-
-  numberEl.style.animation="none";
-
-  void numberEl.offsetWidth;
-
-  numberEl.style.animation=
-    "countdownPulse .7s ease-in-out";
-
-  popup.style.display="grid";
-
-}
-
-
-async function startCountdown(){
-
-  if(
-    !gameRef ||
-    !currentGame ||
-    currentGame.started
-  ){
-
-    return;
-
-  }
-
-
-  if(!currentGame.countdownStartedAt){
-
-    try{
-
-      await gameRef.transaction(game=>{
-
-        if(!game || game.started) return game;
-
-
-        if(!game.countdownStartedAt){
-
-          game.countdown=true;
-
-          game.countdownStartedAt=
-            firebase.database.ServerValue.TIMESTAMP;
-
-        }
-
-        return game;
-
-      });
-
-    }catch(error){
-
-      console.error(
-        "Buildva countdown start error:",
-        error
-      );
-
-    }
-
-  }
-
-
-  syncCountdown();
-
-}
-
-
-function syncCountdown(){
-
-  if(
-    !currentGame ||
-    currentGame.started
-  ){
-
-    hideStartCountdown();
-
-    return;
-
-  }
-
-
-  if(!currentGame.countdownStartedAt) return;
-
-
-  if(countdownTimer){
-
-    clearInterval(countdownTimer);
-
-  }
-
-
-  const startedAt=
-    Number(currentGame.countdownStartedAt);
-
-
-  const tick=()=>{
-
-    if(
-      !currentGame ||
-      currentGame.started
-    ){
-
-      hideStartCountdown();
-
-      return;
-
-    }
-
-
-    const elapsed=
-      Date.now()-startedAt;
-
-
-    const secondsLeft=
-      3-Math.floor(elapsed/1000);
-
-
-    if(secondsLeft>=1){
-
-      renderCountdownNumber(secondsLeft);
-
-      return;
-
-    }
-
-
-    if(elapsed<4000){
-
-      renderCountdownNumber("GO!");
-
-      return;
-
-    }
-
-
-    hideStartCountdown();
-
-
-    if(gameRef){
-
-      gameRef.update({
-        started:true
-      });
-
-    }
-
-  };
-
-
-  tick();
-
-  countdownTimer=
-    setInterval(tick,100);
-
-}
-
-
-function updateScreen(){
-
-  document.getElementById("score1").innerHTML=
-    currentGame.score1 || 0;
-
-
-  document.getElementById("score2").innerHTML=
-    currentGame.score2 || 0;
-
-
-  if(currentGame.players.player1){
-
-    document.getElementById("name1").innerHTML=
-      "👤 "+
-      currentGame.players.player1.name;
-
-  }
-
-
-  if(currentGame.players.player2){
-
-    document.getElementById("name2").innerHTML=
-      "👤 "+
-      currentGame.players.player2.name;
-
-  }
-
-
-  document.getElementById("target").innerHTML=
-    currentGame.target;
-
-
-  const scoreOne=
-    document.querySelector(
-      ".scoreboard .score:first-child"
-    );
-
-  const scoreTwo=
-    document.querySelector(
-      ".scoreboard .score:last-child"
-    );
-
-
-  if(scoreOne){
-
-    scoreOne.classList.toggle(
-      "active-player",
-      playerNumber===1
-    );
-
-  }
-
-
-  if(scoreTwo){
-
-    scoreTwo.classList.toggle(
-      "active-player",
-      playerNumber===2
-    );
-
-  }
-
-
-  document.getElementById("remaining").innerHTML=
-
-    Math.max(
-      0,
-      TOTAL_NUMBERS-currentGame.target+1
-    );
-
-
-  updateLobbyPlayers();
-
-
-  if(
-    currentGame.players.player1 &&
-    currentGame.players.player2
-  ){
-
-    document.getElementById("gameArea").style.display=
-      "block";
-
-
-    document.getElementById("waiting").innerHTML="";
-
-
-    if(!currentGame.started){
-
-      if(!currentGame.countdownStartedAt){
-
-        startCountdown();
-
-      }else{
-
-        syncCountdown();
-
-      }
-
-    }else{
-
-      hideStartCountdown();
-
-    }
-
-
-    renderBoard();
-
-  }else{
-
-    document.getElementById("waiting").innerHTML=
-      "Waiting for another player...";
-
-  }
-
-
-  if(currentGame.finished){
-
-    showWinner();
-
-  }
-
-}
-
-
-function renderBoard(){
-
-  let box=
-    document.getElementById("numbers");
-
-  box.innerHTML="";
-
-
-  currentGame.board.forEach(num=>{
-
-    let button=
-      document.createElement("button");
-
-
-    button.className="number";
-
-    button.innerHTML=num;
-
-
-    if(num < currentGame.target){
-
-      button.classList.add("used");
-
-    }else if(
-      !currentGame.started ||
-      currentGame.finished
-    ){
-
-      button.disabled=true;
-
-    }else{
-
-      button.onclick=function(){
-
-        pickNumber(num);
-
-      };
-
-    }
-
-
-    box.appendChild(button);
-
-  });
-
-}
-
-
-async function pickNumber(num){
-
-  if(!playerNumber){
-
-    let savedPlayer=
-      localStorage.getItem(
-        "buildvaPlayerNumber"
-      );
-
-
-    if(savedPlayer){
-
-      playerNumber=
-        Number(savedPlayer);
-
-    }
-
-  }
-
-
-  if(!playerNumber) return;
-
-
-  await gameRef.transaction(game=>{
-
-    if(!game) return game;
-
-    if(!game.started) return game;
-
-    if(game.finished) return game;
-
-
-    if(num !== game.target){
-
-      return game;
-
-    }
-
-
-    if(playerNumber===1){
-
-      game.score1++;
-
-    }else{
-
-      game.score2++;
-
-    }
-
-
-    if(game.target===TOTAL_NUMBERS){
-
-      game.finished=true;
-
-
-      if(game.score1>game.score2){
-
-        game.winner=1;
-
-      }else if(game.score2>game.score1){
-
-        game.winner=2;
-
-      }else{
-
-        game.winner=0;
-
-      }
-
-    }else{
-
-      game.target++;
-
-    }
-
-
-    return game;
-
-  });
-
-}
-
-
-function showWinner(){
-
-  let title="";
-
-  let icon="🏆";
-
-
-  if(currentGame.winner===1){
-
-    title=
-      (
-        currentGame.players.player1?.name ||
-        "Player 1"
-      )+
-      " Wins!";
-
-  }else if(currentGame.winner===2){
-
-    title=
-      (
-        currentGame.players.player2?.name ||
-        "Player 2"
-      )+
-      " Wins!";
-
-  }else{
-
-    icon="🤝";
-
-    title="Draw Game!";
-
-  }
-
-
-  document.querySelector(
-    "#winnerPopup .winner-icon"
-  ).textContent=icon;
-
-
-  document.getElementById("popupText").innerHTML=
-
-    '<div class="winner-title">'+
-      title+
-    '</div>'+
-
-    '<div class="final-score">'+
-
-      '<div class="final-player">'+
-        (
-          currentGame.players.player1?.name ||
-          "Player 1"
-        )+
-        '<strong>'+
-          currentGame.score1+
-        '</strong>'+
-      '</div>'+
-
-      '<div style="font-weight:900;color:var(--muted)">VS</div>'+
-
-      '<div class="final-player">'+
-        (
-          currentGame.players.player2?.name ||
-          "Player 2"
-        )+
-        '<strong>'+
-          currentGame.score2+
-        '</strong>'+
-      '</div>'+
-
-    '</div>';
-
-
-  document.getElementById(
-    "winnerPopup"
-  ).style.display="block";
-
-}
-
-
-// PLAY AGAIN
-
-async function playAgain(){
-
-  document.getElementById(
-    "winnerPopup"
-  ).style.display="none";
-
-
-  let board=[];
-
-
-  for(let i=1;i<=TOTAL_NUMBERS;i++){
-
-    board.push(i);
-
-  }
-
-
-  shuffle(board);
-
-
-  await gameRef.update({
-
-    board:board,
-
-    target:1,
-
-    score1:0,
-
-    score2:0,
-
-    finished:false,
-
-    winner:null,
-
-    started:false,
-
-    countdown:false,
-
-    countdownStartedAt:null
-
-  });
-
-
-  gameStarted=false;
-
-}
-
-
-// LEAVE GAME
-
-function leaveGame(){
-
-  localStorage.removeItem(
-    "buildvaGameCode"
-  );
-
-  localStorage.removeItem(
-    "buildvaPlayerNumber"
-  );
-
-  localStorage.removeItem(
-    "buildvaPlayerName"
-  );
-
-
-  if(gameRef){
-
-    gameRef.off();
-
-  }
-
-
-  gameCode=null;
-
-  gameRef=null;
-
-  playerNumber=null;
-
-  currentGame=null;
-
-  gameStarted=false;
-
-
-  document.getElementById(
-    "playerArea"
-  ).style.display="none";
-
-
-  document.getElementById(
-    "gameArea"
-  ).style.display="none";
-
-
-  document.getElementById(
-    "setup"
-  ).style.display="block";
-
-
-  document.getElementById(
-    "gameCodeInput"
-  ).value="";
-
-
-  document.getElementById(
-    "playerName"
-  ).value="";
-
-
-  document.getElementById(
-    "status"
-  ).innerHTML="";
-
-}
-
-
-function closeWinnerPopup(){
-
-  document.getElementById(
-    "winnerPopup"
-  ).style.display="none";
-
-}
-
-
-function toggleDark(){
-
-  document.body.classList.toggle("dark");
-
-  localStorage.setItem(
-    "buildvaDark",
-    document.body.classList.contains("dark")
-      ? "1"
-      : "0"
-  );
+return;
 
 }
 
 
 if(
-  localStorage.getItem("buildvaDark")==="1"
+playerNumber &&
+currentGame &&
+currentGame.players &&
+currentGame.players["player"+playerNumber]
 ){
 
-  document.body.classList.add("dark");
+if(status){
+
+status.innerHTML=
+'<span class="status-pill">'+
+'🟢 You are Player '+
+playerNumber+
+'</span>';
+
+}
+
+return;
 
 }
 
 
-/* =========================================================
-   VOICE CHAT
-   WebRTC + Firebase signaling
-   This section does NOT replace any game functions.
-========================================================= */
+if(button){
 
-let localStream = null;
+button.disabled=true;
 
-let peerConnection = null;
+button.textContent=
+"⏳ Assigning…";
 
-let remoteAudio = null;
-
-let voiceListeners = [];
-
-let voiceStarted = false;
-
-let pendingRemoteCandidates = [];
-
-let remoteDescriptionReady = false;
+}
 
 
-const voiceConfig = {
+if(status){
 
-  iceServers: [
+status.innerHTML=
+'<span class="status-pill">'+
+'🔄 Finding an available player slot…'+
+'</span>';
 
-    {
-      urls:"stun:stun.l.google.com:19302"
-    },
+}
 
-    {
-      urls:"stun:stun1.l.google.com:19302"
-    }
 
-  ]
+let assignedSlot=null;
+
+const normalizedName=
+name.toLowerCase();
+
+
+try{
+
+const result=
+await gameRef.transaction(game=>{
+
+if(!game) return game;
+
+if(!game.players){
+
+game.players={
+player1:false,
+player2:false
+};
+
+}
+
+
+const p1=game.players.player1;
+
+const p2=game.players.player2;
+
+
+if(
+(p1 &&
+(p1.name || "").trim().toLowerCase()
+===normalizedName)
+||
+(p2 &&
+(p2.name || "").trim().toLowerCase()
+===normalizedName)
+){
+
+return;
+
+}
+
+
+if(!p1){
+
+game.players.player1={
+name:name,
+ready:true
+};
+
+return game;
+
+}
+
+
+if(!p2){
+
+game.players.player2={
+name:name,
+ready:true
+};
+
+return game;
+
+}
+
+
+return;
+
+});
+
+
+if(!result.committed){
+
+const latest=
+(await gameRef.once("value")).val();
+
+
+if(
+latest &&
+latest.players &&
+latest.players.player1 &&
+latest.players.player2
+){
+
+if(status){
+
+status.innerHTML=
+'<span class="status-pill">'+
+'🔴 Both player slots are already taken.'+
+'</span>';
+
+}
+
+}else{
+
+if(status){
+
+status.innerHTML=
+'<span class="status-pill">'+
+'⚠️ That name is already being used.'+
+'</span>';
+
+}
+
+}
+
+return;
+
+}
+
+
+const saved=result.snapshot.val();
+
+
+if(saved && saved.players){
+
+if(
+saved.players.player1 &&
+saved.players.player1.name===name
+){
+
+assignedSlot=1;
+
+}
+
+
+if(
+saved.players.player2 &&
+saved.players.player2.name===name
+){
+
+assignedSlot=2;
+
+}
+
+}
+
+
+if(!assignedSlot){
+
+if(
+saved.players.player1 &&
+saved.players.player1.name===name
+){
+
+assignedSlot=1;
+
+}
+
+else if(
+saved.players.player2 &&
+saved.players.player2.name===name
+){
+
+assignedSlot=2;
+
+}
+
+}
+
+
+if(!assignedSlot){
+
+throw new Error(
+"Could not determine assigned player slot."
+);
+
+}
+
+
+playerNumber=assignedSlot;
+
+
+localStorage.setItem(
+"buildvaGameCode",
+gameCode
+);
+
+localStorage.setItem(
+"buildvaPlayerNumber",
+String(assignedSlot)
+);
+
+localStorage.setItem(
+"buildvaPlayerName",
+name
+);
+
+
+if(status){
+
+status.innerHTML=
+'<span class="status-pill">'+
+'🟢 You are Player '+
+assignedSlot+
+'</span>';
+
+}
+
+
+if(button){
+
+button.textContent=
+"✅ Player "+assignedSlot;
+
+}
+
+
+updateLobbyPlayers();
+
+
+}catch(error){
+
+console.error(
+"Buildva player assignment error:",
+error
+);
+
+
+if(status){
+
+status.innerHTML=
+'<span class="status-pill">'+
+'⚠️ Assignment failed. Please try again.'+
+'</span>';
+
+}
+
+}finally{
+
+if(button && !playerNumber){
+
+button.disabled=false;
+
+}
+
+}
+
+}
+
+
+
+async function choosePlayer(number){
+
+return assignMe();
+
+}
+
+
+
+/* ================================
+   COUNTDOWN
+================================ */
+
+function hideStartCountdown(){
+
+const popup=
+document.getElementById(
+"startCountdownPopup"
+);
+
+if(popup){
+
+popup.style.display="none";
+
+}
+
+
+if(countdownTimer){
+
+clearInterval(countdownTimer);
+
+countdownTimer=null;
+
+}
+
+}
+
+
+
+function renderCountdownNumber(value){
+
+const popup=
+document.getElementById(
+"startCountdownPopup"
+);
+
+const numberEl=
+document.getElementById(
+"countdownPopupNumber"
+);
+
+
+if(!popup || !numberEl) return;
+
+
+numberEl.textContent=value;
+
+numberEl.style.animation="none";
+
+void numberEl.offsetWidth;
+
+numberEl.style.animation=
+"countdownPulse .7s ease-in-out";
+
+popup.style.display="grid";
+
+}
+
+
+
+async function startCountdown(){
+
+if(
+!gameRef ||
+!currentGame ||
+currentGame.started
+){
+
+return;
+
+}
+
+
+if(!currentGame.countdownStartedAt){
+
+try{
+
+await gameRef.transaction(game=>{
+
+if(!game || game.started)
+return game;
+
+
+if(!game.countdownStartedAt){
+
+game.countdown=true;
+
+game.countdownStartedAt=
+firebase.database.ServerValue.TIMESTAMP;
+
+}
+
+return game;
+
+});
+
+}catch(error){
+
+console.error(
+"Buildva countdown start error:",
+error
+);
+
+}
+
+}
+
+
+syncCountdown();
+
+}
+
+
+
+function syncCountdown(){
+
+if(
+!currentGame ||
+currentGame.started
+){
+
+hideStartCountdown();
+
+return;
+
+}
+
+
+if(!currentGame.countdownStartedAt)
+return;
+
+
+if(countdownTimer)
+clearInterval(countdownTimer);
+
+
+const startedAt=
+Number(currentGame.countdownStartedAt);
+
+
+const tick=()=>{
+
+if(
+!currentGame ||
+currentGame.started
+){
+
+hideStartCountdown();
+
+return;
+
+}
+
+
+const elapsed=
+Date.now()-startedAt;
+
+
+const secondsLeft=
+3-Math.floor(elapsed/1000);
+
+
+if(secondsLeft>=1){
+
+renderCountdownNumber(
+secondsLeft
+);
+
+return;
+
+}
+
+
+if(elapsed<4000){
+
+renderCountdownNumber("GO!");
+
+return;
+
+}
+
+
+hideStartCountdown();
+
+
+if(gameRef){
+
+gameRef.update({
+started:true
+});
+
+}
 
 };
 
 
-function setVoiceStatus(message){
+tick();
 
-  const status=
-    document.getElementById(
-      "voiceStatus"
-    );
-
-  if(status){
-
-    status.innerHTML=message;
-
-  }
-
-
-  const live=
-    document.getElementById(
-      "voiceLive"
-    );
-
-
-  if(live){
-
-    const active=
-      /connected|connecting|waiting/i.test(message)
-      &&
-      !/off|ended|failed|muted/i.test(message);
-
-
-    live.classList.toggle(
-      "on",
-      active
-    );
-
-
-    live.innerHTML=
-      '<span class="voice-dot"></span> '+
-      (
-        active
-          ? "ON"
-          : "OFF"
-      );
-
-  }
+countdownTimer=
+setInterval(tick,100);
 
 }
 
 
-function setVoiceButtons(active){
 
-  const start=
-    document.getElementById(
-      "voiceStartBtn"
-    );
+/* ================================
+   GAME SCREEN
+================================ */
 
-  const mute=
-    document.getElementById(
-      "voiceMuteBtn"
-    );
+function updateScreen(){
 
-  const end=
-    document.getElementById(
-      "voiceEndBtn"
-    );
+if(!currentGame)
+return;
 
 
-  if(start){
-
-    start.style.display=
-      active
-        ? "none"
-        : "inline-block";
-
-  }
+document.getElementById("score1").innerHTML=
+currentGame.score1 || 0;
 
 
-  if(mute){
-
-    mute.style.display=
-      active
-        ? "inline-block"
-        : "none";
-
-  }
+document.getElementById("score2").innerHTML=
+currentGame.score2 || 0;
 
 
-  if(end){
 
-    end.style.display=
-      active
-        ? "inline-block"
-        : "none";
+if(currentGame.players &&
+currentGame.players.player1){
 
-  }
-
-
-  if(mute && !active){
-
-    mute.innerHTML="🔇 Mute";
-
-  }
+document.getElementById("name1").innerHTML=
+"👤 "+
+currentGame.players.player1.name;
 
 }
 
 
-function createRemoteAudio(){
 
-  if(remoteAudio) return;
+if(currentGame.players &&
+currentGame.players.player2){
 
-
-  remoteAudio=
-    document.createElement("audio");
-
-
-  remoteAudio.id="remoteAudio";
-
-  remoteAudio.autoplay=true;
-
-  remoteAudio.playsInline=true;
-
-  remoteAudio.style.display="none";
-
-
-  document.body.appendChild(
-    remoteAudio
-  );
+document.getElementById("name2").innerHTML=
+"👤 "+
+currentGame.players.player2.name;
 
 }
 
 
-function removeVoiceListeners(){
 
-  voiceListeners.forEach(item=>{
-
-    try{
-
-      item.ref.off(
-        item.event,
-        item.callback
-      );
-
-    }catch(error){}
-
-  });
+document.getElementById("target").innerHTML=
+currentGame.target;
 
 
-  voiceListeners=[];
-
-}
-
-
-async function flushRemoteCandidates(){
-
-  if(
-    !peerConnection ||
-    !remoteDescriptionReady
-  ){
-
-    return;
-
-  }
+const scoreOne=
+document.querySelector(
+".scoreboard .score:first-child"
+);
 
 
-  const candidates=[
-    ...pendingRemoteCandidates
-  ];
+const scoreTwo=
+document.querySelector(
+".scoreboard .score:last-child"
+);
 
 
-  pendingRemoteCandidates=[];
+if(scoreOne){
 
-
-  for(
-    const candidate of candidates
-  ){
-
-    try{
-
-      await peerConnection.addIceCandidate(
-        new RTCIceCandidate(candidate)
-      );
-
-    }catch(error){
-
-      console.error(
-        "ICE candidate error:",
-        error
-      );
-
-    }
-
-  }
+scoreOne.classList.toggle(
+"active-player",
+playerNumber===1
+);
 
 }
 
 
-function listenForRemoteCandidates(){
+if(scoreTwo){
 
-  if(!gameRef || !playerNumber) return;
-
-
-  const otherPlayer=
-    playerNumber===1
-      ? 2
-      : 1;
-
-
-  const candidateRef=
-    gameRef.child(
-      "voice/candidates/player"+
-      otherPlayer
-    );
-
-
-  const callback=
-    async snapshot=>{
-
-      const candidate=
-        snapshot.val();
-
-
-      if(
-        !candidate ||
-        !peerConnection
-      ){
-
-        return;
-
-      }
-
-
-      if(!remoteDescriptionReady){
-
-        pendingRemoteCandidates.push(
-          candidate
-        );
-
-        return;
-
-      }
-
-
-      try{
-
-        await peerConnection.addIceCandidate(
-          new RTCIceCandidate(candidate)
-        );
-
-      }catch(error){
-
-        console.error(
-          "ICE candidate error:",
-          error
-        );
-
-      }
-
-    };
-
-
-  candidateRef.on(
-    "child_added",
-    callback
-  );
-
-
-  voiceListeners.push({
-
-    ref:candidateRef,
-
-    event:"child_added",
-
-    callback:callback
-
-  });
+scoreTwo.classList.toggle(
+"active-player",
+playerNumber===2
+);
 
 }
 
 
-function setupVoiceConnection(){
 
-  peerConnection=
-    new RTCPeerConnection(
-      voiceConfig
-    );
+document.getElementById("remaining").innerHTML=
 
-
-  localStream.getTracks().forEach(
-    track=>{
-
-      peerConnection.addTrack(
-        track,
-        localStream
-      );
-
-    }
-  );
+Math.max(
+0,
+TOTAL_NUMBERS-currentGame.target+1
+);
 
 
-  peerConnection.ontrack=
-    event=>{
 
-      createRemoteAudio();
+updateLobbyPlayers();
 
 
-      if(
-        event.streams &&
-        event.streams[0]
-      ){
 
-        remoteAudio.srcObject=
-          event.streams[0];
+/* ====================================
+   DETECT PLAYER LEAVING
+==================================== */
 
-        remoteAudio.play().catch(
-          ()=>{}
-        );
+if(currentGame.lastLeft){
 
-      }
+const notice=
+document.getElementById(
+"playerLeftNotice"
+);
 
 
-      setVoiceStatus(
-        "🟢 Voice connected"
-      );
+if(
+currentGame.lastLeft.player &&
+currentGame.lastLeft.player !== playerNumber
+){
 
-    };
-
-
-  peerConnection.onicecandidate=
-    async event=>{
-
-      if(
-        !event.candidate ||
-        !gameRef ||
-        !playerNumber
-      ){
-
-        return;
-
-      }
+notice.innerHTML=
+"⚠️ "+
+(currentGame.lastLeft.name ||
+("Player "+currentGame.lastLeft.player))+
+" has left the game.";
 
 
-      try{
-
-        await gameRef
-          .child(
-            "voice/candidates/player"+
-            playerNumber
-          )
-          .push(
-            event.candidate.toJSON()
-          );
-
-      }catch(error){
-
-        console.error(
-          "Could not send ICE candidate:",
-          error
-        );
-
-      }
-
-    };
+notice.style.display="block";
 
 
-  peerConnection.onconnectionstatechange=
-    ()=>{
-
-      if(!peerConnection) return;
-
-
-      const state=
-        peerConnection.connectionState;
+document.getElementById(
+"gameArea"
+).style.display="none";
 
 
-      if(state==="connected"){
+hideStartCountdown();
 
-        setVoiceStatus(
-          "🟢 Voice connected"
-        );
 
-      }else if(state==="connecting"){
-
-        setVoiceStatus(
-          "🟡 Connecting voice..."
-        );
-
-      }else if(state==="disconnected"){
-
-        setVoiceStatus(
-          "🟠 Voice disconnected"
-        );
-
-      }else if(state==="failed"){
-
-        setVoiceStatus(
-          "🔴 Voice connection failed"
-        );
-
-      }
-
-    };
+}
 
 }
 
 
-async function startVoiceChat(){
 
-  if(!gameRef || !gameCode){
+/* ====================================
+   BOTH PLAYERS PRESENT
+==================================== */
 
-    alert(
-      "Please join a game first."
-    );
+if(
 
-    return;
+currentGame.players &&
+currentGame.players.player1 &&
+currentGame.players.player2
 
-  }
+){
 
+document.getElementById(
+"gameArea"
+).style.display="block";
 
-  if(!playerNumber){
 
-    alert(
-      "Please choose Player 1 or Player 2 first."
-    );
+if(!currentGame.started){
 
-    return;
+if(!currentGame.countdownStartedAt){
 
-  }
+startCountdown();
 
+}else{
 
-  if(
-    !currentGame ||
-    !currentGame.players ||
-    !currentGame.players.player1 ||
-    !currentGame.players.player2
-  ){
+syncCountdown();
 
-    alert(
-      "Both players must join the game before starting voice chat."
-    );
+}
 
-    return;
+}else{
 
-  }
-
-
-  if(voiceStarted) return;
-
-
-  if(
-    !navigator.mediaDevices ||
-    !navigator.mediaDevices.getUserMedia
-  ){
-
-    alert(
-      "Voice chat needs a secure website (HTTPS or localhost) and a browser with microphone support."
-    );
-
-    return;
-
-  }
-
-
-  try{
-
-    setVoiceStatus(
-      "🎙️ Requesting microphone access..."
-    );
-
-
-    localStream=
-      await navigator.mediaDevices.getUserMedia({
-        audio:true
-      });
-
-
-    createRemoteAudio();
-
-
-    pendingRemoteCandidates=[];
-
-    remoteDescriptionReady=false;
-
-
-    setupVoiceConnection();
-
-
-    voiceStarted=true;
-
-    setVoiceButtons(true);
-
-
-    if(playerNumber===1){
-
-      /*
-        Player 1 starts a fresh voice call and clears
-        old signaling information.
-      */
-
-      await gameRef
-        .child("voice")
-        .remove();
-
-
-      const callId=
-        Date.now().toString();
-
-
-      await gameRef
-        .child("voice/callId")
-        .set(callId);
-
-
-      await gameRef
-        .child("voice/ended")
-        .set(false);
-
-
-      const offer=
-        await peerConnection.createOffer();
-
-
-      await peerConnection.setLocalDescription(
-        offer
-      );
-
-
-      await gameRef
-        .child("voice/offer")
-        .set({
-
-          type:offer.type,
-
-          sdp:offer.sdp
-
-        });
-
-
-      setVoiceStatus(
-        "🟡 Waiting for Player 2..."
-      );
-
-
-      const answerRef=
-        gameRef.child(
-          "voice/answer"
-        );
-
-
-      const answerCallback=
-        async snapshot=>{
-
-          const answer=
-            snapshot.val();
-
-
-          if(
-            !answer ||
-            !peerConnection ||
-            peerConnection.currentRemoteDescription
-          ){
-
-            return;
-
-          }
-
-
-          try{
-
-            await peerConnection.setRemoteDescription(
-              new RTCSessionDescription(answer)
-            );
-
-
-            remoteDescriptionReady=true;
-
-            await flushRemoteCandidates();
-
-
-            setVoiceStatus(
-              "🟡 Connecting voice..."
-            );
-
-          }catch(error){
-
-            console.error(
-              "Answer error:",
-              error
-            );
-
-            setVoiceStatus(
-              "🔴 Voice connection error"
-            );
-
-          }
-
-        };
-
-
-      answerRef.on(
-        "value",
-        answerCallback
-      );
-
-
-      voiceListeners.push({
-
-        ref:answerRef,
-
-        event:"value",
-
-        callback:answerCallback
-
-      });
-
-
-    }else{
-
-      setVoiceStatus(
-        "🟡 Waiting for Player 1..."
-      );
-
-
-      const offerRef=
-        gameRef.child(
-          "voice/offer"
-        );
-
-
-      const offerCallback=
-        async snapshot=>{
-
-          const offer=
-            snapshot.val();
-
-
-          if(
-            !offer ||
-            !peerConnection ||
-            peerConnection.currentRemoteDescription
-          ){
-
-            return;
-
-          }
-
-
-          try{
-
-            await peerConnection.setRemoteDescription(
-              new RTCSessionDescription(offer)
-            );
-
-
-            remoteDescriptionReady=true;
-
-            await flushRemoteCandidates();
-
-
-            const answer=
-              await peerConnection.createAnswer();
-
-
-            await peerConnection.setLocalDescription(
-              answer
-            );
-
-
-            await gameRef
-              .child("voice/answer")
-              .set({
-
-                type:answer.type,
-
-                sdp:answer.sdp
-
-              });
-
-
-            setVoiceStatus(
-              "🟡 Connecting voice..."
-            );
-
-
-          }catch(error){
-
-            console.error(
-              "Offer error:",
-              error
-            );
-
-            setVoiceStatus(
-              "🔴 Voice connection error"
-            );
-
-          }
-
-        };
-
-
-      offerRef.on(
-        "value",
-        offerCallback
-      );
-
-
-      voiceListeners.push({
-
-        ref:offerRef,
-
-        event:"value",
-
-        callback:offerCallback
-
-      });
-
-    }
-
-
-    listenForRemoteCandidates();
-
-
-  }catch(error){
-
-    console.error(
-      "Voice chat error:",
-      error
-    );
-
-
-    voiceStarted=false;
-
-    setVoiceButtons(false);
-
-
-    if(localStream){
-
-      localStream
-        .getTracks()
-        .forEach(
-          track=>track.stop()
-        );
-
-      localStream=null;
-
-    }
-
-
-    if(peerConnection){
-
-      try{
-
-        peerConnection.close();
-
-      }catch(error){}
-
-      peerConnection=null;
-
-    }
-
-
-    setVoiceStatus(
-      "🔴 Microphone access failed"
-    );
-
-
-    alert(
-      "Could not access your microphone. Please allow microphone access in your browser."
-    );
-
-  }
+hideStartCountdown();
 
 }
 
 
-function toggleMute(){
-
-  if(!localStream) return;
+renderBoard();
 
 
-  const audioTracks=
-    localStream.getAudioTracks();
+}else{
 
 
-  if(audioTracks.length===0) return;
+document.getElementById(
+"waiting"
+).innerHTML=
+"Waiting for another player...";
 
-
-  const currentlyEnabled=
-    audioTracks[0].enabled;
-
-
-  audioTracks.forEach(
-    track=>{
-
-      track.enabled=
-        !currentlyEnabled;
-
-    }
-  );
-
-
-  const button=
-    document.getElementById(
-      "voiceMuteBtn"
-    );
-
-
-  if(currentlyEnabled){
-
-    button.innerHTML=
-      "🔊 Unmute";
-
-    setVoiceStatus(
-      "🔇 Microphone muted"
-    );
-
-  }else{
-
-    button.innerHTML=
-      "🔇 Mute";
-
-    setVoiceStatus(
-      "🟢 Voice connected"
-    );
-
-  }
 
 }
 
 
-async function endVoiceChat(){
 
-  removeVoiceListeners();
+if(currentGame.finished){
 
+showWinner();
 
-  if(localStream){
+}
 
-    localStream
-      .getTracks()
-      .forEach(
-        track=>track.stop()
-      );
-
-    localStream=null;
-
-  }
+}
 
 
-  if(peerConnection){
 
-    try{
+/* ================================
+   RENDER BOARD
+================================ */
 
-      peerConnection.close();
+function renderBoard(){
 
-    }catch(error){}
-
-    peerConnection=null;
-
-  }
+let box=
+document.getElementById("numbers");
 
 
-  pendingRemoteCandidates=[];
-
-  remoteDescriptionReady=false;
+box.innerHTML="";
 
 
-  if(remoteAudio){
-
-    remoteAudio.srcObject=null;
-
-    remoteAudio.remove();
-
-    remoteAudio=null;
-
-  }
+if(!currentGame.board)
+return;
 
 
-  /*
-    Removing the shared voice node tells the other player
-    that the call has ended too.
-  */
+currentGame.board.forEach(num=>{
 
-  if(gameRef){
-
-    try{
-
-      await gameRef
-        .child("voice")
-        .remove();
-
-    }catch(error){
-
-      console.error(
-        "Could not clear voice data:",
-        error
-      );
-
-    }
-
-  }
+let button=
+document.createElement("button");
 
 
-  voiceStarted=false;
+button.className="number";
 
-  setVoiceButtons(false);
+button.innerHTML=num;
 
-  setVoiceStatus(
-    "🔴 Voice chat is off"
-  );
+
+
+if(num < currentGame.target){
+
+button.classList.add("used");
+
+}
+
+else if(
+!currentGame.started ||
+currentGame.finished
+){
+
+button.disabled=true;
+
+}
+
+else{
+
+button.onclick=function(){
+
+pickNumber(num);
+
+};
+
+}
+
+
+box.appendChild(button);
+
+});
+
+}
+
+
+
+/* ================================
+   PICK NUMBER
+================================ */
+
+async function pickNumber(num){
+
+if(!playerNumber){
+
+let savedPlayer=
+localStorage.getItem(
+"buildvaPlayerNumber"
+);
+
+
+if(savedPlayer){
+
+playerNumber=
+Number(savedPlayer);
+
+}
+
+}
+
+
+if(!playerNumber)
+return;
+
+
+await gameRef.transaction(game=>{
+
+if(!game)
+return game;
+
+
+if(!game.started)
+return game;
+
+
+if(game.finished)
+return game;
+
+
+if(num !== game.target){
+
+return game;
+
+}
+
+
+
+if(playerNumber===1){
+
+game.score1++;
+
+}else{
+
+game.score2++;
+
+}
+
+
+
+if(game.target===TOTAL_NUMBERS){
+
+game.finished=true;
+
+
+if(game.score1>game.score2){
+
+game.winner=1;
+
+}
+
+else if(game.score2>game.score1){
+
+game.winner=2;
+
+}
+
+else{
+
+game.winner=0;
+
+}
+
+}
+
+else{
+
+game.target++;
+
+}
+
+
+return game;
+
+});
+
+}
+
+
+
+/* ================================
+   WINNER
+================================ */
+
+function showWinner(){
+
+let title="";
+
+let icon="🏆";
+
+
+if(currentGame.winner===1){
+
+title=
+(currentGame.players.player1?.name ||
+"Player 1")+
+" Wins!";
+
+}
+
+else if(currentGame.winner===2){
+
+title=
+(currentGame.players.player2?.name ||
+"Player 2")+
+" Wins!";
+
+}
+
+else{
+
+icon="🤝";
+
+title="Draw Game!";
+
+}
+
+
+document.querySelector(
+"#winnerPopup .winner-icon"
+).textContent=icon;
+
+
+document.getElementById(
+"popupText"
+).innerHTML=
+
+'<div class="winner-title">'+
+title+
+'</div>'+
+
+'<div class="final-score">'+
+
+'<div class="final-player">'+
+(currentGame.players.player1?.name ||
+"Player 1")+
+'<strong>'+
+currentGame.score1+
+'</strong>'+
+'</div>'+
+
+'<div style="font-weight:900;color:var(--muted)">'+
+'VS'+
+'</div>'+
+
+'<div class="final-player">'+
+(currentGame.players.player2?.name ||
+"Player 2")+
+'<strong>'+
+currentGame.score2+
+'</strong>'+
+'</div>'+
+
+'</div>';
+
+
+document.getElementById(
+"winnerPopup"
+).style.display="block";
+
+}
+
+
+
+/* ================================
+   PLAY AGAIN
+================================ */
+
+async function playAgain(){
+
+document.getElementById(
+"winnerPopup"
+).style.display="none";
+
+
+let board=[];
+
+
+for(
+let i=1;
+i<=TOTAL_NUMBERS;
+i++
+){
+
+board.push(i);
+
+}
+
+
+shuffle(board);
+
+
+await gameRef.update({
+
+board:board,
+
+target:1,
+
+score1:0,
+
+score2:0,
+
+finished:false,
+
+winner:null,
+
+started:false,
+
+countdown:false,
+
+countdownStartedAt:null,
+
+lastLeft:null
+
+});
+
+
+gameStarted=false;
+
+}
+
+
+
+/* ================================
+   LEAVE GAME
+================================ */
+
+async function leaveGame(){
+
+if(!gameRef || !gameCode)
+return;
+
+
+const leavingPlayer=
+playerNumber;
+
+
+const leavingName=
+currentGame &&
+currentGame.players &&
+currentGame.players[
+"player"+leavingPlayer
+]
+?
+currentGame.players[
+"player"+leavingPlayer
+].name
+:
+localStorage.getItem(
+"buildvaPlayerName"
+) ||
+("Player "+leavingPlayer);
+
+
+leavingGame=true;
+
+
+/*
+  Tell Firebase that this player has left.
+  The other player's browser receives this
+  immediately through listenGame().
+*/
+
+try{
+
+await gameRef.transaction(game=>{
+
+if(!game)
+return game;
+
+
+if(
+leavingPlayer===1 &&
+game.players &&
+game.players.player1
+){
+
+game.players.player1=false;
+
+}
+
+
+if(
+leavingPlayer===2 &&
+game.players &&
+game.players.player2
+){
+
+game.players.player2=false;
 
 }
 
 
 /*
-  If the other player ends the voice call,
-  Firebase removes the shared voice node.
+  Save the player who left so the other
+  player receives a visible notification.
 */
 
-function watchForVoiceEnd(){
+game.lastLeft={
 
-  if(!gameRef) return;
+player:leavingPlayer,
 
+name:leavingName,
 
-  const voiceRef=
-    gameRef.child("voice");
+timestamp:firebase.database.ServerValue.TIMESTAMP
 
-
-  let voiceWasPresent=false;
-
-
-  const callback=
-    snapshot=>{
-
-      if(snapshot.exists()){
-
-        voiceWasPresent=true;
-
-        return;
-
-      }
+};
 
 
-      if(
-        voiceWasPresent &&
-        voiceStarted
-      ){
+/*
+  Stop the current game if it was running.
+*/
 
-        removeVoiceListeners();
+game.started=false;
 
+game.finished=false;
 
-        if(localStream){
+game.winner=null;
 
-          localStream
-            .getTracks()
-            .forEach(
-              track=>track.stop()
-            );
+game.countdown=false;
 
-          localStream=null;
-
-        }
+game.countdownStartedAt=null;
 
 
-        if(peerConnection){
+/*
+  Clear scores so the remaining player
+  returns to the lobby state.
+*/
 
-          try{
+game.score1=0;
 
-            peerConnection.close();
+game.score2=0;
 
-          }catch(error){}
+return game;
 
-          peerConnection=null;
+});
 
-        }
+}catch(error){
 
-
-        pendingRemoteCandidates=[];
-
-        remoteDescriptionReady=false;
-
-
-        if(remoteAudio){
-
-          remoteAudio.srcObject=null;
-
-          remoteAudio.remove();
-
-          remoteAudio=null;
-
-        }
-
-
-        voiceStarted=false;
-
-        setVoiceButtons(false);
-
-        setVoiceStatus(
-          "🔴 Other player ended voice chat"
-        );
-
-      }
-
-    };
-
-
-  voiceRef.on(
-    "value",
-    callback
-  );
-
-
-  voiceListeners.push({
-
-    ref:voiceRef,
-
-    event:"value",
-
-    callback:callback
-
-  });
+console.error(
+"Buildva leave game error:",
+error
+);
 
 }
 
 
-window.addEventListener(
-  "beforeunload",
-  ()=>{
+/* Stop voice */
 
-    if(localStream){
+try{
 
-      localStream
-        .getTracks()
-        .forEach(
-          track=>track.stop()
-        );
+await endVoiceChat();
 
-    }
+}catch(error){
 
-
-    if(peerConnection){
-
-      try{
-
-        peerConnection.close();
-
-      }catch(error){}
-
-    }
-
-  }
+console.error(
+"Voice cleanup error:",
+error
 );
+
+}
+
+
+/* Clear local identity */
+
+localStorage.removeItem(
+"buildvaGameCode"
+);
+
+localStorage.removeItem(
+"buildvaPlayerNumber"
+);
+
+localStorage.removeItem(
+"buildvaPlayerName"
+);
+
+
+if(gameRef){
+
+gameRef.off();
+
+}
+
+
+gameCode=null;
+
+gameRef=null;
+
+playerNumber=null;
+
+currentGame=null;
+
+gameStarted=false;
+
+leavingGame=false;
+
+
+document.getElementById(
+"playerArea"
+).style.display="none";
+
+
+document.getElementById(
+"gameArea"
+).style.display="none";
+
+
+document.getElementById(
+"setup"
+).style.display="block";
+
+
+document.getElementById(
+"gameCodeInput"
+).value="";
+
+
+document.getElementById(
+"playerName"
+).value="";
+
+
+document.getElementById(
+"status"
+).innerHTML="";
+
+}
+
+
+
+/* ================================
+   WINNER POPUP
+================================ */
+
+function closeWinnerPopup(){
+
+document.getElementById(
+"winnerPopup"
+).style.display="none";
+
+}
+
+
+
+/* ================================
+   DARK MODE
+================================ */
+
+function toggleDark(){
+
+document.body.classList.toggle("dark");
+
+localStorage.setItem(
+"buildvaDark",
+document.body.classList.contains("dark")
+? "1"
+: "0"
+);
+
+}
+
+
+if(
+localStorage.getItem("buildvaDark")==="1"
+){
+
+document.body.classList.add("dark");
+
+}
+
+
+
+/* =========================================================
+   VOICE CHAT
+   WebRTC + Firebase signaling
+========================================================= */
+
+let localStream=null;
+
+let peerConnection=null;
+
+let remoteAudio=null;
+
+let voiceListeners=[];
+
+let voiceStarted=false;
+
+let pendingRemoteCandidates=[];
+
+let remoteDescriptionReady=false;
+
+
+
+const voiceConfig={
+
+iceServers:[
+
+{
+urls:"stun:stun.l.google.com:19302"
+},
+
+{
+urls:"stun:stun1.l.google.com:19302"
+}
+
+]
+
+};
+
+
+
+function setVoiceStatus(message){
+
+const status=
+document.getElementById(
+"voiceStatus"
+);
+
+
+if(status){
+
+status.innerHTML=message;
+
+}
+
+
+const live=
+document.getElementById(
+"voiceLive"
+);
+
+
+if(live){
+
+const active=
+/connected|connecting|waiting/i
+.test(message)
+&&
+!/off|ended|failed|muted/i
+.test(message);
+
+
+live.classList.toggle(
+"on",
+active
+);
+
+
+live.innerHTML=
+'<span class="voice-dot"></span> '+
+(active ? "ON" : "OFF");
+
+}
+
+}
+
+
+
+function setVoiceButtons(active){
+
+const start=
+document.getElementById(
+"voiceStartBtn"
+);
+
+const mute=
+document.getElementById(
+"voiceMuteBtn"
+);
+
+const end=
+document.getElementById(
+"voiceEndBtn"
+);
+
+
+if(start){
+
+start.style.display=
+active
+? "none"
+: "inline-block";
+
+}
+
+
+if(mute){
+
+mute.style.display=
+active
+? "inline-block"
+: "none";
+
+}
+
+
+if(end){
+
+end.style.display=
+active
+? "inline-block"
+: "none";
+
+}
+
+
+if(mute && !active){
+
+mute.innerHTML="🔇 Mute";
+
+}
+
+}
+
+
+
+function createRemoteAudio(){
+
+if(remoteAudio)
+return;
+
+
+remoteAudio=
+document.createElement("audio");
+
+
+remoteAudio.id=
+"remoteAudio";
+
+
+remoteAudio.autoplay=true;
+
+remoteAudio.playsInline=true;
+
+remoteAudio.style.display="none";
+
+
+document.body.appendChild(
+remoteAudio
+);
+
+}
+
+
+
+function removeVoiceListeners(){
+
+voiceListeners.forEach(item=>{
+
+try{
+
+item.ref.off(
+item.event,
+item.callback
+);
+
+}catch(error){}
+
+});
+
+
+voiceListeners=[];
+
+}
+
+
+
+async function flushRemoteCandidates(){
+
+if(
+!peerConnection ||
+!remoteDescriptionReady
+)
+return;
+
+
+const candidates=[
+...pendingRemoteCandidates
+];
+
+
+pendingRemoteCandidates=[];
+
+
+for(
+const candidate of candidates
+){
+
+try{
+
+await peerConnection.addIceCandidate(
+new RTCIceCandidate(candidate)
+);
+
+}catch(error){
+
+console.error(
+"ICE candidate error:",
+error
+);
+
+}
+
+}
+
+}
+
+
+
+function listenForRemoteCandidates(){
+
+if(!gameRef || !playerNumber)
+return;
+
+
+const otherPlayer=
+playerNumber===1
+? 2
+: 1;
+
+
+const candidateRef=
+gameRef.child(
+"voice/candidates/player"+
+otherPlayer
+);
+
+
+const callback=async snapshot=>{
+
+const candidate=
+snapshot.val();
+
+
+if(
+!candidate ||
+!peerConnection
+)
+return;
+
+
+if(!remoteDescriptionReady){
+
+pendingRemoteCandidates.push(
+candidate
+);
+
+return;
+
+}
+
+
+try{
+
+await peerConnection.addIceCandidate(
+new RTCIceCandidate(candidate)
+);
+
+}catch(error){
+
+console.error(
+"ICE candidate error:",
+error
+);
+
+}
+
+};
+
+
+candidateRef.on(
+"child_added",
+callback
+);
+
+
+voiceListeners.push({
+
+ref:candidateRef,
+
+event:"child_added",
+
+callback:callback
+
+});
+
+}
+
+
+
+function setupVoiceConnection(){
+
+peerConnection=
+new RTCPeerConnection(
+voiceConfig
+);
+
+
+localStream
+.getTracks()
+.forEach(track=>{
+
+peerConnection.addTrack(
+track,
+localStream
+);
+
+});
+
+
+peerConnection.ontrack=
+event=>{
+
+createRemoteAudio();
+
+
+if(
+event.streams &&
+event.streams[0]
+){
+
+remoteAudio.srcObject=
+event.streams[0];
+
+remoteAudio.play().catch(
+()=>{}
+);
+
+}
+
+
+setVoiceStatus(
+"🟢 Voice connected"
+);
+
+};
+
+
+
+peerConnection.onicecandidate=
+async event=>{
+
+if(
+!event.candidate ||
+!gameRef ||
+!playerNumber
+)
+return;
+
+
+try{
+
+await gameRef
+.child(
+"voice/candidates/player"+
+playerNumber
+)
+.push(
+event.candidate.toJSON()
+);
+
+}catch(error){
+
+console.error(
+"Could not send ICE candidate:",
+error
+);
+
+}
+
+};
+
+
+
+peerConnection.onconnectionstatechange=
+()=>{
+
+if(!peerConnection)
+return;
+
+
+const state=
+peerConnection.connectionState;
+
+
+if(state==="connected"){
+
+setVoiceStatus(
+"🟢 Voice connected"
+);
+
+}
+
+else if(state==="connecting"){
+
+setVoiceStatus(
+"🟡 Connecting voice..."
+);
+
+}
+
+else if(state==="disconnected"){
+
+setVoiceStatus(
+"🟠 Voice disconnected"
+);
+
+}
+
+else if(state==="failed"){
+
+setVoiceStatus(
+"🔴 Voice connection failed"
+);
+
+}
+
+};
+
+}
+
+
+
+async function startVoiceChat(){
+
+if(
+!gameRef ||
+!gameCode
+){
+
+alert(
+"Please join a game first."
+);
+
+return;
+
+}
+
+
+if(!playerNumber){
+
+alert(
+"Please choose Player 1 or Player 2 first."
+);
+
+return;
+
+}
+
+
+if(
+!currentGame ||
+!currentGame.players ||
+!currentGame.players.player1 ||
+!currentGame.players.player2
+){
+
+alert(
+"Both players must join the game before starting voice chat."
+);
+
+return;
+
+}
+
+
+if(voiceStarted)
+return;
+
+
+if(
+!navigator.mediaDevices ||
+!navigator.mediaDevices.getUserMedia
+){
+
+alert(
+"Voice chat needs a secure website (HTTPS or localhost) and a browser with microphone support."
+);
+
+return;
+
+}
+
+
+try{
+
+setVoiceStatus(
+"🎙️ Requesting microphone access..."
+);
+
+
+localStream=
+await navigator.mediaDevices.getUserMedia({
+audio:true
+});
+
+
+createRemoteAudio();
+
+
+pendingRemoteCandidates=[];
+
+remoteDescriptionReady=false;
+
+
+setupVoiceConnection();
+
+
+voiceStarted=true;
+
+setVoiceButtons(true);
+
+
+if(playerNumber===1){
+
+
+await gameRef.child(
+"voice"
+).remove();
+
+
+const callId=
+Date.now().toString();
+
+
+await gameRef.child(
+"voice/callId"
+).set(callId);
+
+
+await gameRef.child(
+"voice/ended"
+).set(false);
+
+
+const offer=
+await peerConnection.createOffer();
+
+
+await peerConnection.setLocalDescription(
+offer
+);
+
+
+await gameRef.child(
+"voice/offer"
+).set({
+
+type:offer.type,
+
+sdp:offer.sdp
+
+});
+
+
+setVoiceStatus(
+"🟡 Waiting for Player 2..."
+);
+
+
+const answerRef=
+gameRef.child(
+"voice/answer"
+);
+
+
+const answerCallback=
+async snapshot=>{
+
+const answer=
+snapshot.val();
+
+
+if(
+!answer ||
+!peerConnection ||
+peerConnection.currentRemoteDescription
+){
+
+return;
+
+}
+
+
+try{
+
+await peerConnection.setRemoteDescription(
+new RTCSessionDescription(answer)
+);
+
+
+remoteDescriptionReady=true;
+
+await flushRemoteCandidates();
+
+
+setVoiceStatus(
+"🟡 Connecting voice..."
+);
+
+}catch(error){
+
+console.error(
+"Answer error:",
+error
+);
+
+setVoiceStatus(
+"🔴 Voice connection error"
+);
+
+}
+
+};
+
+
+answerRef.on(
+"value",
+answerCallback
+);
+
+
+voiceListeners.push({
+
+ref:answerRef,
+
+event:"value",
+
+callback:answerCallback
+
+});
+
+
+}else{
+
+
+setVoiceStatus(
+"🟡 Waiting for Player 1..."
+);
+
+
+const offerRef=
+gameRef.child(
+"voice/offer"
+);
+
+
+const offerCallback=
+async snapshot=>{
+
+const offer=
+snapshot.val();
+
+
+if(
+!offer ||
+!peerConnection ||
+peerConnection.currentRemoteDescription
+){
+
+return;
+
+}
+
+
+try{
+
+await peerConnection.setRemoteDescription(
+new RTCSessionDescription(offer)
+);
+
+
+remoteDescriptionReady=true;
+
+await flushRemoteCandidates();
+
+
+const answer=
+await peerConnection.createAnswer();
+
+
+await peerConnection.setLocalDescription(
+answer
+);
+
+
+await gameRef.child(
+"voice/answer"
+).set({
+
+type:answer.type,
+
+sdp:answer.sdp
+
+});
+
+
+setVoiceStatus(
+"🟡 Connecting voice..."
+);
+
+}catch(error){
+
+console.error(
+"Offer error:",
+error
+);
+
+setVoiceStatus(
+"🔴 Voice connection error"
+);
+
+}
+
+};
+
+
+offerRef.on(
+"value",
+offerCallback
+);
+
+
+voiceListeners.push({
+
+ref:offerRef,
+
+event:"value",
+
+callback:offerCallback
+
+});
+
+}
+
+
+listenForRemoteCandidates();
+
+
+}catch(error){
+
+console.error(
+"Voice chat error:",
+error
+);
+
+
+voiceStarted=false;
+
+setVoiceButtons(false);
+
+
+if(localStream){
+
+localStream
+.getTracks()
+.forEach(track=>track.stop());
+
+localStream=null;
+
+}
+
+
+if(peerConnection){
+
+try{
+
+peerConnection.close();
+
+}catch(error){}
+
+peerConnection=null;
+
+}
+
+
+setVoiceStatus(
+"🔴 Microphone access failed"
+);
+
+
+alert(
+"Could not access your microphone. Please allow microphone access in your browser."
+);
+
+}
+
+}
+
+
+
+function toggleMute(){
+
+if(!localStream)
+return;
+
+
+const audioTracks=
+localStream.getAudioTracks();
+
+
+if(audioTracks.length===0)
+return;
+
+
+const currentlyEnabled=
+audioTracks[0].enabled;
+
+
+audioTracks.forEach(track=>{
+
+track.enabled=
+!currentlyEnabled;
+
+});
+
+
+const button=
+document.getElementById(
+"voiceMuteBtn"
+);
+
+
+if(currentlyEnabled){
+
+button.innerHTML=
+"🔊 Unmute";
+
+setVoiceStatus(
+"🔇 Microphone muted"
+);
+
+}else{
+
+button.innerHTML=
+"🔇 Mute";
+
+setVoiceStatus(
+"🟢 Voice connected"
+);
+
+}
+
+}
+
+
+
+async function endVoiceChat(){
+
+removeVoiceListeners();
+
+
+if(localStream){
+
+localStream
+.getTracks()
+.forEach(track=>track.stop());
+
+localStream=null;
+
+}
+
+
+if(peerConnection){
+
+try{
+
+peerConnection.close();
+
+}catch(error){}
+
+peerConnection=null;
+
+}
+
+
+pendingRemoteCandidates=[];
+
+remoteDescriptionReady=false;
+
+
+if(remoteAudio){
+
+remoteAudio.srcObject=null;
+
+remoteAudio.remove();
+
+remoteAudio=null;
+
+}
+
+
+if(gameRef){
+
+try{
+
+await gameRef
+.child("voice")
+.remove();
+
+}catch(error){
+
+console.error(
+"Could not clear voice data:",
+error
+);
+
+}
+
+}
+
+
+voiceStarted=false;
+
+setVoiceButtons(false);
+
+setVoiceStatus(
+"🔴 Voice chat is off"
+);
+
+}
+
+
+
+/* Watch for voice ending */
+
+function watchForVoiceEnd(){
+
+if(!gameRef)
+return;
+
+
+const voiceRef=
+gameRef.child("voice");
+
+
+let voiceWasPresent=false;
+
+
+const callback=snapshot=>{
+
+if(snapshot.exists()){
+
+voiceWasPresent=true;
+
+return;
+
+}
+
+
+if(
+voiceWasPresent &&
+voiceStarted
+){
+
+removeVoiceListeners();
+
+
+if(localStream){
+
+localStream
+.getTracks()
+.forEach(track=>track.stop());
+
+localStream=null;
+
+}
+
+
+if(peerConnection){
+
+try{
+
+peerConnection.close();
+
+}catch(error){}
+
+peerConnection=null;
+
+}
+
+
+pendingRemoteCandidates=[];
+
+remoteDescriptionReady=false;
+
+
+if(remoteAudio){
+
+remoteAudio.srcObject=null;
+
+remoteAudio.remove();
+
+remoteAudio=null;
+
+}
+
+
+voiceStarted=false;
+
+setVoiceButtons(false);
+
+setVoiceStatus(
+"🔴 Other player ended voice chat"
+);
+
+}
+
+};
+
+
+voiceRef.on(
+"value",
+callback
+);
+
+
+voiceListeners.push({
+
+ref:voiceRef,
+
+event:"value",
+
+callback:callback
+
+});
+
+}
+
+
+
+/* Browser closing */
+
+window.addEventListener(
+"beforeunload",
+()=>{
+
+if(localStream){
+
+localStream
+.getTracks()
+.forEach(track=>track.stop());
+
+}
+
+
+if(peerConnection){
+
+try{
+
+peerConnection.close();
+
+}catch(error){}
+
+}
+
+});
 
 
 </script>
