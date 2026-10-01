@@ -1982,6 +1982,345 @@ firebase.initializeApp(firebaseConfig);
 
 const db=firebase.database();
 
+
+/* =========================================
+   BUILT-IN BUILDVA SOUND SYSTEM
+   No MP3 files required.
+========================================= */
+
+let buildvaAudioContext=null;
+
+let soundEnabled=true;
+
+let winnerSoundPlayed=false;
+
+
+function getAudioContext(){
+
+if(!soundEnabled)
+return null;
+
+
+if(!buildvaAudioContext){
+
+const AudioContext=
+window.AudioContext ||
+window.webkitAudioContext;
+
+
+if(!AudioContext)
+return null;
+
+
+buildvaAudioContext=
+new AudioContext();
+
+}
+
+
+if(
+buildvaAudioContext.state==="suspended"
+){
+
+buildvaAudioContext.resume()
+.catch(()=>{});
+
+}
+
+
+return buildvaAudioContext;
+
+}
+
+
+
+function playTone(
+frequency,
+duration=0.08,
+type="sine",
+volume=0.045,
+delay=0
+){
+
+const ctx=
+getAudioContext();
+
+
+if(!ctx)
+return;
+
+
+try{
+
+const oscillator=
+ctx.createOscillator();
+
+const gain=
+ctx.createGain();
+
+
+oscillator.type=
+type;
+
+oscillator.frequency.setValueAtTime(
+frequency,
+ctx.currentTime+delay
+);
+
+
+gain.gain.setValueAtTime(
+0.0001,
+ctx.currentTime+delay
+);
+
+
+gain.gain.exponentialRampToValueAtTime(
+volume,
+ctx.currentTime+delay+0.01
+);
+
+
+gain.gain.exponentialRampToValueAtTime(
+0.0001,
+ctx.currentTime+delay+duration
+);
+
+
+oscillator.connect(gain);
+
+gain.connect(ctx.destination);
+
+
+oscillator.start(
+ctx.currentTime+delay
+);
+
+
+oscillator.stop(
+ctx.currentTime+delay+duration+0.02
+);
+
+
+}catch(error){
+
+console.warn(
+"Buildva sound error:",
+error
+);
+
+}
+
+}
+
+
+
+function soundClick(){
+
+playTone(
+520,
+0.055,
+"sine",
+0.035
+);
+
+}
+
+
+
+function soundCorrect(){
+
+playTone(
+660,
+0.07,
+"sine",
+0.045
+);
+
+playTone(
+880,
+0.11,
+"sine",
+0.04,
+0.055
+);
+
+}
+
+
+
+function soundWrong(){
+
+playTone(
+180,
+0.12,
+"sawtooth",
+0.035
+);
+
+}
+
+
+
+function soundCountdown(){
+
+playTone(
+520,
+0.12,
+"sine",
+0.045
+);
+
+}
+
+
+
+function soundGo(){
+
+playTone(
+660,
+0.10,
+"sine",
+0.05
+);
+
+playTone(
+990,
+0.18,
+"sine",
+0.055,
+0.08
+);
+
+}
+
+
+
+function soundWinner(){
+
+playTone(
+523,
+0.13,
+"sine",
+0.055
+);
+
+playTone(
+659,
+0.13,
+"sine",
+0.055,
+0.12
+);
+
+playTone(
+784,
+0.18,
+"sine",
+0.06,
+0.24
+);
+
+playTone(
+1047,
+0.30,
+"sine",
+0.06,
+0.40
+);
+
+}
+
+
+
+function soundPlayAgain(){
+
+playTone(
+440,
+0.08,
+"sine",
+0.04
+);
+
+playTone(
+660,
+0.12,
+"sine",
+0.045,
+0.08
+);
+
+}
+
+
+
+function soundLeave(){
+
+playTone(
+440,
+0.08,
+"sine",
+0.035
+);
+
+playTone(
+300,
+0.14,
+"sine",
+0.035,
+0.08
+);
+
+}
+
+
+
+function soundVoice(){
+
+playTone(
+600,
+0.07,
+"sine",
+0.035
+);
+
+playTone(
+800,
+0.10,
+"sine",
+0.04,
+0.07
+);
+
+}
+
+
+
+function soundMute(){
+
+playTone(
+350,
+0.09,
+"sine",
+0.035
+);
+
+}
+
+
+
+function soundError(){
+
+playTone(
+220,
+0.10,
+"sawtooth",
+0.035
+);
+
+}
+
+
+
 /* =========================================
    ANONYMOUS AUTHENTICATION
    SAFE INITIALIZATION
@@ -2014,15 +2353,6 @@ auth.onAuthStateChanged(user=>{
 
 });
 
-
-/*
-   Start anonymous authentication in the background.
-
-   IMPORTANT:
-   We do NOT make the game wait for authentication yet.
-   This prevents authentication problems from making
-   the existing game buttons stop working.
-*/
 
 auth.signInAnonymously()
 .catch(error=>{
@@ -2210,6 +2540,9 @@ return code;
 
 async function createGame(){
 
+soundClick();
+
+
 let size=
 document.querySelector(
 'input[name="gameSize"]:checked'
@@ -2246,6 +2579,8 @@ shuffle(board);
 
 
 
+try{
+
 await gameRef.set({
 
 maxNumber:TOTAL_NUMBERS,
@@ -2278,7 +2613,24 @@ lastLeft:null
 });
 
 
+soundCorrect();
+
 openGame();
+
+}catch(error){
+
+soundError();
+
+console.error(
+"Buildva create game error:",
+error
+);
+
+alert(
+"Could not create the game. Please try again."
+);
+
+}
 
 }
 
@@ -2287,6 +2639,9 @@ openGame();
 /* JOIN GAME */
 
 async function joinGame(){
+
+soundClick();
+
 
 let code=
 document
@@ -2298,6 +2653,8 @@ document
 
 if(!code){
 
+soundError();
+
 document.getElementById("status")
 .innerHTML=
 "⚠️ Enter a game code.";
@@ -2308,6 +2665,8 @@ return;
 
 
 if(code.length!==6){
+
+soundError();
 
 document.getElementById("status")
 .innerHTML=
@@ -2325,11 +2684,15 @@ gameRef=
 db.ref("games/"+gameCode);
 
 
+try{
+
 let snap=
 await gameRef.once("value");
 
 
 if(!snap.exists()){
+
+soundError();
 
 document.getElementById("status")
 .innerHTML=
@@ -2340,7 +2703,24 @@ return;
 }
 
 
+soundCorrect();
+
 openGame();
+
+}catch(error){
+
+soundError();
+
+console.error(
+"Buildva join game error:",
+error
+);
+
+document.getElementById("status")
+.innerHTML=
+"⚠️ Could not join the game. Please try again.";
+
+}
 
 }
 
@@ -2542,6 +2922,9 @@ badge.remove();
 
 async function copyGameCode(){
 
+soundClick();
+
+
 if(!gameCode)
 return;
 
@@ -2596,6 +2979,9 @@ setLobbyMessage(
 /* SHARE GAME */
 
 async function shareGame(){
+
+soundClick();
+
 
 if(!gameCode)
 return;
@@ -2704,6 +3090,9 @@ waiting.innerHTML=
 
 async function assignMe(){
 
+soundClick();
+
+
 if(
 !gameRef ||
 !gameCode
@@ -2736,6 +3125,8 @@ document.getElementById(
 
 if(!name){
 
+soundError();
+
 alert(
 "Please enter your name"
 );
@@ -2760,6 +3151,8 @@ currentGame.players.player1.playerId
 
 playerNumber=1;
 
+soundCorrect();
+
 if(status){
 
 status.innerHTML=
@@ -2781,6 +3174,8 @@ currentGame.players.player2.playerId
 ){
 
 playerNumber=2;
+
+soundCorrect();
 
 if(status){
 
@@ -2939,6 +3334,8 @@ assignedSlot=2;
 
 else{
 
+soundError();
+
 if(status){
 
 status.innerHTML=
@@ -2953,6 +3350,8 @@ return;
 }
 
 }else{
+
+soundError();
 
 if(status){
 
@@ -3065,6 +3464,9 @@ name
 );
 
 
+soundCorrect();
+
+
 if(status){
 
 status.innerHTML=
@@ -3090,6 +3492,8 @@ updateLobbyPlayers();
 
 
 }catch(error){
+
+soundError();
 
 console.error(
 "Buildva player assignment error:",
@@ -3328,6 +3732,8 @@ renderCountdownNumber(
 secondsLeft
 );
 
+soundCountdown();
+
 return;
 
 }
@@ -3338,6 +3744,8 @@ if(elapsed<4000){
 renderCountdownNumber(
 "GO!"
 );
+
+soundGo();
 
 return;
 
@@ -3716,6 +4124,32 @@ if(!playerNumber)
 return;
 
 
+if(
+!currentGame ||
+!currentGame.started ||
+currentGame.finished
+){
+
+return;
+
+}
+
+
+/* IMMEDIATE LOCAL FEEDBACK */
+
+if(
+num!==currentGame.target
+){
+
+soundWrong();
+
+}else{
+
+soundClick();
+
+}
+
+
 await gameRef.transaction(
 game=>{
 
@@ -3839,6 +4273,15 @@ title="Draw Game!";
 }
 
 
+if(!winnerSoundPlayed){
+
+soundWinner();
+
+winnerSoundPlayed=true;
+
+}
+
+
 document.querySelector(
 "#winnerPopup .winner-icon"
 ).textContent=
@@ -3893,10 +4336,16 @@ document.getElementById(
 
 async function playAgain(){
 
+soundPlayAgain();
+
+
 document.getElementById(
 "winnerPopup"
 ).style.display=
 "none";
+
+
+winnerSoundPlayed=false;
 
 
 let board=[];
@@ -3950,6 +4399,9 @@ gameStarted=false;
 /* LEAVE GAME */
 
 async function leaveGame(){
+
+soundLeave();
+
 
 if(
 !gameRef ||
@@ -4159,6 +4611,9 @@ document.getElementById(
 
 function closeWinnerPopup(){
 
+soundClick();
+
+
 document.getElementById(
 "winnerPopup"
 ).style.display=
@@ -4171,6 +4626,9 @@ document.getElementById(
 /* DARK MODE */
 
 function toggleDark(){
+
+soundClick();
+
 
 document.body.classList.toggle(
 "dark"
@@ -4590,6 +5048,9 @@ remoteAudio.play()
 }
 
 
+soundVoice();
+
+
 setVoiceStatus(
 "🟢 Voice connected"
 );
@@ -4646,6 +5107,8 @@ peerConnection.connectionState;
 
 if(state==="connected"){
 
+soundVoice();
+
 setVoiceStatus(
 "🟢 Voice connected"
 );
@@ -4676,6 +5139,8 @@ else if(
 state==="failed"
 ){
 
+soundError();
+
 setVoiceStatus(
 "🔴 Voice connection failed"
 );
@@ -4690,10 +5155,15 @@ setVoiceStatus(
 
 async function startVoiceChat(){
 
+soundVoice();
+
+
 if(
 !gameRef ||
 !gameCode
 ){
+
+soundError();
 
 alert(
 "Please join a game first."
@@ -4705,6 +5175,8 @@ return;
 
 
 if(!playerNumber){
+
+soundError();
 
 alert(
 "Please choose Player 1 or Player 2 first."
@@ -4721,6 +5193,8 @@ if(
 !currentGame.players.player1 ||
 !currentGame.players.player2
 ){
+
+soundError();
 
 alert(
 "Both players must join the game before starting voice chat."
@@ -4739,6 +5213,8 @@ if(
 !navigator.mediaDevices ||
 !navigator.mediaDevices.getUserMedia
 ){
+
+soundError();
 
 alert(
 "Voice chat needs a secure website (HTTPS or localhost) and a browser with microphone support."
@@ -5015,6 +5491,8 @@ listenForRemoteCandidates();
 
 }catch(error){
 
+soundError();
+
 console.error(
 "Voice chat error:",
 error
@@ -5068,6 +5546,9 @@ alert(
 
 
 function toggleMute(){
+
+soundMute();
+
 
 if(!localStream)
 return;
@@ -5127,6 +5608,9 @@ setVoiceStatus(
 
 
 async function endVoiceChat(){
+
+soundVoice();
+
 
 removeVoiceListeners();
 
@@ -5236,6 +5720,9 @@ if(
 voiceWasPresent &&
 voiceStarted
 ){
+
+soundVoice();
+
 
 removeVoiceListeners();
 
