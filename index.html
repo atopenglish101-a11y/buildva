@@ -598,6 +598,8 @@ body.dark .status-pill{background:#064e3b;color:#a7f3d0;}
 body.dark .game-code-box{background:#172554;border-color:#1e40af;}
 .game-code{font-size:26px;font-weight:900;letter-spacing:.14em;color:var(--brand);}
 body.dark .game-code{color:#93c5fd;}
+.game-code-notice{display:block;width:100%;margin:-6px 0 15px;padding:11px 14px;border-radius:11px;background:#fef3c7;border:1px solid #fcd34d;color:#92400e;font-size:13px;font-weight:800;line-height:1.4;text-align:center;}
+body.dark .game-code-notice{background:#451a03;border-color:#92400e;color:#fde68a;}
 .code-actions{display:flex;gap:7px;flex-wrap:wrap;}
 .small-btn{padding:9px 12px;border-radius:8px;border:none;background:#e2e8f0;color:#0f172a;font-weight:700;cursor:pointer;}
 body.dark .small-btn{background:#334155;color:#f8fafc;}
@@ -841,11 +843,12 @@ body.dark .final-score .final-player{background:#111827;}
   </div>
 
   <div class="setup-card">
-    <p><b>Choose your player</b></p>
+    <p><b>👤 Join the game</b></p>
+    <p style="margin-top:0;color:var(--muted);font-size:13px;">Enter your name and Buildva will automatically assign you the first available player slot.</p>
     <input id="playerName" placeholder="Your name" maxlength="20" autocomplete="name" style="padding:12px;width:min(100%,280px);">
     <br><br>
-    <button class="player-btn" onclick="choosePlayer(1)">👤 Player 1</button>
-    <button class="player-btn" onclick="choosePlayer(2)">👤 Player 2</button>
+    <button id="assignMeBtn" class="player-btn" onclick="assignMe()">🎯 Assign Me</button>
+    <p id="assignmentStatus"></p>
     <p id="waiting"><span class="status-pill">🟡 Waiting for another player…</span></p>
   </div>
 
@@ -1607,146 +1610,164 @@ function setLobbyMessage(message){
   },2200);
 }
 
-async function choosePlayer(number){
-
-
-
-let name=document
-
-.getElementById("playerName")
-
-.value
-
-.trim();
-
-
-
-
-
-
-if(!name){
-
-
-
-alert("Please enter your name");
-
-
-
-return;
-
-
-
-}
-
-
-
-
-
-
-
-playerNumber=number;
-
-
-
-
-
-
-// Save BOTH game and player
-
-
-localStorage.setItem(
-
-"buildvaGameCode",
-
-gameCode
-
-);
-
-
-
-localStorage.setItem(
-
-"buildvaPlayerNumber",
-
-number
-
-);
-
-
-
-
-
-
-
-let path="players/player"+number;
-
-
-
-
-
-
-await gameRef.child(path).set({
-
-
-
-name:name,
-
-
-ready:true
-
-
-
-});
-
-
-
-
-
-}
-
-function startCountdown(){
-
-  if(currentGame && currentGame.started) return;
-
-  gameStarted=true;
-
-  let count=3;
-  const popup=document.getElementById("startCountdownPopup");
-  const numberEl=document.getElementById("countdownPopupNumber");
-
-  function showCount(value){
-    if(numberEl){
-      numberEl.textContent=value;
-      numberEl.style.animation="none";
-      void numberEl.offsetWidth;
-      numberEl.style.animation="countdownPulse .7s ease-in-out";
-    }
-    if(popup) popup.style.display="grid";
+async function assignMe(){
+
+  if(!gameRef || !gameCode) return;
+
+  const nameInput=document.getElementById("playerName");
+  const name=(nameInput.value || "").trim();
+  const status=document.getElementById("assignmentStatus");
+  const button=document.getElementById("assignMeBtn");
+
+  if(!name){
+    alert("Please enter your name");
+    nameInput.focus();
+    return;
   }
 
-  showCount(count);
+  if(playerNumber && currentGame && currentGame.players && currentGame.players["player"+playerNumber]){
+    if(status) status.innerHTML='<span class="status-pill">🟢 You are Player '+playerNumber+'</span>';
+    return;
+  }
 
-  const timer=setInterval(()=>{
-    count--;
+  if(button){
+    button.disabled=true;
+    button.textContent="⏳ Assigning…";
+  }
+  if(status) status.innerHTML='<span class="status-pill">🔄 Finding an available player slot…</span>';
 
-    if(count>0){
-      showCount(count);
-    }else{
-      clearInterval(timer);
+  let assignedSlot=null;
+  const normalizedName=name.toLowerCase();
 
-      showCount("GO!");
+  try{
+    const result=await gameRef.transaction(game=>{
+      if(!game) return game;
+      if(!game.players) game.players={player1:false,player2:false};
 
-      gameRef.update({started:true});
+      const p1=game.players.player1;
+      const p2=game.players.player2;
 
-      setTimeout(()=>{
-        if(popup) popup.style.display="none";
-        if(numberEl) numberEl.textContent="3";
-      },850);
+      // Never allow the same name to appear in both player slots.
+      if((p1 && (p1.name || "").trim().toLowerCase()===normalizedName) ||
+         (p2 && (p2.name || "").trim().toLowerCase()===normalizedName)){
+        return;
+      }
+
+      // Atomically reserve the first free slot.
+      if(!p1){
+        game.players.player1={name:name,ready:true};
+        return game;
+      }
+      if(!p2){
+        game.players.player2={name:name,ready:true};
+        return game;
+      }
+
+      return;
+    });
+
+    if(!result.committed){
+      const latest=(await gameRef.once("value")).val();
+      if(latest && latest.players && latest.players.player1 && latest.players.player2){
+        if(status) status.innerHTML='<span class="status-pill">🔴 Both player slots are already taken.</span>';
+      }else{
+        if(status) status.innerHTML='<span class="status-pill">⚠️ That name is already being used.</span>';
+      }
+      return;
     }
-  },1000);
+
+    const saved=result.snapshot.val();
+    if(saved && saved.players){
+      if(saved.players.player1 && saved.players.player1.name===name) assignedSlot=1;
+      if(saved.players.player2 && saved.players.player2.name===name) assignedSlot=2;
+    }
+
+    // Determine the assigned slot from the saved game state.
+    if(!assignedSlot){
+      if(saved.players.player1 && saved.players.player1.name===name) assignedSlot=1;
+      else if(saved.players.player2 && saved.players.player2.name===name) assignedSlot=2;
+    }
+
+    if(!assignedSlot) throw new Error("Could not determine assigned player slot.");
+
+    playerNumber=assignedSlot;
+    localStorage.setItem("buildvaGameCode",gameCode);
+    localStorage.setItem("buildvaPlayerNumber",String(assignedSlot));
+    localStorage.setItem("buildvaPlayerName",name);
+
+    if(status) status.innerHTML='<span class="status-pill">🟢 You are Player '+assignedSlot+'</span>';
+    if(button){
+      button.textContent="✅ Player "+assignedSlot;
+    }
+
+    updateLobbyPlayers();
+
+  }catch(error){
+    console.error("Buildva player assignment error:",error);
+    if(status) status.innerHTML='<span class="status-pill">⚠️ Assignment failed. Please try again.</span>';
+  }finally{
+    if(button && !playerNumber) button.disabled=false;
+  }
 }
 
+// Kept for compatibility with any older saved page state.
+async function choosePlayer(number){
+  return assignMe();
+}
 
+let countdownTimer=null;
+
+function hideStartCountdown(){
+  const popup=document.getElementById("startCountdownPopup");
+  if(popup) popup.style.display="none";
+  if(countdownTimer){clearInterval(countdownTimer);countdownTimer=null;}
+}
+
+function renderCountdownNumber(value){
+  const popup=document.getElementById("startCountdownPopup");
+  const numberEl=document.getElementById("countdownPopupNumber");
+  if(!popup || !numberEl) return;
+  numberEl.textContent=value;
+  numberEl.style.animation="none";
+  void numberEl.offsetWidth;
+  numberEl.style.animation="countdownPulse .7s ease-in-out";
+  popup.style.display="grid";
+}
+
+async function startCountdown(){
+  if(!gameRef || !currentGame || currentGame.started) return;
+  if(!currentGame.countdownStartedAt){
+    try{
+      await gameRef.transaction(game=>{
+        if(!game || game.started) return game;
+        if(!game.countdownStartedAt){
+          game.countdown=true;
+          game.countdownStartedAt=firebase.database.ServerValue.TIMESTAMP;
+        }
+        return game;
+      });
+    }catch(error){console.error("Buildva countdown start error:",error);}
+  }
+  syncCountdown();
+}
+
+function syncCountdown(){
+  if(!currentGame || currentGame.started){hideStartCountdown();return;}
+  if(!currentGame.countdownStartedAt) return;
+  if(countdownTimer) clearInterval(countdownTimer);
+  const startedAt=Number(currentGame.countdownStartedAt);
+  const tick=()=>{
+    if(!currentGame || currentGame.started){hideStartCountdown();return;}
+    const elapsed=Date.now()-startedAt;
+    const secondsLeft=3-Math.floor(elapsed/1000);
+    if(secondsLeft>=1){renderCountdownNumber(secondsLeft);return;}
+    if(elapsed<4000){renderCountdownNumber("GO!");return;}
+    hideStartCountdown();
+    if(gameRef) gameRef.update({started:true});
+  };
+  tick();
+  countdownTimer=setInterval(tick,100);
+}
 
 function updateScreen(){
 
@@ -1847,25 +1868,17 @@ document.getElementById("waiting").innerHTML="";
 
 
 
-if(!currentGame.started && !currentGame.countdown){
+if(!currentGame.started){
 
+  if(!currentGame.countdownStartedAt){
+    startCountdown();
+  }else{
+    syncCountdown();
+  }
 
-
-gameRef.update({
-
-countdown:true
-
-});
-
-
-
-startCountdown();
-
-
-
+}else{
+  hideStartCountdown();
 }
-
-
 
 
 renderBoard();
@@ -2283,6 +2296,7 @@ localStorage.removeItem("buildvaGameCode");
 
 
 localStorage.removeItem("buildvaPlayerNumber");
+localStorage.removeItem("buildvaPlayerName");
 
 
 
