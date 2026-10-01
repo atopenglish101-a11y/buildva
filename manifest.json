@@ -1,0 +1,23 @@
+{
+  "name": "Buildva - Picking Numbers",
+  "short_name": "Buildva",
+  "description": "A fast multiplayer number-picking game.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#eef4f8",
+  "theme_color": "#2563a8",
+  "icons": [
+    {
+      "src": "buildva-logo.png",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "buildva-favicon.png",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

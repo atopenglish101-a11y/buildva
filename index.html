@@ -8,6 +8,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="icon" type="image/png" href="buildva-favicon.png">
+<link rel="manifest" href="manifest.json">
+
+<meta name="theme-color" content="#2563a8">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Buildva">
+
+<link rel="apple-touch-icon" href="buildva-logo.png">
 <meta name="theme-color" content="#2563a8">
 <meta name="description" content="Buildva — a fast multiplayer number-picking game. Create a game, invite a player, and play together.">
 <meta property="og:title" content="Buildva - Picking Numbers">
@@ -5831,6 +5840,26 @@ peerConnection.close();
 
 });
 
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+
+    navigator.serviceWorker.register("./service-worker.js")
+      .then(registration => {
+        console.log(
+          "Buildva PWA service worker registered:",
+          registration.scope
+        );
+      })
+      .catch(error => {
+        console.error(
+          "Buildva PWA service worker registration failed:",
+          error
+        );
+      });
+
+  });
+}
 
 </script>
 
