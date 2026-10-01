@@ -1961,6 +1961,8 @@ style="display:none">
 
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+
 
 <script>
 
@@ -1980,6 +1982,58 @@ firebase.initializeApp(firebaseConfig);
 
 
 const db=firebase.database();
+
+/* =========================================
+   ANONYMOUS AUTHENTICATION
+   SAFE INITIALIZATION
+========================================= */
+
+const auth=firebase.auth();
+
+let myAuthUser=null;
+
+auth.onAuthStateChanged(user=>{
+
+  if(user){
+
+    myAuthUser=user;
+
+    console.log(
+      "Buildva Anonymous Authentication ready:",
+      user.uid
+    );
+
+  }else{
+
+    myAuthUser=null;
+
+    console.log(
+      "Buildva: No authenticated user yet."
+    );
+
+  }
+
+});
+
+
+/*
+   Start anonymous authentication in the background.
+
+   IMPORTANT:
+   We do NOT make the game wait for authentication yet.
+   This prevents authentication problems from making
+   the existing game buttons stop working.
+*/
+
+auth.signInAnonymously()
+.catch(error=>{
+
+  console.error(
+    "Buildva Anonymous Authentication error:",
+    error
+  );
+
+});
 
 
 
