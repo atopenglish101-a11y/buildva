@@ -1960,6 +1960,7 @@ style="display:none">
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
 
 
@@ -1967,57 +1968,70 @@ style="display:none">
 
 
 const firebaseConfig = {
-
-apiKey:"AIzaSyDU7o7f1-xdxatIP9rwWmthgMdz-maAlSU",
-
-authDomain:"buildva-9767b.firebaseapp.com",
-
-projectId:"buildva-9767b",
-
-storageBucket:"buildva-9767b.firebasestorage.app",
-
-messagingSenderId:"13159875709",
-
-appId:"1:13159875709:web:5599420e2907eb7c429d14",
-
-databaseURL:"https://buildva-9767b-default-rtdb.firebaseio.com/"
-
+  apiKey: "AIzaSyDUo7f1j-xdxatIP9rwWmthgMdz-maAlSU",
+  authDomain: "buildva-9767b.firebaseapp.com",
+  databaseURL: "https://buildva-9767b-default-rtdb.firebaseio.com",
+  projectId: "buildva-9767b",
+  storageBucket: "buildva-9767b.firebasestorage.app",
+  messagingSenderId: "13159875709",
+  appId: "1:13159875709:web:5599420e2907eb7c429d14"
 };
-
 
 firebase.initializeApp(firebaseConfig);
 
 
 const db=firebase.database();
+
+/* =========================================
+   ANONYMOUS AUTHENTICATION
+   SAFE INITIALIZATION
+========================================= */
+
 const auth=firebase.auth();
 
-let myPlayerId=null;
-let authReadyPromise=null;
-
-function ensureAuth(){
-  if(auth.currentUser){
-    myPlayerId=auth.currentUser.uid;
-    return Promise.resolve(auth.currentUser);
-  }
-
-  if(!authReadyPromise){
-    authReadyPromise=auth.signInAnonymously().then(userCredential=>{
-      myPlayerId=userCredential.user.uid;
-      return userCredential.user;
-    });
-  }
-
-  return authReadyPromise;
-}
+let myAuthUser=null;
 
 auth.onAuthStateChanged(user=>{
-  myPlayerId=user ? user.uid : null;
+
+  if(user){
+
+    myAuthUser=user;
+
+    console.log(
+      "Buildva Anonymous Authentication ready:",
+      user.uid
+    );
+
+  }else{
+
+    myAuthUser=null;
+
+    console.log(
+      "Buildva: No authenticated user yet."
+    );
+
+  }
+
 });
 
-ensureAuth().catch(error=>{
-  console.error("Buildva authentication failed:",error);
-  const status=document.getElementById("status");
-  if(status) status.innerHTML="❌ Could not connect securely. Please refresh the page.";
+
+/*
+   Start anonymous authentication in the background.
+
+   IMPORTANT:
+   We do NOT make the game wait for authentication yet.
+   This prevents authentication problems from making
+   the existing game buttons stop working.
+*/
+
+auth.signInAnonymously()
+.catch(error=>{
+
+  console.error(
+    "Buildva Anonymous Authentication error:",
+    error
+  );
+
 });
 
 
@@ -2096,14 +2110,45 @@ let leavingGame=false;
 
 
 
-/* SECURE PLAYER ID
-   Firebase Anonymous Authentication gives each browser a Firebase UID.
-   This replaces the old editable localStorage player ID.
-*/
+/* UNIQUE PLAYER ID */
 
 function getPlayerId(){
-  return myPlayerId || (auth.currentUser ? auth.currentUser.uid : null);
+
+let id=
+localStorage.getItem(
+"buildvaPlayerId"
+);
+
+
+if(!id){
+
+id=
+"player_"+
+
+Date.now().toString(36)+
+
+"_"+
+
+Math.random()
+.toString(36)
+.substring(2,12);
+
+
+localStorage.setItem(
+"buildvaPlayerId",
+id
+);
+
 }
+
+
+return id;
+
+}
+
+
+const myPlayerId=
+getPlayerId();
 
 
 
@@ -2164,8 +2209,6 @@ return code;
 /* CREATE GAME */
 
 async function createGame(){
-
-await ensureAuth();
 
 let size=
 document.querySelector(
@@ -2244,8 +2287,6 @@ openGame();
 /* JOIN GAME */
 
 async function joinGame(){
-
-await ensureAuth();
 
 let code=
 document
@@ -2662,8 +2703,6 @@ waiting.innerHTML=
 /* PLAYER ASSIGNMENT */
 
 async function assignMe(){
-
-await ensureAuth();
 
 if(
 !gameRef ||
@@ -3085,8 +3124,6 @@ button.textContent=
 
 async function choosePlayer(number){
 
-await ensureAuth();
-
 return assignMe();
 
 }
@@ -3167,8 +3204,6 @@ popup.style.display="grid";
 
 
 async function startCountdown(){
-
-await ensureAuth();
 
 if(
 !gameRef ||
@@ -3659,8 +3694,6 @@ button
 
 async function pickNumber(num){
 
-await ensureAuth();
-
 if(!playerNumber){
 
 let savedPlayer=
@@ -3860,8 +3893,6 @@ document.getElementById(
 
 async function playAgain(){
 
-await ensureAuth();
-
 document.getElementById(
 "winnerPopup"
 ).style.display=
@@ -3919,8 +3950,6 @@ gameStarted=false;
 /* LEAVE GAME */
 
 async function leaveGame(){
-
-await ensureAuth();
 
 if(
 !gameRef ||
