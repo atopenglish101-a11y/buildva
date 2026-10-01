@@ -634,6 +634,42 @@ body.dark .you-badge{background:#1e3a8a;color:#bfdbfe;}
 .voice-dot{width:8px;height:8px;border-radius:50%;background:#94a3b8;}
 .voice-live.on .voice-dot{background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.15);}
 
+/* Start countdown popup */
+#startCountdownPopup{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.68);
+  backdrop-filter:blur(5px);
+  -webkit-backdrop-filter:blur(5px);
+  z-index:4000;
+  place-items:center;
+  padding:20px;
+}
+.countdown-card{
+  width:min(88vw,360px);
+  text-align:center;
+  padding:30px 22px;
+  border-radius:24px;
+  background:white;
+  border:1px solid rgba(255,255,255,.7);
+  box-shadow:0 18px 60px rgba(0,0,0,.35);
+  animation:countdownPop .28s ease-out;
+}
+body.dark .countdown-card{background:#172033;color:#f8fafc;border-color:#334155;}
+.countdown-kicker{font-size:13px;font-weight:900;letter-spacing:.14em;color:var(--brand);}
+#countdownPopupNumber{
+  font-size:clamp(82px,20vw,120px);
+  line-height:.95;
+  font-weight:1000;
+  color:var(--brand);
+  margin:10px 0;
+  animation:countdownPulse .7s ease-in-out;
+}
+.countdown-text{font-size:16px;font-weight:700;color:var(--muted);}
+@keyframes countdownPop{from{opacity:0;transform:scale(.78)}to{opacity:1;transform:scale(1)}}
+@keyframes countdownPulse{0%{transform:scale(.7);opacity:.3}55%{transform:scale(1.08);opacity:1}100%{transform:scale(1)}}
+
 #winnerPopup{width:min(92vw,430px);padding:28px 22px;border:1px solid var(--border);}
 .winner-icon{font-size:52px;}
 .winner-title{font-size:30px;font-weight:900;margin:7px 0;}
@@ -680,8 +716,6 @@ body.dark .final-score .final-player{background:#111827;}
   .size-options{grid-template-columns:1fr;}
 }
 
-
-.auto-assign-box{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}.auto-assign-help{font-size:12px;color:var(--muted);}.live-lobby{display:inline-flex;align-items:center;gap:6px;margin:8px 0 0;padding:5px 9px;border-radius:999px;background:#eff6ff;color:#1d4ed8;font-size:11px;font-weight:900;}.live-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.12);}body.dark .live-lobby{background:#172554;color:#bfdbfe;}
 
 /* Firebase connection health indicator */
 .firebase-health{display:inline-flex;align-items:center;gap:7px;margin-top:7px;padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.16);color:#fff;font-size:11px;font-weight:800;letter-spacing:.02em;}
@@ -792,6 +826,8 @@ body.dark .final-score .final-player{background:#111827;}
     </div>
   </div>
 
+  <div id="gameCodeNotice" class="game-code-notice">📢 Share this 6-character game code with your opponent so they can join.</div>
+
   <h3>👥 Players</h3>
   <div class="player-cards">
     <div class="player-card" id="lobbyPlayer1">
@@ -803,7 +839,6 @@ body.dark .final-score .final-player{background:#111827;}
       <div class="player-info"><div class="player-name">Player 2</div><div class="player-state">Waiting to join…</div></div>
     </div>
   </div>
-  <div id="liveLobby" class="live-lobby"><span class="live-dot"></span><span id="liveLobbyText">Live lobby • 0/2 connected</span></div>
 
   <div class="setup-card">
     <p><b>Choose your player</b></p>
@@ -811,8 +846,7 @@ body.dark .final-score .final-player{background:#111827;}
     <br><br>
     <button class="player-btn" onclick="choosePlayer(1)">👤 Player 1</button>
     <button class="player-btn" onclick="choosePlayer(2)">👤 Player 2</button>
-    <div class="auto-assign-box"><button class="main-btn success" onclick="autoAssignPlayer()">⚡ Auto Assign Me</button><span class="auto-assign-help">We will give you the first available player slot.</span></div>
-    <p id="waiting"><span class="status-pill">🟡 Enter your name, then choose a player or use Auto Assign.</span></p>
+    <p id="waiting"><span class="status-pill">🟡 Waiting for another player…</span></p>
   </div>
 
   <h2 id="countdown"></h2>
@@ -969,6 +1003,15 @@ Remaining:
 
 
 
+
+<!-- START COUNTDOWN POPUP -->
+<div id="startCountdownPopup" aria-live="assertive" aria-atomic="true">
+  <div class="countdown-card">
+    <div class="countdown-kicker">🎮 GET READY!</div>
+    <div id="countdownPopupNumber">3</div>
+    <div class="countdown-text">The game is starting…</div>
+  </div>
+</div>
 
 <!-- WINNER POPUP -->
 
@@ -1405,10 +1448,11 @@ localStorage.getItem("buildvaPlayerNumber");
 
 
 if(savedGame===gameCode && savedPlayer){
-  playerNumber=Number(savedPlayer);
-  const restoredRef=gameRef.child("players/player"+playerNumber);
-  restoredRef.update({connected:true,ready:true}).catch(()=>{});
-  try{ restoredRef.onDisconnect().update({connected:false,ready:false}); }catch(error){}
+
+
+playerNumber=Number(savedPlayer);
+
+
 }
 
 
@@ -1495,17 +1539,15 @@ updateScreen();
 
 function updateLobbyPlayers(){
   if(!currentGame || !currentGame.players) return;
-  let onlineCount=0;
   [1,2].forEach(n=>{
     const card=document.getElementById("lobbyPlayer"+n);
     if(!card) return;
     const player=currentGame.players["player"+n];
-    if(player && player.connected) onlineCount++;
     const nameEl=card.querySelector(".player-name");
     const stateEl=card.querySelector(".player-state");
     if(player){
       nameEl.textContent=player.name || ("Player "+n);
-      stateEl.textContent=player.connected ? (player.ready ? "🟢 Ready • Online" : "🟡 Joined • Online") : "⚪ Offline";
+      stateEl.textContent=(player.ready ? "🟢 Ready" : "🟡 Joined");
       if(playerNumber===n){
         if(!card.querySelector(".you-badge")){
           const badge=document.createElement("span");
@@ -1521,9 +1563,8 @@ function updateLobbyPlayers(){
       if(badge) badge.remove();
     }
   });
-  const liveText=document.getElementById("liveLobbyText");
-  if(liveText) liveText.textContent="Live lobby • "+onlineCount+"/2 connected";
 }
+
 async function copyGameCode(){
   if(!gameCode) return;
   try{
@@ -1542,8 +1583,7 @@ async function copyGameCode(){
 
 async function shareGame(){
   if(!gameCode) return;
-  const shareUrl=window.location.origin+window.location.pathname+"?game="+encodeURIComponent(gameCode);
-  const shareData={title:"Join my Buildva game",text:"Join my Buildva game with code: "+gameCode,url:shareUrl};
+  const shareData={title:"Join my Buildva game",text:"Join my Buildva game with code: "+gameCode,url:window.location.href};
   try{
     if(navigator.share){
       await navigator.share(shareData);
@@ -1568,121 +1608,147 @@ function setLobbyMessage(message){
 }
 
 async function choosePlayer(number){
-  const name=document.getElementById("playerName").value.trim();
-  if(!name){alert("Please enter your name");return;}
-  if(!gameRef||!gameCode){alert("Please create or join a game first.");return;}
-  const ref=gameRef.child("players/player"+number);
-  const snap=await ref.once("value");
-  if(snap.exists()&&snap.val()&&snap.val().name&&playerNumber!==number){alert("Player "+number+" is already taken. Use Auto Assign Me or choose the other player.");return;}
-  playerNumber=number;
-  localStorage.setItem("buildvaGameCode",gameCode);
-  localStorage.setItem("buildvaPlayerNumber",number);
-  await ref.set({name:name,ready:true,connected:true});
-  try{await ref.onDisconnect().update({connected:false,ready:false});}catch(error){}
-  setLobbyMessage("✅ You are Player "+number+".");
-}
-
-async function autoAssignPlayer(){
-  const name=document.getElementById("playerName").value.trim();
-  if(!name){alert("Please enter your name first.");return;}
-  if(!gameRef||!gameCode){alert("Please create or join a game first.");return;}
-  if(playerNumber){setLobbyMessage("✅ You are already Player "+playerNumber+".");return;}
-  for(const number of [1,2]){
-    const ref=gameRef.child("players/player"+number); let assigned=false;
-    const result=await ref.transaction(current=>{if(current===null||current===false){assigned=true;return {name:name,ready:true,connected:true};}return;});
-    if(assigned&&result.committed){
-      playerNumber=number;localStorage.setItem("buildvaGameCode",gameCode);localStorage.setItem("buildvaPlayerNumber",number);
-      try{await ref.onDisconnect().update({connected:false,ready:false});}catch(error){}
-      setLobbyMessage("⚡ Automatically assigned to Player "+number+".");return;
-    }
-  }
-  setLobbyMessage("❌ Both player slots are already occupied.");
-}
-
-function startCountdown(){
-
-
-if(currentGame.started)return;
-
-
-gameStarted=true;
-
-
-let count=3;
 
 
 
-document.getElementById("countdown").innerHTML=count;
+let name=document
+
+.getElementById("playerName")
+
+.value
+
+.trim();
 
 
 
 
-let timer=setInterval(()=>{
 
 
-count--;
+if(!name){
 
 
 
-if(count>0){
+alert("Please enter your name");
 
 
-document.getElementById("countdown").innerHTML=count;
+
+return;
+
 
 
 }
 
-else{
-
-
-clearInterval(timer);
 
 
 
-document.getElementById("countdown").innerHTML="🚀 GO!";
 
 
 
-gameRef.update({
+playerNumber=number;
 
-started:true
+
+
+
+
+
+// Save BOTH game and player
+
+
+localStorage.setItem(
+
+"buildvaGameCode",
+
+gameCode
+
+);
+
+
+
+localStorage.setItem(
+
+"buildvaPlayerNumber",
+
+number
+
+);
+
+
+
+
+
+
+
+let path="players/player"+number;
+
+
+
+
+
+
+await gameRef.child(path).set({
+
+
+
+name:name,
+
+
+ready:true
+
+
 
 });
 
 
 
-setTimeout(()=>{
-
-
-document.getElementById("countdown").innerHTML="";
-
-
-},1000);
-
 
 
 }
 
+function startCountdown(){
 
+  if(currentGame && currentGame.started) return;
 
-},1000);
+  gameStarted=true;
 
+  let count=3;
+  const popup=document.getElementById("startCountdownPopup");
+  const numberEl=document.getElementById("countdownPopupNumber");
 
+  function showCount(value){
+    if(numberEl){
+      numberEl.textContent=value;
+      numberEl.style.animation="none";
+      void numberEl.offsetWidth;
+      numberEl.style.animation="countdownPulse .7s ease-in-out";
+    }
+    if(popup) popup.style.display="grid";
+  }
 
+  showCount(count);
+
+  const timer=setInterval(()=>{
+    count--;
+
+    if(count>0){
+      showCount(count);
+    }else{
+      clearInterval(timer);
+
+      showCount("GO!");
+
+      gameRef.update({started:true});
+
+      setTimeout(()=>{
+        if(popup) popup.style.display="none";
+        if(numberEl) numberEl.textContent="3";
+      },850);
+    }
+  },1000);
 }
-
-
-
-
-
-
-
 
 
 
 function updateScreen(){
-  updateLobbyPlayers();
-
 
 
 
@@ -2209,8 +2275,9 @@ gameStarted=false;
 // LEAVE GAME
 
 
-async function leaveGame(){
-  if(gameRef&&playerNumber){try{await gameRef.child("players/player"+playerNumber).update({connected:false,ready:false});}catch(error){}}
+function leaveGame(){
+
+
 
 localStorage.removeItem("buildvaGameCode");
 
@@ -2303,19 +2370,12 @@ document.getElementById("winnerPopup").style.display="none";
 
 
 
-function loadSharedGame(){
-  const params=new URLSearchParams(window.location.search);
-  const code=(params.get("game")||"").trim().toUpperCase();
-  if(code.length===6){document.getElementById("gameCodeInput").value=code;document.getElementById("status").innerHTML="🔗 Shared game code loaded. Click Join Game.";}
-}
-
 function toggleDark(){
   document.body.classList.toggle("dark");
   localStorage.setItem("buildvaDark",document.body.classList.contains("dark") ? "1" : "0");
 }
 
 if(localStorage.getItem("buildvaDark")==="1") document.body.classList.add("dark");
-loadSharedGame();
 
 
 /* =========================================================
