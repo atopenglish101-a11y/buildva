@@ -24,72 +24,51 @@
 box-sizing:border-box;
 }
 
-
 body{
-
 margin:0;
 font-family:Arial,sans-serif;
 background:#eef4f8;
 color:#334155;
 padding-top:140px;
 transition:.3s;
-
 }
 
 
 /* DARK MODE */
 
 body.dark{
-
 background:#111827;
 color:#e5e7eb;
-
 }
-
 
 body.dark .panel,
 body.dark .score,
 body.dark .number{
-
 background:#1f2937;
 color:#e5e7eb;
-
 }
-
 
 body.dark .number:hover{
-
 background:#374151;
-
 }
-
 
 
 /* HEADER */
 
 header{
-
 position:fixed;
 top:0;
 left:0;
 right:0;
-
 background:#2563a8;
 color:white;
-
 text-align:center;
-
 padding:15px;
-
 z-index:1000;
-
 }
 
-
 header h1{
-
 margin:0;
-
 }
 
 .brand{
@@ -108,351 +87,186 @@ box-shadow:0 3px 10px rgba(0,0,0,.25);
 }
 
 @media(max-width:600px){
-  .brand{
-    gap:8px;
-  }
 
-  .buildva-logo{
-    width:48px;
-    height:48px;
-    border-radius:12px;
-  }
+.brand{
+gap:8px;
 }
 
+.buildva-logo{
+width:48px;
+height:48px;
+border-radius:12px;
+}
+
+}
 
 
 .mode-btn{
-
 position:absolute;
 right:15px;
 top:15px;
-
 background:#ffffff33;
-
 color:white;
-
 padding:8px 12px;
-
 }
-
 
 
 /* MAIN */
 
 .screen{
-
 max-width:1000px;
-
 margin:auto;
-
 padding:10px;
-
 }
-
-
-
 
 
 .panel{
-
 background:white;
-
 border-radius:14px;
-
 padding:15px;
-
 margin-bottom:15px;
-
 box-shadow:0 3px 10px rgba(0,0,0,.12);
-
 }
-
-
-
 
 
 /* BUTTONS */
 
-
 button{
-
 cursor:pointer;
-
 border:none;
-
 border-radius:8px;
-
 }
-
-
-
-
 
 .main-btn{
-
 background:#2563eb;
-
 color:white;
-
 padding:12px 20px;
-
 font-size:16px;
-
 }
-
-
-
-
 
 .player-btn{
-
 background:#10b981;
-
 color:white;
-
 padding:12px 20px;
-
 margin:5px;
-
 }
-
-
-
-
-
 
 
 /* SCORE */
 
-
 .scoreboard{
-
 display:flex;
-
 gap:10px;
-
 }
-
-
 
 .score{
-
 flex:1;
-
 background:white;
-
 border-radius:12px;
-
 padding:12px;
-
 text-align:center;
-
 font-size:20px;
-
 }
-
-
-
 
 
 /* TARGET */
 
-
 .target-panel{
-  position:sticky;
-  top:140px;
-  z-index:900;
+position:sticky;
+top:140px;
+z-index:900;
 }
 
 .target{
-
 background:#facc15;
-
 padding:10px 20px;
-
 border-radius:12px;
-
 font-size:28px;
-
 font-weight:bold;
-
 display:inline-block;
-
 }
-
-
-
 
 
 /* COUNTDOWN */
 
-
 #countdown{
-
 text-align:center;
-
 font-size:40px;
-
 font-weight:bold;
-
 color:#2563eb;
-
 }
-
-
-
-
 
 #winnerMessage{
-
 text-align:center;
-
 font-size:28px;
-
 color:#16a34a;
-
 }
-
-
-
 
 
 /* WINNER POPUP */
 
-
 #winnerPopup{
-
 display:none;
-
 position:fixed;
-
 top:50%;
-
 left:50%;
-
 transform:translate(-50%,-50%);
-
 background:white;
-
 padding:30px;
-
 border-radius:15px;
-
 box-shadow:0 5px 25px rgba(0,0,0,.3);
-
 z-index:3000;
-
 text-align:center;
-
 font-size:22px;
-
 }
-
-
 
 .dark #winnerPopup{
-
 background:#1f2937;
-
 color:white;
-
 }
-
-
-
-
-
 
 
 /* NUMBERS */
 
-
 #numbers{
-
 display:grid;
-
 grid-template-columns:repeat(12,1fr);
-
 gap:5px;
-
 }
-
-
-
-
 
 .number{
-
 background:white;
-
 border:1px solid #cbd5e1;
-
 aspect-ratio:1;
-
 font-weight:bold;
-
 font-size:14px;
-
 }
-
-
-
-
 
 .number:hover{
-
 background:#dbeafe;
-
 }
-
-
-
-
 
 .used{
-
 visibility:hidden;
-
 }
-
-
-
-
-
 
 
 @media(max-width:600px){
 
-
 #numbers{
-
 grid-template-columns:repeat(8,1fr);
-
 }
-
-
 
 .number{
-
 font-size:12px;
-
 }
-
-
 
 .mode-btn{
-
 position:static;
-
 margin-top:10px;
-
 }
 
-
 }
-
-
-
 
 
 /* =========================
@@ -460,925 +274,946 @@ margin-top:10px;
 ========================= */
 
 #voiceChat{
-  margin-top:20px;
-  text-align:center;
+margin-top:20px;
+text-align:center;
 }
 
 #voiceChat h3{
-  margin-bottom:8px;
+margin-bottom:8px;
 }
 
 #voiceStatus{
-  margin:8px 0 15px;
-  font-weight:bold;
+margin:8px 0 15px;
+font-weight:bold;
 }
 
 .voice-controls{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
+display:flex;
+justify-content:center;
+align-items:center;
+gap:10px;
+flex-wrap:wrap;
 }
 
 #voiceChat .main-btn{
-  min-width:130px;
+min-width:130px;
 }
 
 body.dark #voiceChat{
-  background:#1e1e1e;
+background:#1e1e1e;
 }
 
 @media(max-width:600px){
-  .voice-controls{
-    flex-direction:column;
-  }
 
-  #voiceChat .main-btn{
-    width:90%;
-    max-width:280px;
-  }
+.voice-controls{
+flex-direction:column;
 }
 
+#voiceChat .main-btn{
+width:90%;
+max-width:280px;
+}
+
+}
 
 
 /* =========================
    BUILDVA 2.0 POLISH
 ========================= */
+
 :root{
-  --brand:#2563eb;
-  --brand-dark:#1d4ed8;
-  --accent:#10b981;
-  --gold:#facc15;
-  --surface:#ffffff;
-  --muted:#64748b;
-  --border:#dbe4ee;
+--brand:#2563eb;
+--brand-dark:#1d4ed8;
+--accent:#10b981;
+--gold:#facc15;
+--surface:#ffffff;
+--muted:#64748b;
+--border:#dbe4ee;
 }
 
-html{scroll-behavior:smooth;}
+html{
+scroll-behavior:smooth;
+}
 
 body{
-  background:
-    radial-gradient(circle at 10% 10%,rgba(37,99,235,.10),transparent 28%),
-    radial-gradient(circle at 90% 20%,rgba(16,185,129,.10),transparent 26%),
-    #eef4f8;
+background:
+radial-gradient(circle at 10% 10%,rgba(37,99,235,.10),transparent 28%),
+radial-gradient(circle at 90% 20%,rgba(16,185,129,.10),transparent 26%),
+#eef4f8;
 }
 
 body.dark{
-  background:
-    radial-gradient(circle at 10% 10%,rgba(37,99,235,.18),transparent 28%),
-    radial-gradient(circle at 90% 20%,rgba(16,185,129,.12),transparent 26%),
-    #0b1220;
+background:
+radial-gradient(circle at 10% 10%,rgba(37,99,235,.18),transparent 28%),
+radial-gradient(circle at 90% 20%,rgba(16,185,129,.12),transparent 26%),
+#0b1220;
 }
 
 header{
-  background:linear-gradient(135deg,#1d4ed8,#2563a8 55%,#0f766e);
-  box-shadow:0 4px 18px rgba(15,23,42,.20);
-  padding:10px 15px;
+background:linear-gradient(135deg,#1d4ed8,#2563a8 55%,#0f766e);
+box-shadow:0 4px 18px rgba(15,23,42,.20);
+padding:10px 15px;
 }
 
-.brand{text-align:left;}
+.brand{
+text-align:left;
+}
 
 .brand-copy h1{
-  font-size:25px;
-  line-height:1;
-  margin:0 0 4px;
+font-size:25px;
+line-height:1;
+margin:0 0 4px;
 }
 
 .brand-copy div{
-  font-size:13px;
-  opacity:.9;
+font-size:13px;
+opacity:.9;
 }
 
 .screen{
-  max-width:1050px;
-  padding:18px 12px 40px;
+max-width:1050px;
+padding:18px 12px 40px;
 }
 
+
 .home-hero{
-  position:relative;
-  overflow:hidden;
-  padding:30px 24px;
-  margin-bottom:16px;
-  border-radius:20px;
-  background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(239,246,255,.96));
-  border:1px solid rgba(148,163,184,.22);
-  box-shadow:0 10px 30px rgba(15,23,42,.10);
+position:relative;
+overflow:hidden;
+padding:30px 24px;
+margin-bottom:16px;
+border-radius:20px;
+background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(239,246,255,.96));
+border:1px solid rgba(148,163,184,.22);
+box-shadow:0 10px 30px rgba(15,23,42,.10);
 }
 
 body.dark .home-hero{
-  background:linear-gradient(135deg,#172033,#111827);
+background:linear-gradient(135deg,#172033,#111827);
 }
 
 .home-hero::after{
-  content:"";
-  position:absolute;
-  width:180px;
-  height:180px;
-  border-radius:50%;
-  right:-70px;
-  top:-70px;
-  background:rgba(37,99,235,.12);
+content:"";
+position:absolute;
+width:180px;
+height:180px;
+border-radius:50%;
+right:-70px;
+top:-70px;
+background:rgba(37,99,235,.12);
 }
 
 .hero-content{
-  position:relative;
-  z-index:1;
-  max-width:700px;
+position:relative;
+z-index:1;
+max-width:700px;
 }
 
 .hero-kicker{
-  font-weight:800;
-  color:var(--brand);
-  letter-spacing:.08em;
-  text-transform:uppercase;
-  font-size:12px;
+font-weight:800;
+color:var(--brand);
+letter-spacing:.08em;
+text-transform:uppercase;
+font-size:12px;
 }
 
 .hero-title{
-  font-size:clamp(30px,6vw,52px);
-  line-height:1.02;
-  margin:8px 0 10px;
-  color:#0f172a;
+font-size:clamp(30px,6vw,52px);
+line-height:1.02;
+margin:8px 0 10px;
+color:#0f172a;
 }
 
 body.dark .hero-title{
-  color:#f8fafc;
+color:#f8fafc;
 }
 
 .hero-subtitle{
-  font-size:17px;
-  line-height:1.5;
-  color:var(--muted);
-  max-width:620px;
-  margin:0;
+font-size:17px;
+line-height:1.5;
+color:var(--muted);
+max-width:620px;
+margin:0;
 }
 
 body.dark .hero-subtitle{
-  color:#cbd5e1;
+color:#cbd5e1;
 }
 
 .feature-row{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-  margin-top:20px;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+margin-top:20px;
 }
 
 .feature-card{
-  padding:13px;
-  border-radius:14px;
-  background:rgba(255,255,255,.75);
-  border:1px solid var(--border);
-  font-size:13px;
-  font-weight:700;
+padding:13px;
+border-radius:14px;
+background:rgba(255,255,255,.75);
+border:1px solid var(--border);
+font-size:13px;
+font-weight:700;
 }
 
 body.dark .feature-card{
-  background:#1f2937;
-  border-color:#334155;
+background:#1f2937;
+border-color:#334155;
 }
 
 .feature-card span{
-  display:block;
-  font-size:22px;
-  margin-bottom:4px;
+display:block;
+font-size:22px;
+margin-bottom:4px;
 }
 
+
 #setup.panel{
-  padding:20px;
+padding:20px;
 }
 
 .setup-grid{
-  display:grid;
-  grid-template-columns:1.1fr .9fr;
-  gap:16px;
+display:grid;
+grid-template-columns:1.1fr .9fr;
+gap:16px;
 }
 
 .setup-card{
-  padding:18px;
-  border:1px solid var(--border);
-  border-radius:16px;
-  background:rgba(248,250,252,.72);
+padding:18px;
+border:1px solid var(--border);
+border-radius:16px;
+background:rgba(248,250,252,.72);
 }
 
 body.dark .setup-card{
-  background:#111827;
-  border-color:#334155;
+background:#111827;
+border-color:#334155;
 }
 
 .setup-card h3{
-  margin-top:0;
+margin-top:0;
 }
 
 .size-options{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:8px;
 }
 
 .size-option{
-  display:block;
-  cursor:pointer;
+display:block;
+cursor:pointer;
 }
 
 .size-option input{
-  position:absolute;
-  opacity:0;
-  pointer-events:none;
+position:absolute;
+opacity:0;
+pointer-events:none;
 }
 
 .size-option span{
-  display:block;
-  text-align:center;
-  padding:13px 8px;
-  border:2px solid var(--border);
-  border-radius:12px;
-  font-weight:800;
-  background:var(--surface);
-  transition:.2s;
+display:block;
+text-align:center;
+padding:13px 8px;
+border:2px solid var(--border);
+border-radius:12px;
+font-weight:800;
+background:var(--surface);
+transition:.2s;
 }
 
 .size-option input:checked + span{
-  border-color:var(--brand);
-  background:#eff6ff;
-  color:var(--brand);
-  box-shadow:0 0 0 3px rgba(37,99,235,.10);
+border-color:var(--brand);
+background:#eff6ff;
+color:var(--brand);
+box-shadow:0 0 0 3px rgba(37,99,235,.10);
 }
 
 body.dark .size-option span{
-  background:#1f2937;
-  border-color:#475569;
+background:#1f2937;
+border-color:#475569;
 }
 
 body.dark .size-option input:checked + span{
-  background:#172554;
-  color:#93c5fd;
-  border-color:#60a5fa;
+background:#172554;
+color:#93c5fd;
+border-color:#60a5fa;
 }
 
 .join-row{
-  display:flex;
-  gap:8px;
-  align-items:stretch;
+display:flex;
+gap:8px;
+align-items:stretch;
 }
 
 .join-row input{
-  flex:1;
-  min-width:0;
-  padding:12px;
-  border:1px solid var(--border);
-  border-radius:9px;
-  font-size:16px;
-  text-transform:uppercase;
+flex:1;
+min-width:0;
+padding:12px;
+border:1px solid var(--border);
+border-radius:9px;
+font-size:16px;
+text-transform:uppercase;
 }
 
 body.dark input{
-  background:#111827;
-  color:#f8fafc;
-  border-color:#475569;
+background:#111827;
+color:#f8fafc;
+border-color:#475569;
 }
 
 .main-btn,
 .player-btn{
-  transition:transform .15s,box-shadow .15s,filter .15s;
+transition:transform .15s,box-shadow .15s,filter .15s;
 }
 
 .main-btn:hover,
 .player-btn:hover{
-  transform:translateY(-1px);
-  box-shadow:0 5px 14px rgba(15,23,42,.14);
-  filter:brightness(1.03);
+transform:translateY(-1px);
+box-shadow:0 5px 14px rgba(15,23,42,.14);
+filter:brightness(1.03);
 }
 
 .main-btn:active,
 .player-btn:active{
-  transform:translateY(0);
+transform:translateY(0);
 }
 
 .main-btn.secondary{
-  background:#475569;
+background:#475569;
 }
 
 .main-btn.success{
-  background:#059669;
+background:#059669;
 }
 
 .status-pill{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  padding:6px 10px;
-  border-radius:999px;
-  background:#ecfdf5;
-  color:#047857;
-  font-size:12px;
-  font-weight:800;
+display:inline-flex;
+align-items:center;
+gap:6px;
+padding:6px 10px;
+border-radius:999px;
+background:#ecfdf5;
+color:#047857;
+font-size:12px;
+font-weight:800;
 }
 
 body.dark .status-pill{
-  background:#064e3b;
-  color:#a7f3d0;
+background:#064e3b;
+color:#a7f3d0;
 }
+
 
 #playerArea{
-  padding:20px;
+padding:20px;
 }
 
-/* PLAYER LEFT GAME MESSAGE */
+
+/* PLAYER LEFT NOTICE */
+
 #playerLeftNotice{
-  display:none;
-  margin:0 0 15px;
-  padding:13px 15px;
-  border-radius:12px;
-  background:#fef2f2;
-  border:1px solid #fecaca;
-  color:#b91c1c;
-  font-weight:800;
-  text-align:center;
+display:none;
+margin:0 0 15px;
+padding:13px 15px;
+border-radius:12px;
+background:#fef2f2;
+border:1px solid #fecaca;
+color:#b91c1c;
+font-weight:800;
+text-align:center;
 }
 
 body.dark #playerLeftNotice{
-  background:#450a0a;
-  border-color:#991b1b;
-  color:#fecaca;
+background:#450a0a;
+border-color:#991b1b;
+color:#fecaca;
 }
 
-/* GAME CODE NOW AT THE BOTTOM */
+
+/* GAME CODE AT BOTTOM */
+
 .game-code-box{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  flex-wrap:wrap;
-  padding:14px;
-  border-radius:15px;
-  background:#eff6ff;
-  border:1px solid #bfdbfe;
-  margin-top:20px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+flex-wrap:wrap;
+padding:14px;
+border-radius:15px;
+background:#eff6ff;
+border:1px solid #bfdbfe;
+margin-top:20px;
 }
 
 body.dark .game-code-box{
-  background:#172554;
-  border-color:#1e40af;
+background:#172554;
+border-color:#1e40af;
 }
 
 .game-code{
-  font-size:26px;
-  font-weight:900;
-  letter-spacing:.14em;
-  color:var(--brand);
+font-size:26px;
+font-weight:900;
+letter-spacing:.14em;
+color:var(--brand);
 }
 
 body.dark .game-code{
-  color:#93c5fd;
+color:#93c5fd;
 }
 
 .game-code-notice{
-  display:block;
-  width:100%;
-  margin:10px 0 0;
-  padding:11px 14px;
-  border-radius:11px;
-  background:#fef3c7;
-  border:1px solid #fcd34d;
-  color:#92400e;
-  font-size:13px;
-  font-weight:800;
-  line-height:1.4;
-  text-align:center;
+display:block;
+width:100%;
+margin:10px 0 0;
+padding:11px 14px;
+border-radius:11px;
+background:#fef3c7;
+border:1px solid #fcd34d;
+color:#92400e;
+font-size:13px;
+font-weight:800;
+line-height:1.4;
+text-align:center;
 }
 
 body.dark .game-code-notice{
-  background:#451a03;
-  border-color:#92400e;
-  color:#fde68a;
+background:#451a03;
+border-color:#92400e;
+color:#fde68a;
 }
 
 .code-actions{
-  display:flex;
-  gap:7px;
-  flex-wrap:wrap;
+display:flex;
+gap:7px;
+flex-wrap:wrap;
 }
 
 .small-btn{
-  padding:9px 12px;
-  border-radius:8px;
-  border:none;
-  background:#e2e8f0;
-  color:#0f172a;
-  font-weight:700;
-  cursor:pointer;
+padding:9px 12px;
+border-radius:8px;
+border:none;
+background:#e2e8f0;
+color:#0f172a;
+font-weight:700;
+cursor:pointer;
 }
 
 body.dark .small-btn{
-  background:#334155;
-  color:#f8fafc;
+background:#334155;
+color:#f8fafc;
 }
 
+
 .player-cards{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin:15px 0;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin:15px 0;
 }
 
 .player-card{
-  padding:14px;
-  border-radius:14px;
-  border:1px solid var(--border);
-  background:var(--surface);
-  display:flex;
-  align-items:center;
-  gap:12px;
+padding:14px;
+border-radius:14px;
+border:1px solid var(--border);
+background:var(--surface);
+display:flex;
+align-items:center;
+gap:12px;
 }
 
 .player-avatar{
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  background:#dbeafe;
-  font-size:21px;
-  flex:0 0 auto;
+width:42px;
+height:42px;
+border-radius:50%;
+display:grid;
+place-items:center;
+background:#dbeafe;
+font-size:21px;
+flex:0 0 auto;
 }
 
 body.dark .player-avatar{
-  background:#1e3a8a;
+background:#1e3a8a;
 }
 
 .player-info{
-  min-width:0;
-  flex:1;
+min-width:0;
+flex:1;
 }
 
 .player-name{
-  font-weight:800;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+font-weight:800;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
 }
 
 .player-state{
-  font-size:12px;
-  color:var(--muted);
-  margin-top:3px;
+font-size:12px;
+color:var(--muted);
+margin-top:3px;
 }
 
 .you-badge{
-  font-size:10px;
-  font-weight:900;
-  padding:4px 7px;
-  border-radius:999px;
-  background:#dbeafe;
-  color:#1d4ed8;
+font-size:10px;
+font-weight:900;
+padding:4px 7px;
+border-radius:999px;
+background:#dbeafe;
+color:#1d4ed8;
 }
 
 body.dark .you-badge{
-  background:#1e3a8a;
-  color:#bfdbfe;
+background:#1e3a8a;
+color:#bfdbfe;
 }
 
+
 .scoreboard{
-  position:sticky;
-  top:112px;
-  z-index:850;
+position:sticky;
+top:112px;
+z-index:850;
 }
 
 .score{
-  border:1px solid var(--border);
-  box-shadow:0 3px 10px rgba(0,0,0,.06);
+border:1px solid var(--border);
+box-shadow:0 3px 10px rgba(0,0,0,.06);
 }
 
 .score.active-player{
-  outline:3px solid rgba(37,99,235,.20);
+outline:3px solid rgba(37,99,235,.20);
 }
 
 .score-label{
-  font-size:11px;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  color:var(--muted);
-  font-weight:800;
+font-size:11px;
+text-transform:uppercase;
+letter-spacing:.08em;
+color:var(--muted);
+font-weight:800;
 }
 
 .score-number{
-  font-size:32px;
-  line-height:1.1;
-  display:block;
-  margin-top:3px;
+font-size:32px;
+line-height:1.1;
+display:block;
+margin-top:3px;
 }
 
 .target-panel{
-  text-align:center;
-  box-shadow:0 6px 18px rgba(15,23,42,.10);
+text-align:center;
+box-shadow:0 6px 18px rgba(15,23,42,.10);
 }
 
 .target-label{
-  font-size:12px;
-  text-transform:uppercase;
-  letter-spacing:.12em;
-  color:#92400e;
-  font-weight:900;
-  margin-bottom:4px;
+font-size:12px;
+text-transform:uppercase;
+letter-spacing:.12em;
+color:#92400e;
+font-weight:900;
+margin-bottom:4px;
 }
 
 .target{
-  min-width:90px;
+min-width:90px;
 }
 
 #remaining{
-  font-size:20px;
+font-size:20px;
 }
 
 #numbers{
-  gap:6px;
-  padding-bottom:20px;
+gap:6px;
+padding-bottom:20px;
 }
 
 .number{
-  border-radius:8px;
-  box-shadow:0 1px 2px rgba(15,23,42,.06);
-  transition:.12s;
+border-radius:8px;
+box-shadow:0 1px 2px rgba(15,23,42,.06);
+transition:.12s;
 }
 
 .number:not(:disabled):hover{
-  transform:scale(1.04);
-  border-color:#60a5fa;
+transform:scale(1.04);
+border-color:#60a5fa;
 }
 
 .number:disabled{
-  cursor:not-allowed;
-  opacity:.75;
+cursor:not-allowed;
+opacity:.75;
 }
 
 
-/* Voice upgrade */
+/* VOICE */
 
 #voiceChat{
-  border:1px solid var(--border);
+border:1px solid var(--border);
 }
 
 .voice-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
 }
 
 .voice-live{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  font-size:11px;
-  font-weight:900;
-  padding:5px 9px;
-  border-radius:999px;
-  background:#f1f5f9;
-  color:#475569;
+display:inline-flex;
+align-items:center;
+gap:6px;
+font-size:11px;
+font-weight:900;
+padding:5px 9px;
+border-radius:999px;
+background:#f1f5f9;
+color:#475569;
 }
 
 .voice-live.on{
-  background:#dcfce7;
-  color:#166534;
+background:#dcfce7;
+color:#166534;
 }
 
 .voice-dot{
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:#94a3b8;
+width:8px;
+height:8px;
+border-radius:50%;
+background:#94a3b8;
 }
 
 .voice-live.on .voice-dot{
-  background:#22c55e;
-  box-shadow:0 0 0 4px rgba(34,197,94,.15);
+background:#22c55e;
+box-shadow:0 0 0 4px rgba(34,197,94,.15);
 }
 
 
-/* Start countdown popup */
+/* COUNTDOWN */
 
 #startCountdownPopup{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(15,23,42,.68);
-  backdrop-filter:blur(5px);
-  -webkit-backdrop-filter:blur(5px);
-  z-index:4000;
-  place-items:center;
-  padding:20px;
+display:none;
+position:fixed;
+inset:0;
+background:rgba(15,23,42,.68);
+backdrop-filter:blur(5px);
+-webkit-backdrop-filter:blur(5px);
+z-index:4000;
+place-items:center;
+padding:20px;
 }
 
 .countdown-card{
-  width:min(88vw,360px);
-  text-align:center;
-  padding:30px 22px;
-  border-radius:24px;
-  background:white;
-  border:1px solid rgba(255,255,255,.7);
-  box-shadow:0 18px 60px rgba(0,0,0,.35);
-  animation:countdownPop .28s ease-out;
+width:min(88vw,360px);
+text-align:center;
+padding:30px 22px;
+border-radius:24px;
+background:white;
+border:1px solid rgba(255,255,255,.7);
+box-shadow:0 18px 60px rgba(0,0,0,.35);
+animation:countdownPop .28s ease-out;
 }
 
 body.dark .countdown-card{
-  background:#172033;
-  color:#f8fafc;
-  border-color:#334155;
+background:#172033;
+color:#f8fafc;
+border-color:#334155;
 }
 
 .countdown-kicker{
-  font-size:13px;
-  font-weight:900;
-  letter-spacing:.14em;
-  color:var(--brand);
+font-size:13px;
+font-weight:900;
+letter-spacing:.14em;
+color:var(--brand);
 }
 
 #countdownPopupNumber{
-  font-size:clamp(82px,20vw,120px);
-  line-height:.95;
-  font-weight:1000;
-  color:var(--brand);
-  margin:10px 0;
-  animation:countdownPulse .7s ease-in-out;
+font-size:clamp(82px,20vw,120px);
+line-height:.95;
+font-weight:1000;
+color:var(--brand);
+margin:10px 0;
+animation:countdownPulse .7s ease-in-out;
 }
 
 .countdown-text{
-  font-size:16px;
-  font-weight:700;
-  color:var(--muted);
+font-size:16px;
+font-weight:700;
+color:var(--muted);
 }
 
 @keyframes countdownPop{
-  from{
-    opacity:0;
-    transform:scale(.78)
-  }
-  to{
-    opacity:1;
-    transform:scale(1)
-  }
+
+from{
+opacity:0;
+transform:scale(.78)
+}
+
+to{
+opacity:1;
+transform:scale(1)
+}
+
 }
 
 @keyframes countdownPulse{
-  0%{
-    transform:scale(.7);
-    opacity:.3
-  }
-  55%{
-    transform:scale(1.08);
-    opacity:1
-  }
-  100%{
-    transform:scale(1)
-  }
+
+0%{
+transform:scale(.7);
+opacity:.3
+}
+
+55%{
+transform:scale(1.08);
+opacity:1
+}
+
+100%{
+transform:scale(1)
+}
+
 }
 
 
 #winnerPopup{
-  width:min(92vw,430px);
-  padding:28px 22px;
-  border:1px solid var(--border);
+width:min(92vw,430px);
+padding:28px 22px;
+border:1px solid var(--border);
 }
 
 .winner-icon{
-  font-size:52px;
+font-size:52px;
 }
 
 .winner-title{
-  font-size:30px;
-  font-weight:900;
-  margin:7px 0;
+font-size:30px;
+font-weight:900;
+margin:7px 0;
 }
 
 .final-score{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:18px;
-  margin:15px 0 20px;
+display:flex;
+justify-content:center;
+align-items:center;
+gap:18px;
+margin:15px 0 20px;
 }
 
 .final-score .final-player{
-  padding:12px 16px;
-  border-radius:12px;
-  background:#f8fafc;
-  border:1px solid var(--border);
-  min-width:110px;
+padding:12px 16px;
+border-radius:12px;
+background:#f8fafc;
+border:1px solid var(--border);
+min-width:110px;
 }
 
 body.dark .final-score .final-player{
-  background:#111827;
+background:#111827;
 }
 
 .final-score strong{
-  font-size:28px;
-  display:block;
+font-size:28px;
+display:block;
 }
 
 .popup-actions{
-  display:flex;
-  gap:8px;
-  justify-content:center;
-  flex-wrap:wrap;
+display:flex;
+gap:8px;
+justify-content:center;
+flex-wrap:wrap;
 }
 
 .share-note{
-  font-size:12px;
-  color:var(--muted);
-  margin-top:9px;
+font-size:12px;
+color:var(--muted);
+margin-top:9px;
 }
 
 
 @media(max-width:700px){
 
-  body{
-    padding-top:105px;
-  }
+body{
+padding-top:105px;
+}
 
-  header{
-    padding:7px 10px;
-  }
+header{
+padding:7px 10px;
+}
 
-  .brand-copy h1{
-    font-size:21px;
-  }
+.brand-copy h1{
+font-size:21px;
+}
 
-  .buildva-logo{
-    width:42px;
-    height:42px;
-    border-radius:10px;
-  }
+.buildva-logo{
+width:42px;
+height:42px;
+border-radius:10px;
+}
 
-  .mode-btn{
-    right:8px;
-    top:8px;
-    padding:7px 9px;
-  }
+.mode-btn{
+right:8px;
+top:8px;
+padding:7px 9px;
+}
 
-  .screen{
-    padding:10px 8px 28px;
-  }
+.screen{
+padding:10px 8px 28px;
+}
 
-  .home-hero{
-    padding:22px 17px;
-    border-radius:16px;
-  }
+.home-hero{
+padding:22px 17px;
+border-radius:16px;
+}
 
-  .hero-title{
-    font-size:34px;
-  }
+.hero-title{
+font-size:34px;
+}
 
-  .hero-subtitle{
-    font-size:15px;
-  }
+.hero-subtitle{
+font-size:15px;
+}
 
-  .feature-row{
-    grid-template-columns:1fr;
-    gap:7px;
-  }
+.feature-row{
+grid-template-columns:1fr;
+gap:7px;
+}
 
-  .feature-card{
-    padding:10px;
-    display:flex;
-    align-items:center;
-    gap:9px;
-  }
+.feature-card{
+padding:10px;
+display:flex;
+align-items:center;
+gap:9px;
+}
 
-  .feature-card span{
-    margin:0;
-    font-size:20px;
-  }
+.feature-card span{
+margin:0;
+font-size:20px;
+}
 
-  .setup-grid{
-    grid-template-columns:1fr;
-  }
+.setup-grid{
+grid-template-columns:1fr;
+}
 
-  .size-options{
-    grid-template-columns:1fr 1fr 1fr;
-  }
+.size-options{
+grid-template-columns:1fr 1fr 1fr;
+}
 
-  .join-row{
-    flex-direction:column;
-  }
+.join-row{
+flex-direction:column;
+}
 
-  .join-row .main-btn{
-    width:100%;
-  }
+.join-row .main-btn{
+width:100%;
+}
 
-  .player-cards{
-    grid-template-columns:1fr;
-  }
+.player-cards{
+grid-template-columns:1fr;
+}
 
-  .game-code{
-    font-size:22px;
-  }
+.game-code{
+font-size:22px;
+}
 
-  .code-actions{
-    width:100%;
-  }
+.code-actions{
+width:100%;
+}
 
-  .code-actions .small-btn{
-    flex:1;
-  }
+.code-actions .small-btn{
+flex:1;
+}
 
-  .scoreboard{
-    top:84px;
-  }
+.scoreboard{
+top:84px;
+}
 
-  .score{
-    padding:9px;
-    font-size:16px;
-  }
+.score{
+padding:9px;
+font-size:16px;
+}
 
-  .score-number{
-    font-size:27px;
-  }
+.score-number{
+font-size:27px;
+}
 
-  .target-panel{
-    top:142px;
-  }
+.target-panel{
+top:142px;
+}
 
-  #numbers{
-    grid-template-columns:repeat(8,1fr);
-    gap:4px;
-  }
+#numbers{
+grid-template-columns:repeat(8,1fr);
+gap:4px;
+}
 
-  .number{
-    font-size:12px;
-  }
+.number{
+font-size:12px;
+}
 
-  .voice-head{
-    align-items:flex-start;
-  }
+.voice-head{
+align-items:flex-start;
+}
 
 }
 
 
 @media(max-width:380px){
 
-  #numbers{
-    grid-template-columns:repeat(7,1fr);
-  }
+#numbers{
+grid-template-columns:repeat(7,1fr);
+}
 
-  .number{
-    font-size:11px;
-  }
+.number{
+font-size:11px;
+}
 
-  .size-options{
-    grid-template-columns:1fr;
-  }
+.size-options{
+grid-template-columns:1fr;
+}
 
 }
 
 
-/* Firebase connection health indicator */
+/* FIREBASE CONNECTION */
 
 .firebase-health{
-  display:inline-flex;
-  align-items:center;
-  gap:7px;
-  margin-top:7px;
-  padding:5px 10px;
-  border-radius:999px;
-  background:rgba(255,255,255,.16);
-  color:#fff;
-  font-size:11px;
-  font-weight:800;
-  letter-spacing:.02em;
+display:inline-flex;
+align-items:center;
+gap:7px;
+margin-top:7px;
+padding:5px 10px;
+border-radius:999px;
+background:rgba(255,255,255,.16);
+color:#fff;
+font-size:11px;
+font-weight:800;
+letter-spacing:.02em;
 }
 
 .firebase-health-dot{
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:#fbbf24;
-  box-shadow:0 0 0 3px rgba(251,191,36,.16);
+width:8px;
+height:8px;
+border-radius:50%;
+background:#fbbf24;
+box-shadow:0 0 0 3px rgba(251,191,36,.16);
 }
 
 .firebase-health.connected .firebase-health-dot{
-  background:#4ade80;
-  box-shadow:0 0 0 3px rgba(74,222,128,.16);
+background:#4ade80;
+box-shadow:0 0 0 3px rgba(74,222,128,.16);
 }
 
 .firebase-health.disconnected .firebase-health-dot{
-  background:#f87171;
-  box-shadow:0 0 0 3px rgba(248,113,113,.16);
+background:#f87171;
+box-shadow:0 0 0 3px rgba(248,113,113,.16);
 }
 
 @media(max-width:600px){
 
-  .firebase-health{
-    font-size:10px;
-    margin-top:5px;
-    padding:4px 8px;
-  }
+.firebase-health{
+font-size:10px;
+margin-top:5px;
+padding:4px 8px;
+}
 
 }
 
 </style>
-
 
 </head>
 
@@ -1391,8 +1226,8 @@ body.dark .final-score .final-player{
 <div class="brand">
 
 <img src="buildva-logo.png"
-     alt="Buildva logo"
-     class="buildva-logo">
+alt="Buildva logo"
+class="buildva-logo">
 
 <div class="brand-copy">
 
@@ -1406,10 +1241,10 @@ body.dark .final-score .final-player{
 
 
 <div id="firebaseHealth"
-     class="firebase-health"
-     role="status"
-     aria-live="polite"
-     title="Shows this device’s connection to Firebase, not total players online">
+class="firebase-health"
+role="status"
+aria-live="polite"
+title="Shows this device’s connection to Firebase, not total players online">
 
 <span class="firebase-health-dot"></span>
 
@@ -1421,12 +1256,11 @@ Checking server connection…
 
 
 <button class="mode-btn"
-        onclick="toggleDark()">
+onclick="toggleDark()">
 
 🌙
 
 </button>
-
 
 </header>
 
@@ -1493,15 +1327,14 @@ Create a game, invite a friend with a code, and race to find the numbers in orde
 Select how many numbers you want to play with.
 </p>
 
-
 <div class="size-options">
 
 <label class="size-option">
 
 <input type="radio"
-       name="gameSize"
-       value="50"
-       checked>
+name="gameSize"
+value="50"
+checked>
 
 <span>1–50</span>
 
@@ -1511,8 +1344,8 @@ Select how many numbers you want to play with.
 <label class="size-option">
 
 <input type="radio"
-       name="gameSize"
-       value="100">
+name="gameSize"
+value="100">
 
 <span>1–100</span>
 
@@ -1522,8 +1355,8 @@ Select how many numbers you want to play with.
 <label class="size-option">
 
 <input type="radio"
-       name="gameSize"
-       value="200">
+name="gameSize"
+value="200">
 
 <span>1–200</span>
 
@@ -1531,20 +1364,19 @@ Select how many numbers you want to play with.
 
 </div>
 
-
 <br>
 
-
 <button class="main-btn success"
-        onclick="createGame()">
+onclick="createGame()">
 
 🎮 Create Game
 
 </button>
 
-
 <p class="share-note">
+
 After creating, share the 6-character game code with your opponent.
+
 </p>
 
 </div>
@@ -1559,24 +1391,21 @@ After creating, share the 6-character game code with your opponent.
 Enter the game code your friend sent you.
 </p>
 
-
 <div class="join-row">
 
 <input id="gameCodeInput"
-       placeholder="GAME CODE"
-       maxlength="6"
-       autocomplete="off">
-
+placeholder="GAME CODE"
+maxlength="6"
+autocomplete="off">
 
 <button class="main-btn"
-        onclick="joinGame()">
+onclick="joinGame()">
 
 Join Game
 
 </button>
 
 </div>
-
 
 <p id="status"></p>
 
@@ -1594,11 +1423,9 @@ Join Game
 <!-- PLAYER AREA -->
 
 <div id="playerArea"
-     class="panel"
-     style="display:none">
+class="panel"
+style="display:none">
 
-
-<!-- PLAYER LEFT NOTICE -->
 
 <div id="playerLeftNotice"></div>
 
@@ -1610,7 +1437,7 @@ Join Game
 
 
 <div class="player-card"
-     id="lobbyPlayer1">
+id="lobbyPlayer1">
 
 <div class="player-avatar">
 👤
@@ -1633,7 +1460,7 @@ Waiting to join…
 
 
 <div class="player-card"
-     id="lobbyPlayer2">
+id="lobbyPlayer2">
 
 <div class="player-avatar">
 👤
@@ -1672,10 +1499,10 @@ Enter your name and Buildva will automatically assign you the first available pl
 
 
 <input id="playerName"
-       placeholder="Your name"
-       maxlength="20"
-       autocomplete="name"
-       style="padding:12px;width:min(100%,280px);">
+placeholder="Your name"
+maxlength="20"
+autocomplete="name"
+style="padding:12px;width:min(100%,280px);">
 
 
 <br>
@@ -1683,8 +1510,8 @@ Enter your name and Buildva will automatically assign you the first available pl
 
 
 <button id="assignMeBtn"
-        class="player-btn"
-        onclick="assignMe()">
+class="player-btn"
+onclick="assignMe()">
 
 🎯 Assign Me
 
@@ -1726,7 +1553,7 @@ GAME CODE
 
 
 <div id="code"
-     class="game-code">
+class="game-code">
 
 ------
 
@@ -1738,7 +1565,7 @@ GAME CODE
 <div class="code-actions">
 
 <button class="small-btn"
-        onclick="copyGameCode()">
+onclick="copyGameCode()">
 
 📋 Copy Code
 
@@ -1746,7 +1573,7 @@ GAME CODE
 
 
 <button class="small-btn"
-        onclick="shareGame()">
+onclick="shareGame()">
 
 📤 Share
 
@@ -1754,7 +1581,7 @@ GAME CODE
 
 
 <button class="small-btn"
-        onclick="leaveGame()">
+onclick="leaveGame()">
 
 🏠 Leave
 
@@ -1762,12 +1589,11 @@ GAME CODE
 
 </div>
 
-
 </div>
 
 
 <div id="gameCodeNotice"
-     class="game-code-notice">
+class="game-code-notice">
 
 📢 Share this 6-character game code with your opponent so they can join.
 
@@ -1781,7 +1607,7 @@ GAME CODE
 <!-- GAME AREA -->
 
 <div id="gameArea"
-     style="display:none">
+style="display:none">
 
 
 <div class="scoreboard">
@@ -1800,10 +1626,8 @@ Player 1
 <br>
 
 <b id="score1"
-   class="score-number">
-
+class="score-number">
 0
-
 </b>
 
 </div>
@@ -1823,14 +1647,11 @@ Player 2
 <br>
 
 <b id="score2"
-   class="score-number">
-
+class="score-number">
 0
-
 </b>
 
 </div>
-
 
 </div>
 
@@ -1870,7 +1691,7 @@ Remaining:
 <!-- VOICE CHAT -->
 
 <div id="voiceChat"
-     class="panel">
+class="panel">
 
 <div class="voice-head">
 
@@ -1879,7 +1700,7 @@ Remaining:
 </h3>
 
 <span id="voiceLive"
-      class="voice-live">
+class="voice-live">
 
 <span class="voice-dot"></span>
 
@@ -1899,10 +1720,9 @@ OFF
 
 <div class="voice-controls">
 
-
 <button id="voiceStartBtn"
-        class="main-btn"
-        onclick="startVoiceChat()">
+class="main-btn"
+onclick="startVoiceChat()">
 
 🎙️ Start Voice
 
@@ -1910,9 +1730,9 @@ OFF
 
 
 <button id="voiceMuteBtn"
-        class="main-btn"
-        onclick="toggleMute()"
-        style="display:none">
+class="main-btn"
+onclick="toggleMute()"
+style="display:none">
 
 🔇 Mute
 
@@ -1920,14 +1740,13 @@ OFF
 
 
 <button id="voiceEndBtn"
-        class="main-btn"
-        onclick="endVoiceChat()"
-        style="display:none">
+class="main-btn"
+onclick="endVoiceChat()"
+style="display:none">
 
 📞 End Voice
 
 </button>
-
 
 </div>
 
@@ -1942,16 +1761,15 @@ OFF
 
 </div>
 
-
 </div>
 
 
 
-<!-- START COUNTDOWN POPUP -->
+<!-- COUNTDOWN POPUP -->
 
 <div id="startCountdownPopup"
-     aria-live="assertive"
-     aria-atomic="true">
+aria-live="assertive"
+aria-atomic="true">
 
 <div class="countdown-card">
 
@@ -1983,19 +1801,17 @@ The game is starting…
 
 <div id="popupText"></div>
 
-
 <div class="popup-actions">
 
 <button class="main-btn success"
-        onclick="playAgain()">
+onclick="playAgain()">
 
 🔄 Play Again
 
 </button>
 
-
 <button class="main-btn secondary"
-        onclick="closeWinnerPopup()">
+onclick="closeWinnerPopup()">
 
 Close
 
@@ -2041,37 +1857,41 @@ const db=firebase.database();
 
 
 
-/* Firebase connection monitor */
+/* FIREBASE CONNECTION MONITOR */
 
 (function monitorFirebaseConnection(){
 
-const badge=document.getElementById("firebaseHealth");
+const badge=
+document.getElementById("firebaseHealth");
 
-const label=document.getElementById("firebaseHealthText");
+const label=
+document.getElementById("firebaseHealthText");
 
-if(!badge || !label) return;
+if(!badge || !label)
+return;
 
-const connectedRef=db.ref(".info/connected");
+const connectedRef=
+db.ref(".info/connected");
 
 connectedRef.on("value",snapshot=>{
 
-const connected=snapshot.val()===true;
+const connected=
+snapshot.val()===true;
 
-badge.classList.toggle("connected",connected);
-
-badge.classList.toggle("disconnected",!connected);
-
-label.textContent=connected
-? "Server connected"
-: "Reconnecting to server…";
-
-if(!connected){
-
-console.warn(
-"Buildva: Firebase connection unavailable; waiting to reconnect."
+badge.classList.toggle(
+"connected",
+connected
 );
 
-}
+badge.classList.toggle(
+"disconnected",
+!connected
+);
+
+label.textContent=
+connected
+? "Server connected"
+: "Reconnecting to server…";
 
 },error=>{
 
@@ -2079,7 +1899,8 @@ badge.classList.remove("connected");
 
 badge.classList.add("disconnected");
 
-label.textContent="Connection status unavailable";
+label.textContent=
+"Connection status unavailable";
 
 console.error(
 "Buildva Firebase connection monitor error:",
@@ -2110,13 +1931,73 @@ let leavingGame=false;
 
 
 
+/*
+=========================================================
+UNIQUE PLAYER ID
+=========================================================
+
+Every browser gets its own permanent random ID.
+
+This is important because two different people can have
+the same name, and we must NEVER use the name to decide
+who is Player 1 or Player 2.
+*/
+
+function getPlayerId(){
+
+let id=
+localStorage.getItem(
+"buildvaPlayerId"
+);
+
+
+if(!id){
+
+id=
+"player_"+
+
+Date.now().toString(36)+
+
+"_"+
+
+Math.random()
+.toString(36)
+.substring(2,12);
+
+
+localStorage.setItem(
+"buildvaPlayerId",
+id
+);
+
+}
+
+
+return id;
+
+}
+
+
+const myPlayerId=
+getPlayerId();
+
+
+
 function shuffle(array){
 
-for(let i=array.length-1;i>0;i--){
+for(
+let i=array.length-1;
+i>0;
+i--
+){
 
-let j=Math.floor(Math.random()*(i+1));
+let j=
+Math.floor(
+Math.random()*(i+1)
+);
 
-[array[i],array[j]]=[array[j],array[i]];
+[array[i],array[j]]=
+[array[j],array[i]];
 
 }
 
@@ -2128,17 +2009,27 @@ return array;
 
 function generateGameCode(){
 
-let chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+let chars=
+"ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
 let code="";
 
-for(let i=0;i<6;i++){
 
-code+=chars[
-Math.floor(Math.random()*chars.length)
+for(
+let i=0;
+i<6;
+i++
+){
+
+code+=
+chars[
+Math.floor(
+Math.random()*chars.length
+)
 ];
 
 }
+
 
 return code;
 
@@ -2146,27 +2037,44 @@ return code;
 
 
 
+/* CREATE GAME */
+
 async function createGame(){
 
-let size=document.querySelector(
+let size=
+document.querySelector(
 'input[name="gameSize"]:checked'
 ).value;
 
-TOTAL_NUMBERS=Number(size);
 
-gameCode=generateGameCode();
+TOTAL_NUMBERS=
+Number(size);
 
-gameRef=db.ref("games/"+gameCode);
+
+gameCode=
+generateGameCode();
+
+
+gameRef=
+db.ref("games/"+gameCode);
+
 
 let board=[];
 
-for(let i=1;i<=TOTAL_NUMBERS;i++){
+
+for(
+let i=1;
+i<=TOTAL_NUMBERS;
+i++
+){
 
 board.push(i);
 
 }
 
+
 shuffle(board);
+
 
 
 await gameRef.set({
@@ -2189,6 +2097,8 @@ winner:null,
 
 countdown:false,
 
+countdownStartedAt:null,
+
 players:{
 player1:false,
 player2:false
@@ -2205,9 +2115,12 @@ openGame();
 
 
 
+/* JOIN GAME */
+
 async function joinGame(){
 
-let code=document
+let code=
+document
 .getElementById("gameCodeInput")
 .value
 .trim()
@@ -2216,7 +2129,8 @@ let code=document
 
 if(!code){
 
-document.getElementById("status").innerHTML=
+document.getElementById("status")
+.innerHTML=
 "⚠️ Enter a game code.";
 
 return;
@@ -2226,7 +2140,8 @@ return;
 
 if(code.length!==6){
 
-document.getElementById("status").innerHTML=
+document.getElementById("status")
+.innerHTML=
 "⚠️ Game codes are 6 characters.";
 
 return;
@@ -2236,15 +2151,19 @@ return;
 
 gameCode=code;
 
-gameRef=db.ref("games/"+gameCode);
+
+gameRef=
+db.ref("games/"+gameCode);
 
 
-let snap=await gameRef.once("value");
+let snap=
+await gameRef.once("value");
 
 
 if(!snap.exists()){
 
-document.getElementById("status").innerHTML=
+document.getElementById("status")
+.innerHTML=
 "❌ Game not found";
 
 return;
@@ -2258,30 +2177,47 @@ openGame();
 
 
 
+/* OPEN GAME */
+
 function openGame(){
 
-document.getElementById("setup").style.display="none";
+document.getElementById("setup")
+.style.display="none";
 
-document.getElementById("playerArea").style.display="block";
 
-document.getElementById("playerLeftNotice").style.display="none";
+document.getElementById("playerArea")
+.style.display="block";
+
+
+document.getElementById("playerLeftNotice")
+.style.display="none";
 
 
 let savedGame=
-localStorage.getItem("buildvaGameCode");
+localStorage.getItem(
+"buildvaGameCode"
+);
+
 
 let savedPlayer=
-localStorage.getItem("buildvaPlayerNumber");
+localStorage.getItem(
+"buildvaPlayerNumber"
+);
 
 
-if(savedGame===gameCode && savedPlayer){
+if(
+savedGame===gameCode &&
+savedPlayer
+){
 
-playerNumber=Number(savedPlayer);
+playerNumber=
+Number(savedPlayer);
 
 }
 
 
-document.getElementById("code").innerHTML=
+document.getElementById("code")
+.innerHTML=
 gameCode;
 
 
@@ -2293,20 +2229,25 @@ watchForVoiceEnd();
 
 
 
+/* LISTEN TO GAME */
+
 function listenGame(){
 
 gameRef.on("value",snap=>{
 
-currentGame=snap.val();
+currentGame=
+snap.val();
 
 
 if(currentGame){
 
 if(currentGame.maxNumber){
 
-TOTAL_NUMBERS=currentGame.maxNumber;
+TOTAL_NUMBERS=
+currentGame.maxNumber;
 
 }
+
 
 updateScreen();
 
@@ -2318,36 +2259,52 @@ updateScreen();
 
 
 
+/* UPDATE LOBBY */
+
 function updateLobbyPlayers(){
 
-if(!currentGame || !currentGame.players) return;
+if(
+!currentGame ||
+!currentGame.players
+)
+return;
 
 
 [1,2].forEach(n=>{
 
-const card=document.getElementById(
+const card=
+document.getElementById(
 "lobbyPlayer"+n
 );
 
-if(!card) return;
+
+if(!card)
+return;
 
 
 const player=
-currentGame.players["player"+n];
+currentGame.players[
+"player"+n
+];
 
 
 const nameEl=
-card.querySelector(".player-name");
+card.querySelector(
+".player-name"
+);
 
 
 const stateEl=
-card.querySelector(".player-state");
+card.querySelector(
+".player-state"
+);
 
 
 if(player){
 
 nameEl.textContent=
-player.name || ("Player "+n);
+player.name ||
+("Player "+n);
 
 
 stateEl.textContent=
@@ -2356,22 +2313,31 @@ player.ready
 : "🟡 Joined";
 
 
-if(playerNumber===n){
+if(
+player.playerId===myPlayerId
+){
 
-if(!card.querySelector(".you-badge")){
+if(
+!card.querySelector(
+".you-badge"
+)
+){
 
 const badge=
 document.createElement("span");
 
-badge.className="you-badge";
+badge.className=
+"you-badge";
 
-badge.textContent="YOU";
+badge.textContent=
+"YOU";
 
 card.appendChild(badge);
 
 }
 
 }
+
 
 }else{
 
@@ -2383,9 +2349,13 @@ stateEl.textContent=
 
 
 const badge=
-card.querySelector(".you-badge");
+card.querySelector(
+".you-badge"
+);
 
-if(badge) badge.remove();
+
+if(badge)
+badge.remove();
 
 }
 
@@ -2395,48 +2365,79 @@ if(badge) badge.remove();
 
 
 
+/* COPY GAME CODE */
+
 async function copyGameCode(){
 
-if(!gameCode) return;
+if(!gameCode)
+return;
 
 
 try{
 
-await navigator.clipboard.writeText(gameCode);
+await navigator.clipboard
+.writeText(gameCode);
 
-setLobbyMessage("✅ Game code copied!");
+
+setLobbyMessage(
+"✅ Game code copied!"
+);
+
 
 }catch(error){
 
-const temp=document.createElement("input");
+const temp=
+document.createElement("input");
 
-temp.value=gameCode;
 
-document.body.appendChild(temp);
+temp.value=
+gameCode;
+
+
+document.body.appendChild(
+temp
+);
+
 
 temp.select();
 
-document.execCommand("copy");
+
+document.execCommand(
+"copy"
+);
+
 
 temp.remove();
 
-setLobbyMessage("✅ Game code copied!");
+
+setLobbyMessage(
+"✅ Game code copied!"
+);
 
 }
 
 }
 
 
+
+/* SHARE GAME */
 
 async function shareGame(){
 
-if(!gameCode) return;
+if(!gameCode)
+return;
 
 
 const shareData={
+
 title:"Join my Buildva game",
-text:"Join my Buildva game with code: "+gameCode,
+
+text:
+"Join my Buildva game with code: "+
+gameCode,
+
 url:window.location.href
+
 };
 
 
@@ -2444,21 +2445,32 @@ try{
 
 if(navigator.share){
 
-await navigator.share(shareData);
+await navigator.share(
+shareData
+);
 
 return;
 
 }
 
-await navigator.clipboard.writeText(gameCode);
+
+await navigator.clipboard
+.writeText(gameCode);
+
 
 setLobbyMessage(
 "📤 Game code copied — send it to your opponent!"
 );
 
+
 }catch(error){
 
-if(error && error.name==="AbortError") return;
+if(
+error &&
+error.name==="AbortError"
+)
+return;
+
 
 setLobbyMessage(
 "📤 Game code: "+gameCode
@@ -2470,10 +2482,14 @@ setLobbyMessage(
 
 
 
+/* LOBBY MESSAGE */
+
 function setLobbyMessage(message){
 
 const waiting=
-document.getElementById("waiting");
+document.getElementById(
+"waiting"
+);
 
 
 if(waiting){
@@ -2484,6 +2500,7 @@ message+
 '</span>';
 
 }
+
 
 setTimeout(()=>{
 
@@ -2510,34 +2527,65 @@ waiting.innerHTML=
 
 
 
-/* ================================
-   PLAYER ASSIGNMENT
-================================ */
+/*
+=========================================================
+FIXED PLAYER ASSIGNMENT
+=========================================================
+
+This is the important fix.
+
+We use the browser's unique playerId rather than
+the player's name.
+
+Firebase transaction guarantees that two people cannot
+both reserve Player 1.
+
+Player 1 gets:
+
+playerId = browser A
+
+Player 2 gets:
+
+playerId = browser B
+*/
 
 async function assignMe(){
 
-if(!gameRef || !gameCode) return;
+if(
+!gameRef ||
+!gameCode
+)
+return;
 
 
 const nameInput=
-document.getElementById("playerName");
+document.getElementById(
+"playerName"
+);
 
 
 const name=
-(nameInput.value || "").trim();
+(nameInput.value || "")
+.trim();
 
 
 const status=
-document.getElementById("assignmentStatus");
+document.getElementById(
+"assignmentStatus"
+);
 
 
 const button=
-document.getElementById("assignMeBtn");
+document.getElementById(
+"assignMeBtn"
+);
 
 
 if(!name){
 
-alert("Please enter your name");
+alert(
+"Please enter your name"
+);
 
 nameInput.focus();
 
@@ -2546,19 +2594,28 @@ return;
 }
 
 
+/*
+Check whether THIS browser is already assigned.
+*/
+
 if(
-playerNumber &&
 currentGame &&
-currentGame.players &&
-currentGame.players["player"+playerNumber]
+currentGame.players
 ){
+
+if(
+currentGame.players.player1 &&
+currentGame.players.player1.playerId
+===myPlayerId
+){
+
+playerNumber=1;
 
 if(status){
 
 status.innerHTML=
 '<span class="status-pill">'+
-'🟢 You are Player '+
-playerNumber+
+'🟢 You are Player 1'+
 '</span>';
 
 }
@@ -2566,6 +2623,31 @@ playerNumber+
 return;
 
 }
+
+
+if(
+currentGame.players.player2 &&
+currentGame.players.player2.playerId
+===myPlayerId
+){
+
+playerNumber=2;
+
+if(status){
+
+status.innerHTML=
+'<span class="status-pill">'+
+'🟢 You are Player 2'+
+'</span>';
+
+}
+
+return;
+
+}
+
+}
+
 
 
 if(button){
@@ -2590,16 +2672,15 @@ status.innerHTML=
 
 let assignedSlot=null;
 
-const normalizedName=
-name.toLowerCase();
-
 
 try{
 
 const result=
 await gameRef.transaction(game=>{
 
-if(!game) return game;
+if(!game)
+return game;
+
 
 if(!game.players){
 
@@ -2611,59 +2692,98 @@ player2:false
 }
 
 
-const p1=game.players.player1;
+/*
+If this browser is already inside the game,
+do not create another player.
+*/
 
-const p2=game.players.player2;
+if(
+game.players.player1 &&
+game.players.player1.playerId
+===myPlayerId
+){
+
+return game;
+
+}
 
 
 if(
-(p1 &&
-(p1.name || "").trim().toLowerCase()
-===normalizedName)
-||
-(p2 &&
-(p2.name || "").trim().toLowerCase()
-===normalizedName)
+game.players.player2 &&
+game.players.player2.playerId
+===myPlayerId
 ){
 
-return;
+return game;
 
 }
 
 
-if(!p1){
+/*
+FIRST FREE SLOT = PLAYER 1
+*/
+
+if(!game.players.player1){
 
 game.players.player1={
+
+playerId:myPlayerId,
+
 name:name,
+
 ready:true
+
 };
+
 
 return game;
 
 }
 
 
-if(!p2){
+/*
+SECOND FREE SLOT = PLAYER 2
+*/
+
+if(!game.players.player2){
 
 game.players.player2={
+
+playerId:myPlayerId,
+
 name:name,
+
 ready:true
+
 };
+
 
 return game;
 
 }
 
+
+/*
+Both slots occupied.
+Cancel transaction.
+*/
 
 return;
 
 });
 
 
+/*
+Transaction failed because the game is full
+or another browser took the slot first.
+*/
+
 if(!result.committed){
 
 const latest=
-(await gameRef.once("value")).val();
+(
+await gameRef.once("value")
+).val();
 
 
 if(
@@ -2672,6 +2792,31 @@ latest.players &&
 latest.players.player1 &&
 latest.players.player2
 ){
+
+/*
+Check if this browser actually got a slot
+during a race.
+*/
+
+if(
+latest.players.player1.playerId
+===myPlayerId
+){
+
+assignedSlot=1;
+
+}
+
+else if(
+latest.players.player2.playerId
+===myPlayerId
+){
+
+assignedSlot=2;
+
+}
+
+else{
 
 if(status){
 
@@ -2682,16 +2827,18 @@ status.innerHTML=
 
 }
 
+return;
+
+}
+
 }else{
 
 if(status){
 
 status.innerHTML=
 '<span class="status-pill">'+
-'⚠️ That name is already being used.'+
+'⚠️ Could not assign player. Please try again.'+
 '</span>';
-
-}
 
 }
 
@@ -2699,25 +2846,36 @@ return;
 
 }
 
+}
 
-const saved=result.snapshot.val();
+
+/*
+Read the FINAL Firebase state.
+
+This is important because another player may have
+joined at exactly the same time.
+*/
+
+const saved=
+result.snapshot.val();
 
 
 if(saved && saved.players){
 
 if(
 saved.players.player1 &&
-saved.players.player1.name===name
+saved.players.player1.playerId
+===myPlayerId
 ){
 
 assignedSlot=1;
 
 }
 
-
-if(
+else if(
 saved.players.player2 &&
-saved.players.player2.name===name
+saved.players.player2.playerId
+===myPlayerId
 ){
 
 assignedSlot=2;
@@ -2727,11 +2885,25 @@ assignedSlot=2;
 }
 
 
+/*
+Extra verification from Firebase in case the
+transaction result changed during a race.
+*/
+
 if(!assignedSlot){
 
+const latest=
+(
+await gameRef.once("value")
+).val();
+
+
 if(
-saved.players.player1 &&
-saved.players.player1.name===name
+latest &&
+latest.players &&
+latest.players.player1 &&
+latest.players.player1.playerId
+===myPlayerId
 ){
 
 assignedSlot=1;
@@ -2739,8 +2911,11 @@ assignedSlot=1;
 }
 
 else if(
-saved.players.player2 &&
-saved.players.player2.name===name
+latest &&
+latest.players &&
+latest.players.player2 &&
+latest.players.player2.playerId
+===myPlayerId
 ){
 
 assignedSlot=2;
@@ -2759,7 +2934,12 @@ throw new Error(
 }
 
 
-playerNumber=assignedSlot;
+/*
+Save our assigned slot locally.
+*/
+
+playerNumber=
+assignedSlot;
 
 
 localStorage.setItem(
@@ -2767,10 +2947,12 @@ localStorage.setItem(
 gameCode
 );
 
+
 localStorage.setItem(
 "buildvaPlayerNumber",
 String(assignedSlot)
 );
+
 
 localStorage.setItem(
 "buildvaPlayerName",
@@ -2790,6 +2972,8 @@ assignedSlot+
 
 
 if(button){
+
+button.disabled=true;
 
 button.textContent=
 "✅ Player "+assignedSlot;
@@ -2817,19 +3001,23 @@ status.innerHTML=
 
 }
 
-}finally{
 
-if(button && !playerNumber){
+if(button){
 
 button.disabled=false;
 
-}
+button.textContent=
+"🎯 Assign Me";
 
 }
 
 }
 
+}
 
+
+
+/* Compatibility */
 
 async function choosePlayer(number){
 
@@ -2839,9 +3027,9 @@ return assignMe();
 
 
 
-/* ================================
+/* =========================
    COUNTDOWN
-================================ */
+========================= */
 
 function hideStartCountdown(){
 
@@ -2849,6 +3037,7 @@ const popup=
 document.getElementById(
 "startCountdownPopup"
 );
+
 
 if(popup){
 
@@ -2859,7 +3048,9 @@ popup.style.display="none";
 
 if(countdownTimer){
 
-clearInterval(countdownTimer);
+clearInterval(
+countdownTimer
+);
 
 countdownTimer=null;
 
@@ -2876,23 +3067,34 @@ document.getElementById(
 "startCountdownPopup"
 );
 
+
 const numberEl=
 document.getElementById(
 "countdownPopupNumber"
 );
 
 
-if(!popup || !numberEl) return;
+if(
+!popup ||
+!numberEl
+)
+return;
 
 
-numberEl.textContent=value;
+numberEl.textContent=
+value;
 
-numberEl.style.animation="none";
+
+numberEl.style.animation=
+"none";
+
 
 void numberEl.offsetWidth;
 
+
 numberEl.style.animation=
 "countdownPulse .7s ease-in-out";
+
 
 popup.style.display="grid";
 
@@ -2906,31 +3108,39 @@ if(
 !gameRef ||
 !currentGame ||
 currentGame.started
-){
-
+)
 return;
 
-}
 
-
-if(!currentGame.countdownStartedAt){
+if(
+!currentGame.countdownStartedAt
+){
 
 try{
 
-await gameRef.transaction(game=>{
+await gameRef.transaction(
+game=>{
 
-if(!game || game.started)
+if(
+!game ||
+game.started
+)
 return game;
 
 
-if(!game.countdownStartedAt){
+if(
+!game.countdownStartedAt
+){
 
 game.countdown=true;
 
 game.countdownStartedAt=
-firebase.database.ServerValue.TIMESTAMP;
+firebase.database
+.ServerValue
+.TIMESTAMP;
 
 }
+
 
 return game;
 
@@ -2968,16 +3178,22 @@ return;
 }
 
 
-if(!currentGame.countdownStartedAt)
+if(
+!currentGame.countdownStartedAt
+)
 return;
 
 
 if(countdownTimer)
-clearInterval(countdownTimer);
+clearInterval(
+countdownTimer
+);
 
 
 const startedAt=
-Number(currentGame.countdownStartedAt);
+Number(
+currentGame.countdownStartedAt
+);
 
 
 const tick=()=>{
@@ -2999,7 +3215,10 @@ Date.now()-startedAt;
 
 
 const secondsLeft=
-3-Math.floor(elapsed/1000);
+3-
+Math.floor(
+elapsed/1000
+);
 
 
 if(secondsLeft>=1){
@@ -3015,7 +3234,9 @@ return;
 
 if(elapsed<4000){
 
-renderCountdownNumber("GO!");
+renderCountdownNumber(
+"GO!"
+);
 
 return;
 
@@ -3038,16 +3259,20 @@ started:true
 
 tick();
 
+
 countdownTimer=
-setInterval(tick,100);
+setInterval(
+tick,
+100
+);
 
 }
 
 
 
-/* ================================
-   GAME SCREEN
-================================ */
+/* =========================
+   UPDATE SCREEN
+========================= */
 
 function updateScreen(){
 
@@ -3055,19 +3280,27 @@ if(!currentGame)
 return;
 
 
-document.getElementById("score1").innerHTML=
+document.getElementById(
+"score1"
+).innerHTML=
 currentGame.score1 || 0;
 
 
-document.getElementById("score2").innerHTML=
+document.getElementById(
+"score2"
+).innerHTML=
 currentGame.score2 || 0;
 
 
 
-if(currentGame.players &&
-currentGame.players.player1){
+if(
+currentGame.players &&
+currentGame.players.player1
+){
 
-document.getElementById("name1").innerHTML=
+document.getElementById(
+"name1"
+).innerHTML=
 "👤 "+
 currentGame.players.player1.name;
 
@@ -3075,10 +3308,14 @@ currentGame.players.player1.name;
 
 
 
-if(currentGame.players &&
-currentGame.players.player2){
+if(
+currentGame.players &&
+currentGame.players.player2
+){
 
-document.getElementById("name2").innerHTML=
+document.getElementById(
+"name2"
+).innerHTML=
 "👤 "+
 currentGame.players.player2.name;
 
@@ -3086,7 +3323,9 @@ currentGame.players.player2.name;
 
 
 
-document.getElementById("target").innerHTML=
+document.getElementById(
+"target"
+).innerHTML=
 currentGame.target;
 
 
@@ -3123,11 +3362,15 @@ playerNumber===2
 
 
 
-document.getElementById("remaining").innerHTML=
+document.getElementById(
+"remaining"
+).innerHTML=
 
 Math.max(
 0,
-TOTAL_NUMBERS-currentGame.target+1
+TOTAL_NUMBERS-
+currentGame.target+
+1
 );
 
 
@@ -3136,9 +3379,11 @@ updateLobbyPlayers();
 
 
 
-/* ====================================
-   DETECT PLAYER LEAVING
-==================================== */
+/*
+=========================================================
+PLAYER LEFT DETECTION
+=========================================================
+*/
 
 if(currentGame.lastLeft){
 
@@ -3150,36 +3395,43 @@ document.getElementById(
 
 if(
 currentGame.lastLeft.player &&
-currentGame.lastLeft.player !== playerNumber
+currentGame.lastLeft.player
+!==playerNumber
 ){
 
 notice.innerHTML=
 "⚠️ "+
-(currentGame.lastLeft.name ||
-("Player "+currentGame.lastLeft.player))+
+(
+currentGame.lastLeft.name ||
+"Player "+
+currentGame.lastLeft.player
+)+
 " has left the game.";
 
 
-notice.style.display="block";
+notice.style.display=
+"block";
 
 
 document.getElementById(
 "gameArea"
-).style.display="none";
+).style.display=
+"none";
 
 
 hideStartCountdown();
 
-
 }
 
 }
 
 
 
-/* ====================================
-   BOTH PLAYERS PRESENT
-==================================== */
+/*
+=========================================================
+CHECK BOTH PLAYERS
+=========================================================
+*/
 
 if(
 
@@ -3191,12 +3443,15 @@ currentGame.players.player2
 
 document.getElementById(
 "gameArea"
-).style.display="block";
+).style.display=
+"block";
 
 
 if(!currentGame.started){
 
-if(!currentGame.countdownStartedAt){
+if(
+!currentGame.countdownStartedAt
+){
 
 startCountdown();
 
@@ -3215,15 +3470,12 @@ hideStartCountdown();
 
 renderBoard();
 
-
 }else{
-
 
 document.getElementById(
 "waiting"
 ).innerHTML=
 "Waiting for another player...";
-
 
 }
 
@@ -3239,14 +3491,16 @@ showWinner();
 
 
 
-/* ================================
+/* =========================
    RENDER BOARD
-================================ */
+========================= */
 
 function renderBoard(){
 
 let box=
-document.getElementById("numbers");
+document.getElementById(
+"numbers"
+);
 
 
 box.innerHTML="";
@@ -3256,21 +3510,31 @@ if(!currentGame.board)
 return;
 
 
-currentGame.board.forEach(num=>{
+currentGame.board.forEach(
+num=>{
 
 let button=
-document.createElement("button");
+document.createElement(
+"button"
+);
 
 
-button.className="number";
-
-button.innerHTML=num;
-
+button.className=
+"number";
 
 
-if(num < currentGame.target){
+button.innerHTML=
+num;
 
-button.classList.add("used");
+
+if(
+num<
+currentGame.target
+){
+
+button.classList.add(
+"used"
+);
 
 }
 
@@ -3285,7 +3549,8 @@ button.disabled=true;
 
 else{
 
-button.onclick=function(){
+button.onclick=
+function(){
 
 pickNumber(num);
 
@@ -3294,7 +3559,9 @@ pickNumber(num);
 }
 
 
-box.appendChild(button);
+box.appendChild(
+button
+);
 
 });
 
@@ -3302,9 +3569,9 @@ box.appendChild(button);
 
 
 
-/* ================================
+/* =========================
    PICK NUMBER
-================================ */
+========================= */
 
 async function pickNumber(num){
 
@@ -3330,7 +3597,8 @@ if(!playerNumber)
 return;
 
 
-await gameRef.transaction(game=>{
+await gameRef.transaction(
+game=>{
 
 if(!game)
 return game;
@@ -3344,11 +3612,8 @@ if(game.finished)
 return game;
 
 
-if(num !== game.target){
-
+if(num!==game.target)
 return game;
-
-}
 
 
 
@@ -3364,18 +3629,27 @@ game.score2++;
 
 
 
-if(game.target===TOTAL_NUMBERS){
+if(
+game.target===
+TOTAL_NUMBERS
+){
 
 game.finished=true;
 
 
-if(game.score1>game.score2){
+if(
+game.score1>
+game.score2
+){
 
 game.winner=1;
 
 }
 
-else if(game.score2>game.score1){
+else if(
+game.score2>
+game.score1
+){
 
 game.winner=2;
 
@@ -3387,9 +3661,7 @@ game.winner=0;
 
 }
 
-}
-
-else{
+}else{
 
 game.target++;
 
@@ -3404,9 +3676,9 @@ return game;
 
 
 
-/* ================================
+/* =========================
    WINNER
-================================ */
+========================= */
 
 function showWinner(){
 
@@ -3415,20 +3687,28 @@ let title="";
 let icon="🏆";
 
 
-if(currentGame.winner===1){
+if(
+currentGame.winner===1
+){
 
 title=
-(currentGame.players.player1?.name ||
-"Player 1")+
+(
+currentGame.players.player1?.name ||
+"Player 1"
+)+
 " Wins!";
 
 }
 
-else if(currentGame.winner===2){
+else if(
+currentGame.winner===2
+){
 
 title=
-(currentGame.players.player2?.name ||
-"Player 2")+
+(
+currentGame.players.player2?.name ||
+"Player 2"
+)+
 " Wins!";
 
 }
@@ -3444,7 +3724,8 @@ title="Draw Game!";
 
 document.querySelector(
 "#winnerPopup .winner-icon"
-).textContent=icon;
+).textContent=
+icon;
 
 
 document.getElementById(
@@ -3458,20 +3739,22 @@ title+
 '<div class="final-score">'+
 
 '<div class="final-player">'+
-(currentGame.players.player1?.name ||
-"Player 1")+
+(
+currentGame.players.player1?.name ||
+"Player 1"
+)+
 '<strong>'+
 currentGame.score1+
 '</strong>'+
 '</div>'+
 
-'<div style="font-weight:900;color:var(--muted)">'+
-'VS'+
-'</div>'+
+'<div style="font-weight:900;color:var(--muted)">VS</div>'+
 
 '<div class="final-player">'+
-(currentGame.players.player2?.name ||
-"Player 2")+
+(
+currentGame.players.player2?.name ||
+"Player 2"
+)+
 '<strong>'+
 currentGame.score2+
 '</strong>'+
@@ -3482,21 +3765,23 @@ currentGame.score2+
 
 document.getElementById(
 "winnerPopup"
-).style.display="block";
+).style.display=
+"block";
 
 }
 
 
 
-/* ================================
+/* =========================
    PLAY AGAIN
-================================ */
+========================= */
 
 async function playAgain(){
 
 document.getElementById(
 "winnerPopup"
-).style.display="none";
+).style.display=
+"none";
 
 
 let board=[];
@@ -3547,13 +3832,16 @@ gameStarted=false;
 
 
 
-/* ================================
+/* =========================
    LEAVE GAME
-================================ */
+========================= */
 
 async function leaveGame(){
 
-if(!gameRef || !gameCode)
+if(
+!gameRef ||
+!gameCode
+)
 return;
 
 
@@ -3562,6 +3850,7 @@ playerNumber;
 
 
 const leavingName=
+
 currentGame &&
 currentGame.players &&
 currentGame.players[
@@ -3581,15 +3870,11 @@ localStorage.getItem(
 leavingGame=true;
 
 
-/*
-  Tell Firebase that this player has left.
-  The other player's browser receives this
-  immediately through listenGame().
-*/
 
 try{
 
-await gameRef.transaction(game=>{
+await gameRef.transaction(
+game=>{
 
 if(!game)
 return game;
@@ -3598,7 +3883,9 @@ return game;
 if(
 leavingPlayer===1 &&
 game.players &&
-game.players.player1
+game.players.player1 &&
+game.players.player1.playerId
+===myPlayerId
 ){
 
 game.players.player1=false;
@@ -3609,7 +3896,9 @@ game.players.player1=false;
 if(
 leavingPlayer===2 &&
 game.players &&
-game.players.player2
+game.players.player2 &&
+game.players.player2.playerId
+===myPlayerId
 ){
 
 game.players.player2=false;
@@ -3617,25 +3906,19 @@ game.players.player2=false;
 }
 
 
-/*
-  Save the player who left so the other
-  player receives a visible notification.
-*/
-
 game.lastLeft={
 
 player:leavingPlayer,
 
 name:leavingName,
 
-timestamp:firebase.database.ServerValue.TIMESTAMP
+timestamp:
+firebase.database
+.ServerValue
+.TIMESTAMP
 
 };
 
-
-/*
-  Stop the current game if it was running.
-*/
 
 game.started=false;
 
@@ -3647,15 +3930,10 @@ game.countdown=false;
 
 game.countdownStartedAt=null;
 
-
-/*
-  Clear scores so the remaining player
-  returns to the lobby state.
-*/
-
 game.score1=0;
 
 game.score2=0;
+
 
 return game;
 
@@ -3669,6 +3947,7 @@ error
 );
 
 }
+
 
 
 /* Stop voice */
@@ -3687,7 +3966,8 @@ error
 }
 
 
-/* Clear local identity */
+
+/* Clear local game identity */
 
 localStorage.removeItem(
 "buildvaGameCode"
@@ -3724,17 +4004,20 @@ leavingGame=false;
 
 document.getElementById(
 "playerArea"
-).style.display="none";
+).style.display=
+"none";
 
 
 document.getElementById(
 "gameArea"
-).style.display="none";
+).style.display=
+"none";
 
 
 document.getElementById(
 "setup"
-).style.display="block";
+).style.display=
+"block";
 
 
 document.getElementById(
@@ -3755,31 +4038,32 @@ document.getElementById(
 
 
 
-/* ================================
-   WINNER POPUP
-================================ */
+/* CLOSE WINNER */
 
 function closeWinnerPopup(){
 
 document.getElementById(
 "winnerPopup"
-).style.display="none";
+).style.display=
+"none";
 
 }
 
 
 
-/* ================================
-   DARK MODE
-================================ */
+/* DARK MODE */
 
 function toggleDark(){
 
-document.body.classList.toggle("dark");
+document.body.classList.toggle(
+"dark"
+);
 
 localStorage.setItem(
 "buildvaDark",
-document.body.classList.contains("dark")
+document.body.classList.contains(
+"dark"
+)
 ? "1"
 : "0"
 );
@@ -3788,10 +4072,14 @@ document.body.classList.contains("dark")
 
 
 if(
-localStorage.getItem("buildvaDark")==="1"
+localStorage.getItem(
+"buildvaDark"
+)==="1"
 ){
 
-document.body.classList.add("dark");
+document.body.classList.add(
+"dark"
+);
 
 }
 
@@ -3799,7 +4087,6 @@ document.body.classList.add("dark");
 
 /* =========================================================
    VOICE CHAT
-   WebRTC + Firebase signaling
 ========================================================= */
 
 let localStream=null;
@@ -3823,11 +4110,13 @@ const voiceConfig={
 iceServers:[
 
 {
-urls:"stun:stun.l.google.com:19302"
+urls:
+"stun:stun.l.google.com:19302"
 },
 
 {
-urls:"stun:stun1.l.google.com:19302"
+urls:
+"stun:stun1.l.google.com:19302"
 }
 
 ]
@@ -3846,7 +4135,8 @@ document.getElementById(
 
 if(status){
 
-status.innerHTML=message;
+status.innerHTML=
+message;
 
 }
 
@@ -3875,7 +4165,11 @@ active
 
 live.innerHTML=
 '<span class="voice-dot"></span> '+
-(active ? "ON" : "OFF");
+(
+active
+? "ON"
+: "OFF"
+);
 
 }
 
@@ -3931,9 +4225,13 @@ active
 }
 
 
-if(mute && !active){
+if(
+mute &&
+!active
+){
 
-mute.innerHTML="🔇 Mute";
+mute.innerHTML=
+"🔇 Mute";
 
 }
 
@@ -3948,7 +4246,9 @@ return;
 
 
 remoteAudio=
-document.createElement("audio");
+document.createElement(
+"audio"
+);
 
 
 remoteAudio.id=
@@ -3959,7 +4259,8 @@ remoteAudio.autoplay=true;
 
 remoteAudio.playsInline=true;
 
-remoteAudio.style.display="none";
+remoteAudio.style.display=
+"none";
 
 
 document.body.appendChild(
@@ -3972,7 +4273,8 @@ remoteAudio
 
 function removeVoiceListeners(){
 
-voiceListeners.forEach(item=>{
+voiceListeners.forEach(
+item=>{
 
 try{
 
@@ -4001,7 +4303,8 @@ if(
 return;
 
 
-const candidates=[
+const candidates=
+[
 ...pendingRemoteCandidates
 ];
 
@@ -4016,7 +4319,9 @@ const candidate of candidates
 try{
 
 await peerConnection.addIceCandidate(
-new RTCIceCandidate(candidate)
+new RTCIceCandidate(
+candidate
+)
 );
 
 }catch(error){
@@ -4036,14 +4341,17 @@ error
 
 function listenForRemoteCandidates(){
 
-if(!gameRef || !playerNumber)
+if(
+!gameRef ||
+!playerNumber
+)
 return;
 
 
 const otherPlayer=
 playerNumber===1
-? 2
-: 1;
+?2
+:1;
 
 
 const candidateRef=
@@ -4053,7 +4361,8 @@ otherPlayer
 );
 
 
-const callback=async snapshot=>{
+const callback=
+async snapshot=>{
 
 const candidate=
 snapshot.val();
@@ -4066,7 +4375,9 @@ if(
 return;
 
 
-if(!remoteDescriptionReady){
+if(
+!remoteDescriptionReady
+){
 
 pendingRemoteCandidates.push(
 candidate
@@ -4080,7 +4391,9 @@ return;
 try{
 
 await peerConnection.addIceCandidate(
-new RTCIceCandidate(candidate)
+new RTCIceCandidate(
+candidate
+)
 );
 
 }catch(error){
@@ -4125,7 +4438,8 @@ voiceConfig
 
 localStream
 .getTracks()
-.forEach(track=>{
+.forEach(
+track=>{
 
 peerConnection.addTrack(
 track,
@@ -4149,7 +4463,8 @@ event.streams[0]
 remoteAudio.srcObject=
 event.streams[0];
 
-remoteAudio.play().catch(
+remoteAudio.play()
+.catch(
 ()=>{}
 );
 
@@ -4218,7 +4533,9 @@ setVoiceStatus(
 
 }
 
-else if(state==="connecting"){
+else if(
+state==="connecting"
+){
 
 setVoiceStatus(
 "🟡 Connecting voice..."
@@ -4226,7 +4543,9 @@ setVoiceStatus(
 
 }
 
-else if(state==="disconnected"){
+else if(
+state==="disconnected"
+){
 
 setVoiceStatus(
 "🟠 Voice disconnected"
@@ -4234,7 +4553,9 @@ setVoiceStatus(
 
 }
 
-else if(state==="failed"){
+else if(
+state==="failed"
+){
 
 setVoiceStatus(
 "🔴 Voice connection failed"
@@ -4317,7 +4638,8 @@ setVoiceStatus(
 
 
 localStream=
-await navigator.mediaDevices.getUserMedia({
+await navigator.mediaDevices
+.getUserMedia({
 audio:true
 });
 
@@ -4340,38 +4662,39 @@ setVoiceButtons(true);
 
 if(playerNumber===1){
 
-
-await gameRef.child(
-"voice"
-).remove();
+await gameRef
+.child("voice")
+.remove();
 
 
 const callId=
 Date.now().toString();
 
 
-await gameRef.child(
-"voice/callId"
-).set(callId);
+await gameRef
+.child("voice/callId")
+.set(callId);
 
 
-await gameRef.child(
-"voice/ended"
-).set(false);
+await gameRef
+.child("voice/ended")
+.set(false);
 
 
 const offer=
-await peerConnection.createOffer();
+await peerConnection
+.createOffer();
 
 
-await peerConnection.setLocalDescription(
+await peerConnection
+.setLocalDescription(
 offer
 );
 
 
-await gameRef.child(
-"voice/offer"
-).set({
+await gameRef
+.child("voice/offer")
+.set({
 
 type:offer.type,
 
@@ -4411,8 +4734,11 @@ return;
 
 try{
 
-await peerConnection.setRemoteDescription(
-new RTCSessionDescription(answer)
+await peerConnection
+.setRemoteDescription(
+new RTCSessionDescription(
+answer
+)
 );
 
 
@@ -4460,7 +4786,6 @@ callback:answerCallback
 
 }else{
 
-
 setVoiceStatus(
 "🟡 Waiting for Player 1..."
 );
@@ -4492,8 +4817,11 @@ return;
 
 try{
 
-await peerConnection.setRemoteDescription(
-new RTCSessionDescription(offer)
+await peerConnection
+.setRemoteDescription(
+new RTCSessionDescription(
+offer
+)
 );
 
 
@@ -4503,17 +4831,19 @@ await flushRemoteCandidates();
 
 
 const answer=
-await peerConnection.createAnswer();
+await peerConnection
+.createAnswer();
 
 
-await peerConnection.setLocalDescription(
+await peerConnection
+.setLocalDescription(
 answer
 );
 
 
-await gameRef.child(
-"voice/answer"
-).set({
+await gameRef
+.child("voice/answer")
+.set({
 
 type:answer.type,
 
@@ -4581,7 +4911,9 @@ if(localStream){
 
 localStream
 .getTracks()
-.forEach(track=>track.stop());
+.forEach(
+track=>track.stop()
+);
 
 localStream=null;
 
@@ -4634,7 +4966,8 @@ const currentlyEnabled=
 audioTracks[0].enabled;
 
 
-audioTracks.forEach(track=>{
+audioTracks.forEach(
+track=>{
 
 track.enabled=
 !currentlyEnabled;
@@ -4653,6 +4986,7 @@ if(currentlyEnabled){
 button.innerHTML=
 "🔊 Unmute";
 
+
 setVoiceStatus(
 "🔇 Microphone muted"
 );
@@ -4661,6 +4995,7 @@ setVoiceStatus(
 
 button.innerHTML=
 "🔇 Mute";
+
 
 setVoiceStatus(
 "🟢 Voice connected"
@@ -4681,7 +5016,9 @@ if(localStream){
 
 localStream
 .getTracks()
-.forEach(track=>track.stop());
+.forEach(
+track=>track.stop()
+);
 
 localStream=null;
 
@@ -4749,7 +5086,7 @@ setVoiceStatus(
 
 
 
-/* Watch for voice ending */
+/* WATCH FOR VOICE END */
 
 function watchForVoiceEnd(){
 
@@ -4764,7 +5101,8 @@ gameRef.child("voice");
 let voiceWasPresent=false;
 
 
-const callback=snapshot=>{
+const callback=
+snapshot=>{
 
 if(snapshot.exists()){
 
@@ -4787,7 +5125,9 @@ if(localStream){
 
 localStream
 .getTracks()
-.forEach(track=>track.stop());
+.forEach(
+track=>track.stop()
+);
 
 localStream=null;
 
@@ -4856,7 +5196,7 @@ callback:callback
 
 
 
-/* Browser closing */
+/* BROWSER CLOSE */
 
 window.addEventListener(
 "beforeunload",
@@ -4866,7 +5206,9 @@ if(localStream){
 
 localStream
 .getTracks()
-.forEach(track=>track.stop());
+.forEach(
+track=>track.stop()
+);
 
 }
 
