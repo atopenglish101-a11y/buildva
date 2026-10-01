@@ -1,0 +1,23 @@
+BUILDVA UPGRADE — 2026-10-01
+
+This package uses the latest working Buildva Firebase/WebRTC game as its base.
+
+Included improvements:
+1. Professional home/game UI retained and polished.
+2. Automatic Player Assignment with race-safe Firebase transactions.
+3. Multiplayer lobby/player presence and clearer online/offline status.
+4. Voice Chat UI and WebRTC voice system retained and polished.
+5. Mobile layout improvements retained.
+6. Winner/rematch screen retained and polished.
+7. Custom-domain-ready web structure (custom domain intentionally NOT configured).
+8. Reliability: Firebase connection indicator, player presence, onDisconnect handling, reconnect restoration, safer slot claiming.
+9. Custom domain intentionally skipped as requested.
+10. Public-sharing support: shareable game URLs now use ?game=GAMECODE and the Join screen can load the code automatically.
+
+Important owner-side item:
+Firebase project-wide usage/security settings are controlled in Firebase Console. The public HTML must not contain admin credentials. Before a large public launch, review Realtime Database Security Rules and monitor connections/downloads in Firebase Console.
+
+Files:
+- index.html
+- buildva-logo.png
+- buildva-favicon.png
