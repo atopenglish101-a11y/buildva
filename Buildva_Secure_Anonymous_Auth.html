@@ -1,0 +1,5320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="icon" type="image/png" href="buildva-favicon.png">
+<meta name="theme-color" content="#2563a8">
+<meta name="description" content="Buildva — a fast multiplayer number-picking game. Create a game, invite a player, and play together.">
+<meta property="og:title" content="Buildva - Picking Numbers">
+<meta property="og:description" content="Play Buildva, the multiplayer number-picking game.">
+<meta property="og:image" content="buildva-logo.png">
+<meta property="og:type" content="website">
+
+<title>Buildva - Picking Numbers</title>
+
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#eef4f8;
+color:#334155;
+padding-top:140px;
+padding-bottom:90px;
+transition:.3s;
+}
+
+
+/* DARK MODE */
+
+body.dark{
+background:#111827;
+color:#e5e7eb;
+}
+
+body.dark .panel,
+body.dark .score,
+body.dark .number{
+background:#1f2937;
+color:#e5e7eb;
+}
+
+body.dark .number:hover{
+background:#374151;
+}
+
+
+/* HEADER */
+
+header{
+position:fixed;
+top:0;
+left:0;
+right:0;
+background:#2563a8;
+color:white;
+text-align:center;
+padding:15px;
+z-index:1000;
+}
+
+header h1{
+margin:0;
+}
+
+.brand{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:10px;
+}
+
+.buildva-logo{
+width:58px;
+height:58px;
+object-fit:cover;
+border-radius:14px;
+box-shadow:0 3px 10px rgba(0,0,0,.25);
+}
+
+@media(max-width:600px){
+
+.brand{
+gap:8px;
+}
+
+.buildva-logo{
+width:48px;
+height:48px;
+border-radius:12px;
+}
+
+}
+
+
+.mode-btn{
+position:absolute;
+right:15px;
+top:15px;
+background:#ffffff33;
+color:white;
+padding:8px 12px;
+}
+
+
+/* MAIN */
+
+.screen{
+max-width:1000px;
+margin:auto;
+padding:10px;
+}
+
+
+.panel{
+background:white;
+border-radius:14px;
+padding:15px;
+margin-bottom:15px;
+box-shadow:0 3px 10px rgba(0,0,0,.12);
+}
+
+
+/* BUTTONS */
+
+button{
+cursor:pointer;
+border:none;
+border-radius:8px;
+}
+
+.main-btn{
+background:#2563eb;
+color:white;
+padding:12px 20px;
+font-size:16px;
+}
+
+.player-btn{
+background:#10b981;
+color:white;
+padding:12px 20px;
+margin:5px;
+}
+
+
+/* SCORE */
+
+.scoreboard{
+display:flex;
+gap:10px;
+}
+
+.score{
+flex:1;
+background:white;
+border-radius:12px;
+padding:12px;
+text-align:center;
+font-size:20px;
+}
+
+
+/* TARGET */
+
+.target-panel{
+position:sticky;
+top:140px;
+z-index:900;
+}
+
+.target{
+background:#facc15;
+padding:10px 20px;
+border-radius:12px;
+font-size:28px;
+font-weight:bold;
+display:inline-block;
+}
+
+
+/* COUNTDOWN */
+
+#countdown{
+text-align:center;
+font-size:40px;
+font-weight:bold;
+color:#2563eb;
+}
+
+#winnerMessage{
+text-align:center;
+font-size:28px;
+color:#16a34a;
+}
+
+
+/* WINNER POPUP */
+
+#winnerPopup{
+display:none;
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+background:white;
+padding:30px;
+border-radius:15px;
+box-shadow:0 5px 25px rgba(0,0,0,.3);
+z-index:3000;
+text-align:center;
+font-size:22px;
+}
+
+.dark #winnerPopup{
+background:#1f2937;
+color:white;
+}
+
+
+/* NUMBERS */
+
+#numbers{
+display:grid;
+grid-template-columns:repeat(12,1fr);
+gap:5px;
+}
+
+.number{
+background:white;
+border:1px solid #cbd5e1;
+aspect-ratio:1;
+font-weight:bold;
+font-size:14px;
+}
+
+.number:hover{
+background:#dbeafe;
+}
+
+.used{
+visibility:hidden;
+}
+
+
+@media(max-width:600px){
+
+#numbers{
+grid-template-columns:repeat(8,1fr);
+}
+
+.number{
+font-size:12px;
+}
+
+.mode-btn{
+position:static;
+margin-top:10px;
+}
+
+}
+
+
+/* =========================
+   BUILDVA POLISH
+========================= */
+
+:root{
+--brand:#2563eb;
+--brand-dark:#1d4ed8;
+--accent:#10b981;
+--gold:#facc15;
+--surface:#ffffff;
+--muted:#64748b;
+--border:#dbe4ee;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+background:
+radial-gradient(circle at 10% 10%,rgba(37,99,235,.10),transparent 28%),
+radial-gradient(circle at 90% 20%,rgba(16,185,129,.10),transparent 26%),
+#eef4f8;
+}
+
+body.dark{
+background:
+radial-gradient(circle at 10% 10%,rgba(37,99,235,.18),transparent 28%),
+radial-gradient(circle at 90% 20%,rgba(16,185,129,.12),transparent 26%),
+#0b1220;
+}
+
+header{
+background:linear-gradient(135deg,#1d4ed8,#2563a8 55%,#0f766e);
+box-shadow:0 4px 18px rgba(15,23,42,.20);
+padding:10px 15px;
+}
+
+.brand{
+text-align:left;
+}
+
+.brand-copy h1{
+font-size:25px;
+line-height:1;
+margin:0 0 4px;
+}
+
+.brand-copy div{
+font-size:13px;
+opacity:.9;
+}
+
+.screen{
+max-width:1050px;
+padding:18px 12px 40px;
+}
+
+
+/* HOME */
+
+.home-hero{
+position:relative;
+overflow:hidden;
+padding:30px 24px;
+margin-bottom:16px;
+border-radius:20px;
+background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(239,246,255,.96));
+border:1px solid rgba(148,163,184,.22);
+box-shadow:0 10px 30px rgba(15,23,42,.10);
+}
+
+body.dark .home-hero{
+background:linear-gradient(135deg,#172033,#111827);
+}
+
+.home-hero::after{
+content:"";
+position:absolute;
+width:180px;
+height:180px;
+border-radius:50%;
+right:-70px;
+top:-70px;
+background:rgba(37,99,235,.12);
+}
+
+.hero-content{
+position:relative;
+z-index:1;
+max-width:700px;
+}
+
+.hero-kicker{
+font-weight:800;
+color:var(--brand);
+letter-spacing:.08em;
+text-transform:uppercase;
+font-size:12px;
+}
+
+.hero-title{
+font-size:clamp(30px,6vw,52px);
+line-height:1.02;
+margin:8px 0 10px;
+color:#0f172a;
+}
+
+body.dark .hero-title{
+color:#f8fafc;
+}
+
+.hero-subtitle{
+font-size:17px;
+line-height:1.5;
+color:var(--muted);
+max-width:620px;
+margin:0;
+}
+
+body.dark .hero-subtitle{
+color:#cbd5e1;
+}
+
+.feature-row{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+margin-top:20px;
+}
+
+.feature-card{
+padding:13px;
+border-radius:14px;
+background:rgba(255,255,255,.75);
+border:1px solid var(--border);
+font-size:13px;
+font-weight:700;
+}
+
+body.dark .feature-card{
+background:#1f2937;
+border-color:#334155;
+}
+
+.feature-card span{
+display:block;
+font-size:22px;
+margin-bottom:4px;
+}
+
+
+/* SETUP */
+
+#setup.panel{
+padding:20px;
+}
+
+.setup-grid{
+display:grid;
+grid-template-columns:1.1fr .9fr;
+gap:16px;
+}
+
+.setup-card{
+padding:18px;
+border:1px solid var(--border);
+border-radius:16px;
+background:rgba(248,250,252,.72);
+}
+
+body.dark .setup-card{
+background:#111827;
+border-color:#334155;
+}
+
+.setup-card h3{
+margin-top:0;
+}
+
+.size-options{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:8px;
+}
+
+.size-option{
+display:block;
+cursor:pointer;
+}
+
+.size-option input{
+position:absolute;
+opacity:0;
+pointer-events:none;
+}
+
+.size-option span{
+display:block;
+text-align:center;
+padding:13px 8px;
+border:2px solid var(--border);
+border-radius:12px;
+font-weight:800;
+background:var(--surface);
+transition:.2s;
+}
+
+.size-option input:checked + span{
+border-color:var(--brand);
+background:#eff6ff;
+color:var(--brand);
+box-shadow:0 0 0 3px rgba(37,99,235,.10);
+}
+
+body.dark .size-option span{
+background:#1f2937;
+border-color:#475569;
+}
+
+body.dark .size-option input:checked + span{
+background:#172554;
+color:#93c5fd;
+border-color:#60a5fa;
+}
+
+.join-row{
+display:flex;
+gap:8px;
+align-items:stretch;
+}
+
+.join-row input{
+flex:1;
+min-width:0;
+padding:12px;
+border:1px solid var(--border);
+border-radius:9px;
+font-size:16px;
+text-transform:uppercase;
+}
+
+body.dark input{
+background:#111827;
+color:#f8fafc;
+border-color:#475569;
+}
+
+.main-btn,
+.player-btn{
+transition:transform .15s,box-shadow .15s,filter .15s;
+}
+
+.main-btn:hover,
+.player-btn:hover{
+transform:translateY(-1px);
+box-shadow:0 5px 14px rgba(15,23,42,.14);
+filter:brightness(1.03);
+}
+
+.main-btn:active,
+.player-btn:active{
+transform:translateY(0);
+}
+
+.main-btn.secondary{
+background:#475569;
+}
+
+.main-btn.success{
+background:#059669;
+}
+
+
+/* STATUS */
+
+.status-pill{
+display:inline-flex;
+align-items:center;
+gap:6px;
+padding:6px 10px;
+border-radius:999px;
+background:#ecfdf5;
+color:#047857;
+font-size:12px;
+font-weight:800;
+}
+
+body.dark .status-pill{
+background:#064e3b;
+color:#a7f3d0;
+}
+
+
+/* PLAYER AREA */
+
+#playerArea{
+padding:20px;
+}
+
+
+/* PLAYER LEFT NOTICE */
+
+#playerLeftNotice{
+display:none;
+margin:0 0 15px;
+padding:13px 15px;
+border-radius:12px;
+background:#fef2f2;
+border:1px solid #fecaca;
+color:#b91c1c;
+font-weight:800;
+text-align:center;
+}
+
+body.dark #playerLeftNotice{
+background:#450a0a;
+border-color:#991b1b;
+color:#fecaca;
+}
+
+
+/* GAME CODE */
+
+.game-code-box{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+flex-wrap:wrap;
+padding:14px;
+border-radius:15px;
+background:#eff6ff;
+border:1px solid #bfdbfe;
+margin-top:20px;
+}
+
+body.dark .game-code-box{
+background:#172554;
+border-color:#1e40af;
+}
+
+.game-code{
+font-size:26px;
+font-weight:900;
+letter-spacing:.14em;
+color:var(--brand);
+}
+
+body.dark .game-code{
+color:#93c5fd;
+}
+
+.game-code-notice{
+display:block;
+width:100%;
+margin:10px 0 0;
+padding:11px 14px;
+border-radius:11px;
+background:#fef3c7;
+border:1px solid #fcd34d;
+color:#92400e;
+font-size:13px;
+font-weight:800;
+line-height:1.4;
+text-align:center;
+}
+
+body.dark .game-code-notice{
+background:#451a03;
+border-color:#92400e;
+color:#fde68a;
+}
+
+.code-actions{
+display:flex;
+gap:7px;
+flex-wrap:wrap;
+}
+
+.small-btn{
+padding:9px 12px;
+border-radius:8px;
+border:none;
+background:#e2e8f0;
+color:#0f172a;
+font-weight:700;
+cursor:pointer;
+}
+
+body.dark .small-btn{
+background:#334155;
+color:#f8fafc;
+}
+
+
+/* PLAYER CARDS */
+
+.player-cards{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin:15px 0;
+}
+
+.player-card{
+padding:14px;
+border-radius:14px;
+border:1px solid var(--border);
+background:var(--surface);
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.player-avatar{
+width:42px;
+height:42px;
+border-radius:50%;
+display:grid;
+place-items:center;
+background:#dbeafe;
+font-size:21px;
+flex:0 0 auto;
+}
+
+body.dark .player-avatar{
+background:#1e3a8a;
+}
+
+.player-info{
+min-width:0;
+flex:1;
+}
+
+.player-name{
+font-weight:800;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+}
+
+.player-state{
+font-size:12px;
+color:var(--muted);
+margin-top:3px;
+}
+
+.you-badge{
+font-size:10px;
+font-weight:900;
+padding:4px 7px;
+border-radius:999px;
+background:#dbeafe;
+color:#1d4ed8;
+}
+
+body.dark .you-badge{
+background:#1e3a8a;
+color:#bfdbfe;
+}
+
+
+/* SCORE */
+
+.scoreboard{
+position:sticky;
+top:112px;
+z-index:850;
+}
+
+.score{
+border:1px solid var(--border);
+box-shadow:0 3px 10px rgba(0,0,0,.06);
+}
+
+.score.active-player{
+outline:3px solid rgba(37,99,235,.20);
+}
+
+.score-label{
+font-size:11px;
+text-transform:uppercase;
+letter-spacing:.08em;
+color:var(--muted);
+font-weight:800;
+}
+
+.score-number{
+font-size:32px;
+line-height:1.1;
+display:block;
+margin-top:3px;
+}
+
+.target-panel{
+text-align:center;
+box-shadow:0 6px 18px rgba(15,23,42,.10);
+}
+
+.target-label{
+font-size:12px;
+text-transform:uppercase;
+letter-spacing:.12em;
+color:#92400e;
+font-weight:900;
+margin-bottom:4px;
+}
+
+.target{
+min-width:90px;
+}
+
+#remaining{
+font-size:20px;
+}
+
+#numbers{
+gap:6px;
+padding-bottom:30px;
+}
+
+.number{
+border-radius:8px;
+box-shadow:0 1px 2px rgba(15,23,42,.06);
+transition:.12s;
+}
+
+.number:not(:disabled):hover{
+transform:scale(1.04);
+border-color:#60a5fa;
+}
+
+.number:disabled{
+cursor:not-allowed;
+opacity:.75;
+}
+
+
+/* =========================
+   VOICE CALL BAR
+========================= */
+
+#voiceCallBar{
+position:fixed;
+left:0;
+right:0;
+bottom:0;
+z-index:2500;
+padding:10px 14px;
+background:rgba(15,23,42,.96);
+backdrop-filter:blur(12px);
+-webkit-backdrop-filter:blur(12px);
+box-shadow:0 -5px 25px rgba(0,0,0,.25);
+color:white;
+}
+
+.voice-bar-inner{
+max-width:1050px;
+margin:auto;
+display:flex;
+align-items:center;
+gap:14px;
+}
+
+.voice-bar-icon{
+width:42px;
+height:42px;
+border-radius:50%;
+display:grid;
+place-items:center;
+background:#1e3a8a;
+font-size:21px;
+flex:0 0 auto;
+}
+
+.voice-bar-info{
+min-width:0;
+flex:1;
+}
+
+.voice-bar-title{
+font-size:14px;
+font-weight:900;
+display:flex;
+align-items:center;
+gap:7px;
+}
+
+.voice-bar-status{
+font-size:11px;
+color:#cbd5e1;
+margin-top:3px;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+}
+
+.voice-bar-dot{
+width:8px;
+height:8px;
+border-radius:50%;
+background:#ef4444;
+display:inline-block;
+}
+
+#voiceCallBar.connected .voice-bar-dot{
+background:#22c55e;
+box-shadow:0 0 0 4px rgba(34,197,94,.15);
+}
+
+#voiceCallBar.connecting .voice-bar-dot{
+background:#facc15;
+box-shadow:0 0 0 4px rgba(250,204,21,.12);
+}
+
+.voice-bar-controls{
+display:flex;
+gap:7px;
+align-items:center;
+}
+
+.voice-bar-btn{
+border:none;
+border-radius:9px;
+padding:10px 13px;
+font-weight:800;
+font-size:13px;
+cursor:pointer;
+color:white;
+background:#334155;
+white-space:nowrap;
+}
+
+.voice-bar-btn:hover{
+filter:brightness(1.12);
+}
+
+.voice-bar-start{
+background:#10b981;
+}
+
+.voice-bar-mute{
+background:#475569;
+}
+
+.voice-bar-end{
+background:#dc2626;
+}
+
+.voice-bar-btn:disabled{
+opacity:.55;
+cursor:not-allowed;
+}
+
+@media(max-width:700px){
+
+#voiceCallBar{
+padding:8px 9px;
+}
+
+.voice-bar-inner{
+gap:9px;
+}
+
+.voice-bar-icon{
+width:38px;
+height:38px;
+font-size:18px;
+}
+
+.voice-bar-title{
+font-size:12px;
+}
+
+.voice-bar-status{
+font-size:10px;
+}
+
+.voice-bar-controls{
+gap:5px;
+}
+
+.voice-bar-btn{
+padding:9px 9px;
+font-size:11px;
+}
+
+}
+
+@media(max-width:480px){
+
+.voice-bar-inner{
+flex-wrap:wrap;
+}
+
+.voice-bar-info{
+flex:1;
+}
+
+.voice-bar-controls{
+width:100%;
+}
+
+.voice-bar-btn{
+flex:1;
+}
+
+}
+
+
+/* COUNTDOWN */
+
+#startCountdownPopup{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(15,23,42,.68);
+backdrop-filter:blur(5px);
+-webkit-backdrop-filter:blur(5px);
+z-index:4000;
+place-items:center;
+padding:20px;
+}
+
+.countdown-card{
+width:min(88vw,360px);
+text-align:center;
+padding:30px 22px;
+border-radius:24px;
+background:white;
+border:1px solid rgba(255,255,255,.7);
+box-shadow:0 18px 60px rgba(0,0,0,.35);
+animation:countdownPop .28s ease-out;
+}
+
+body.dark .countdown-card{
+background:#172033;
+color:#f8fafc;
+border-color:#334155;
+}
+
+.countdown-kicker{
+font-size:13px;
+font-weight:900;
+letter-spacing:.14em;
+color:var(--brand);
+}
+
+#countdownPopupNumber{
+font-size:clamp(82px,20vw,120px);
+line-height:.95;
+font-weight:1000;
+color:var(--brand);
+margin:10px 0;
+animation:countdownPulse .7s ease-in-out;
+}
+
+.countdown-text{
+font-size:16px;
+font-weight:700;
+color:var(--muted);
+}
+
+@keyframes countdownPop{
+
+from{
+opacity:0;
+transform:scale(.78)
+}
+
+to{
+opacity:1;
+transform:scale(1)
+}
+
+}
+
+@keyframes countdownPulse{
+
+0%{
+transform:scale(.7);
+opacity:.3
+}
+
+55%{
+transform:scale(1.08);
+opacity:1
+}
+
+100%{
+transform:scale(1)
+}
+
+}
+
+
+/* WINNER */
+
+#winnerPopup{
+width:min(92vw,430px);
+padding:28px 22px;
+border:1px solid var(--border);
+}
+
+.winner-icon{
+font-size:52px;
+}
+
+.winner-title{
+font-size:30px;
+font-weight:900;
+margin:7px 0;
+}
+
+.final-score{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:18px;
+margin:15px 0 20px;
+}
+
+.final-score .final-player{
+padding:12px 16px;
+border-radius:12px;
+background:#f8fafc;
+border:1px solid var(--border);
+min-width:110px;
+}
+
+body.dark .final-score .final-player{
+background:#111827;
+}
+
+.final-score strong{
+font-size:28px;
+display:block;
+}
+
+.popup-actions{
+display:flex;
+gap:8px;
+justify-content:center;
+flex-wrap:wrap;
+}
+
+.share-note{
+font-size:12px;
+color:var(--muted);
+margin-top:9px;
+}
+
+
+/* FIREBASE CONNECTION */
+
+.firebase-health{
+display:inline-flex;
+align-items:center;
+gap:7px;
+margin-top:7px;
+padding:5px 10px;
+border-radius:999px;
+background:rgba(255,255,255,.16);
+color:#fff;
+font-size:11px;
+font-weight:800;
+letter-spacing:.02em;
+}
+
+.firebase-health-dot{
+width:8px;
+height:8px;
+border-radius:50%;
+background:#fbbf24;
+box-shadow:0 0 0 3px rgba(251,191,36,.16);
+}
+
+.firebase-health.connected .firebase-health-dot{
+background:#4ade80;
+box-shadow:0 0 0 3px rgba(74,222,128,.16);
+}
+
+.firebase-health.disconnected .firebase-health-dot{
+background:#f87171;
+box-shadow:0 0 0 3px rgba(248,113,113,.16);
+}
+
+
+/* RESPONSIVE */
+
+@media(max-width:700px){
+
+body{
+padding-top:105px;
+padding-bottom:85px;
+}
+
+header{
+padding:7px 10px;
+}
+
+.brand-copy h1{
+font-size:21px;
+}
+
+.buildva-logo{
+width:42px;
+height:42px;
+border-radius:10px;
+}
+
+.mode-btn{
+right:8px;
+top:8px;
+padding:7px 9px;
+}
+
+.screen{
+padding:10px 8px 28px;
+}
+
+.home-hero{
+padding:22px 17px;
+border-radius:16px;
+}
+
+.hero-title{
+font-size:34px;
+}
+
+.hero-subtitle{
+font-size:15px;
+}
+
+.feature-row{
+grid-template-columns:1fr;
+gap:7px;
+}
+
+.feature-card{
+padding:10px;
+display:flex;
+align-items:center;
+gap:9px;
+}
+
+.feature-card span{
+margin:0;
+font-size:20px;
+}
+
+.setup-grid{
+grid-template-columns:1fr;
+}
+
+.size-options{
+grid-template-columns:1fr 1fr 1fr;
+}
+
+.join-row{
+flex-direction:column;
+}
+
+.join-row .main-btn{
+width:100%;
+}
+
+.player-cards{
+grid-template-columns:1fr;
+}
+
+.game-code{
+font-size:22px;
+}
+
+.code-actions{
+width:100%;
+}
+
+.code-actions .small-btn{
+flex:1;
+}
+
+.scoreboard{
+top:84px;
+}
+
+.score{
+padding:9px;
+font-size:16px;
+}
+
+.score-number{
+font-size:27px;
+}
+
+.target-panel{
+top:142px;
+}
+
+#numbers{
+grid-template-columns:repeat(8,1fr);
+gap:4px;
+}
+
+.number{
+font-size:12px;
+}
+
+.firebase-health{
+font-size:10px;
+margin-top:5px;
+padding:4px 8px;
+}
+
+}
+
+
+@media(max-width:380px){
+
+#numbers{
+grid-template-columns:repeat(7,1fr);
+}
+
+.number{
+font-size:11px;
+}
+
+.size-options{
+grid-template-columns:1fr;
+}
+
+}
+
+
+/* GAME LEAVE BUTTON */
+
+.game-actions{
+display:flex;
+justify-content:flex-end;
+margin-bottom:12px;
+}
+
+.leave-game-btn{
+background:#ef4444;
+color:white;
+padding:10px 15px;
+font-weight:800;
+border-radius:9px;
+}
+
+.leave-game-btn:hover{
+background:#dc2626;
+}
+
+@media(max-width:600px){
+
+.game-actions{
+justify-content:center;
+}
+
+.leave-game-btn{
+width:100%;
+}
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<div class="brand">
+
+<img src="buildva-logo.png"
+alt="Buildva logo"
+class="buildva-logo">
+
+<div class="brand-copy">
+
+<h1>Buildva</h1>
+
+<div>Picking Numbers</div>
+
+</div>
+
+</div>
+
+
+<div id="firebaseHealth"
+class="firebase-health"
+role="status"
+aria-live="polite"
+title="Shows this device’s connection to Firebase, not total players online">
+
+<span class="firebase-health-dot"></span>
+
+<span id="firebaseHealthText">
+Checking server connection…
+</span>
+
+</div>
+
+
+<button class="mode-btn"
+onclick="toggleDark()">
+
+🌙
+
+</button>
+
+</header>
+
+
+
+<div class="screen">
+
+
+<!-- HOME / SETUP -->
+
+<div id="setup">
+
+<section class="home-hero">
+
+<div class="hero-content">
+
+<div class="hero-kicker">
+🎯 Fast • Simple • Multiplayer
+</div>
+
+<h2 class="hero-title">
+Pick the numbers. Beat your opponent.
+</h2>
+
+<p class="hero-subtitle">
+Create a game, invite a friend with a code, and race to find the numbers in order. Play from your phone or computer.
+</p>
+
+<div class="feature-row">
+
+<div class="feature-card">
+<span>⚡</span>
+<div>Race in real time</div>
+</div>
+
+<div class="feature-card">
+<span>🎙️</span>
+<div>Talk with voice chat</div>
+</div>
+
+<div class="feature-card">
+<span>🏆</span>
+<div>Score and rematch</div>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<div class="panel">
+
+<div class="setup-grid">
+
+
+<div class="setup-card">
+
+<h3>🎮 Create a Game</h3>
+
+<p>
+Select how many numbers you want to play with.
+</p>
+
+<div class="size-options">
+
+<label class="size-option">
+
+<input type="radio"
+name="gameSize"
+value="50"
+checked>
+
+<span>1–50</span>
+
+</label>
+
+
+<label class="size-option">
+
+<input type="radio"
+name="gameSize"
+value="100">
+
+<span>1–100</span>
+
+</label>
+
+
+<label class="size-option">
+
+<input type="radio"
+name="gameSize"
+value="200">
+
+<span>1–200</span>
+
+</label>
+
+</div>
+
+<br>
+
+<button class="main-btn success"
+onclick="createGame()">
+
+🎮 Create Game
+
+</button>
+
+<p class="share-note">
+
+After creating, share the 6-character game code with your opponent.
+
+</p>
+
+</div>
+
+
+
+<div class="setup-card">
+
+<h3>🚪 Join a Game</h3>
+
+<p>
+Enter the game code your friend sent you.
+</p>
+
+<div class="join-row">
+
+<input id="gameCodeInput"
+placeholder="GAME CODE"
+maxlength="6"
+autocomplete="off">
+
+<button class="main-btn"
+onclick="joinGame()">
+
+Join Game
+
+</button>
+
+</div>
+
+<p id="status"></p>
+
+</div>
+
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- PLAYER LEFT NOTICE -->
+
+<div id="playerLeftNotice"></div>
+
+
+
+<!-- PLAYER AREA -->
+
+<div id="playerArea"
+class="panel"
+style="display:none">
+
+
+<h3>👥 Players</h3>
+
+
+<div class="player-cards">
+
+
+<div class="player-card"
+id="lobbyPlayer1">
+
+<div class="player-avatar">
+👤
+</div>
+
+<div class="player-info">
+
+<div class="player-name">
+Player 1
+</div>
+
+<div class="player-state">
+Waiting to join…
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="player-card"
+id="lobbyPlayer2">
+
+<div class="player-avatar">
+👤
+</div>
+
+<div class="player-info">
+
+<div class="player-name">
+Player 2
+</div>
+
+<div class="player-state">
+Waiting to join…
+</div>
+
+</div>
+
+</div>
+
+
+</div>
+
+
+
+<div class="setup-card">
+
+<p>
+<b>👤 Join the game</b>
+</p>
+
+<p style="margin-top:0;color:var(--muted);font-size:13px;">
+
+Enter your name and Buildva will automatically assign you the first available player slot.
+
+</p>
+
+
+<input id="playerName"
+placeholder="Your name"
+maxlength="20"
+autocomplete="name"
+style="padding:12px;width:min(100%,280px);">
+
+
+<br>
+<br>
+
+
+<button id="assignMeBtn"
+class="player-btn"
+onclick="assignMe()">
+
+🎯 Assign Me
+
+</button>
+
+
+<p id="assignmentStatus"></p>
+
+
+<p id="waiting">
+
+<span class="status-pill">
+🟡 Waiting for another player…
+</span>
+
+</p>
+
+</div>
+
+
+
+<h2 id="countdown"></h2>
+
+<h2 id="winnerMessage"></h2>
+
+
+
+<!-- GAME CODE -->
+
+<div class="game-code-box">
+
+<div>
+
+<div style="font-size:12px;font-weight:800;color:var(--muted);">
+
+GAME CODE
+
+</div>
+
+
+<div id="code"
+class="game-code">
+
+------
+
+</div>
+
+</div>
+
+
+<div class="code-actions">
+
+<button class="small-btn"
+onclick="copyGameCode()">
+
+📋 Copy Code
+
+</button>
+
+
+<button class="small-btn"
+onclick="shareGame()">
+
+📤 Share
+
+</button>
+
+</div>
+
+</div>
+
+
+<div id="gameCodeNotice"
+class="game-code-notice">
+
+📢 Share this 6-character game code with your opponent so they can join.
+
+</div>
+
+
+</div>
+
+
+
+<!-- GAME AREA -->
+
+<div id="gameArea"
+style="display:none">
+
+
+<div class="game-actions">
+
+<button class="leave-game-btn"
+onclick="leaveGame()">
+
+🏠 Leave Game
+
+</button>
+
+</div>
+
+
+<div class="scoreboard">
+
+
+<div class="score">
+
+<span class="score-label">
+PLAYER 1
+</span>
+
+<span id="name1">
+Player 1
+</span>
+
+<br>
+
+<b id="score1"
+class="score-number">
+0
+</b>
+
+</div>
+
+
+
+<div class="score">
+
+<span class="score-label">
+PLAYER 2
+</span>
+
+<span id="name2">
+Player 2
+</span>
+
+<br>
+
+<b id="score2"
+class="score-number">
+0
+</b>
+
+</div>
+
+</div>
+
+
+
+<div class="panel target-panel">
+
+<div class="target-label">
+Find this number
+</div>
+
+<div class="target">
+
+🎯
+
+<span id="target">
+1
+</span>
+
+</div>
+
+
+<p>
+
+Remaining:
+
+<b id="remaining">
+0
+</b>
+
+</p>
+
+</div>
+
+
+
+<!-- NUMBER BOARD -->
+
+<div id="numbers"></div>
+
+
+</div>
+
+
+
+<!-- COUNTDOWN POPUP -->
+
+<div id="startCountdownPopup"
+aria-live="assertive"
+aria-atomic="true">
+
+<div class="countdown-card">
+
+<div class="countdown-kicker">
+🎮 GET READY!
+</div>
+
+<div id="countdownPopupNumber">
+3
+</div>
+
+<div class="countdown-text">
+The game is starting…
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- WINNER POPUP -->
+
+<div id="winnerPopup">
+
+<div class="winner-icon">
+🏆
+</div>
+
+<div id="popupText"></div>
+
+<div class="popup-actions">
+
+<button class="main-btn success"
+onclick="playAgain()">
+
+🔄 Play Again
+
+</button>
+
+<button class="main-btn secondary"
+onclick="closeWinnerPopup()">
+
+Close
+
+</button>
+
+</div>
+
+</div>
+
+
+
+<!-- =========================
+     FIXED VOICE CALL BAR
+========================= -->
+
+<div id="voiceCallBar">
+
+<div class="voice-bar-inner">
+
+<div class="voice-bar-icon">
+🎙️
+</div>
+
+<div class="voice-bar-info">
+
+<div class="voice-bar-title">
+
+<span class="voice-bar-dot"></span>
+
+Voice Call
+
+</div>
+
+<div id="voiceBarStatus"
+class="voice-bar-status">
+
+Voice chat is off
+
+</div>
+
+</div>
+
+
+<div class="voice-bar-controls">
+
+<button id="voiceBarStart"
+class="voice-bar-btn voice-bar-start"
+onclick="startVoiceChat()">
+
+🎙️ Start
+
+</button>
+
+
+<button id="voiceBarMute"
+class="voice-bar-btn voice-bar-mute"
+onclick="toggleMute()"
+style="display:none">
+
+🔇 Mute
+
+</button>
+
+
+<button id="voiceBarEnd"
+class="voice-bar-btn voice-bar-end"
+onclick="endVoiceChat()"
+style="display:none">
+
+📞 End
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+
+
+<script>
+
+
+const firebaseConfig = {
+
+apiKey:"AIzaSyDU7o7f1-xdxatIP9rwWmthgMdz-maAlSU",
+
+authDomain:"buildva-9767b.firebaseapp.com",
+
+projectId:"buildva-9767b",
+
+storageBucket:"buildva-9767b.firebasestorage.app",
+
+messagingSenderId:"13159875709",
+
+appId:"1:13159875709:web:5599420e2907eb7c429d14",
+
+databaseURL:"https://buildva-9767b-default-rtdb.firebaseio.com/"
+
+};
+
+
+firebase.initializeApp(firebaseConfig);
+
+
+const db=firebase.database();
+const auth=firebase.auth();
+
+let myPlayerId=null;
+let authReadyPromise=null;
+
+function ensureAuth(){
+  if(auth.currentUser){
+    myPlayerId=auth.currentUser.uid;
+    return Promise.resolve(auth.currentUser);
+  }
+
+  if(!authReadyPromise){
+    authReadyPromise=auth.signInAnonymously().then(userCredential=>{
+      myPlayerId=userCredential.user.uid;
+      return userCredential.user;
+    });
+  }
+
+  return authReadyPromise;
+}
+
+auth.onAuthStateChanged(user=>{
+  myPlayerId=user ? user.uid : null;
+});
+
+ensureAuth().catch(error=>{
+  console.error("Buildva authentication failed:",error);
+  const status=document.getElementById("status");
+  if(status) status.innerHTML="❌ Could not connect securely. Please refresh the page.";
+});
+
+
+
+/* FIREBASE CONNECTION MONITOR */
+
+(function monitorFirebaseConnection(){
+
+const badge=
+document.getElementById("firebaseHealth");
+
+const label=
+document.getElementById("firebaseHealthText");
+
+if(!badge || !label)
+return;
+
+const connectedRef=
+db.ref(".info/connected");
+
+connectedRef.on("value",snapshot=>{
+
+const connected=
+snapshot.val()===true;
+
+badge.classList.toggle(
+"connected",
+connected
+);
+
+badge.classList.toggle(
+"disconnected",
+!connected
+);
+
+label.textContent=
+connected
+? "Server connected"
+: "Reconnecting to server…";
+
+},error=>{
+
+badge.classList.remove("connected");
+
+badge.classList.add("disconnected");
+
+label.textContent=
+"Connection status unavailable";
+
+console.error(
+"Buildva Firebase connection monitor error:",
+error
+);
+
+});
+
+})();
+
+
+
+let TOTAL_NUMBERS=200;
+
+let gameCode=null;
+
+let gameRef=null;
+
+let playerNumber=null;
+
+let currentGame=null;
+
+let gameStarted=false;
+
+let countdownTimer=null;
+
+let leavingGame=false;
+
+
+
+/* SECURE PLAYER ID
+   Firebase Anonymous Authentication gives each browser a Firebase UID.
+   This replaces the old editable localStorage player ID.
+*/
+
+function getPlayerId(){
+  return myPlayerId || (auth.currentUser ? auth.currentUser.uid : null);
+}
+
+
+
+function shuffle(array){
+
+for(
+let i=array.length-1;
+i>0;
+i--
+){
+
+let j=
+Math.floor(
+Math.random()*(i+1)
+);
+
+[array[i],array[j]]=
+[array[j],array[i]];
+
+}
+
+return array;
+
+}
+
+
+
+function generateGameCode(){
+
+let chars=
+"ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+let code="";
+
+
+for(
+let i=0;
+i<6;
+i++
+){
+
+code+=
+chars[
+Math.floor(
+Math.random()*chars.length
+)
+];
+
+}
+
+
+return code;
+
+}
+
+
+
+/* CREATE GAME */
+
+async function createGame(){
+
+await ensureAuth();
+
+let size=
+document.querySelector(
+'input[name="gameSize"]:checked'
+).value;
+
+
+TOTAL_NUMBERS=
+Number(size);
+
+
+gameCode=
+generateGameCode();
+
+
+gameRef=
+db.ref("games/"+gameCode);
+
+
+let board=[];
+
+
+for(
+let i=1;
+i<=TOTAL_NUMBERS;
+i++
+){
+
+board.push(i);
+
+}
+
+
+shuffle(board);
+
+
+
+await gameRef.set({
+
+maxNumber:TOTAL_NUMBERS,
+
+board:board,
+
+target:1,
+
+score1:0,
+
+score2:0,
+
+finished:false,
+
+started:false,
+
+winner:null,
+
+countdown:false,
+
+countdownStartedAt:null,
+
+players:{
+player1:false,
+player2:false
+},
+
+lastLeft:null
+
+});
+
+
+openGame();
+
+}
+
+
+
+/* JOIN GAME */
+
+async function joinGame(){
+
+await ensureAuth();
+
+let code=
+document
+.getElementById("gameCodeInput")
+.value
+.trim()
+.toUpperCase();
+
+
+if(!code){
+
+document.getElementById("status")
+.innerHTML=
+"⚠️ Enter a game code.";
+
+return;
+
+}
+
+
+if(code.length!==6){
+
+document.getElementById("status")
+.innerHTML=
+"⚠️ Game codes are 6 characters.";
+
+return;
+
+}
+
+
+gameCode=code;
+
+
+gameRef=
+db.ref("games/"+gameCode);
+
+
+let snap=
+await gameRef.once("value");
+
+
+if(!snap.exists()){
+
+document.getElementById("status")
+.innerHTML=
+"❌ Game not found";
+
+return;
+
+}
+
+
+openGame();
+
+}
+
+
+
+/* OPEN GAME */
+
+function openGame(){
+
+document.getElementById("setup")
+.style.display="none";
+
+
+document.getElementById("playerArea")
+.style.display="block";
+
+
+document.getElementById("gameArea")
+.style.display="none";
+
+
+document.getElementById("playerLeftNotice")
+.style.display="none";
+
+
+let savedGame=
+localStorage.getItem(
+"buildvaGameCode"
+);
+
+
+let savedPlayer=
+localStorage.getItem(
+"buildvaPlayerNumber"
+);
+
+
+if(
+savedGame===gameCode &&
+savedPlayer
+){
+
+playerNumber=
+Number(savedPlayer);
+
+}
+
+
+document.getElementById("code")
+.innerHTML=
+gameCode;
+
+
+listenGame();
+
+watchForVoiceEnd();
+
+}
+
+
+
+/* LISTEN TO GAME */
+
+function listenGame(){
+
+gameRef.on("value",snap=>{
+
+currentGame=
+snap.val();
+
+
+if(currentGame){
+
+if(currentGame.maxNumber){
+
+TOTAL_NUMBERS=
+currentGame.maxNumber;
+
+}
+
+
+updateScreen();
+
+}
+
+});
+
+}
+
+
+
+/* UPDATE LOBBY */
+
+function updateLobbyPlayers(){
+
+if(
+!currentGame ||
+!currentGame.players
+)
+return;
+
+
+[1,2].forEach(n=>{
+
+const card=
+document.getElementById(
+"lobbyPlayer"+n
+);
+
+
+if(!card)
+return;
+
+
+const player=
+currentGame.players[
+"player"+n
+];
+
+
+const nameEl=
+card.querySelector(
+".player-name"
+);
+
+
+const stateEl=
+card.querySelector(
+".player-state"
+);
+
+
+if(player){
+
+nameEl.textContent=
+player.name ||
+("Player "+n);
+
+
+stateEl.textContent=
+player.ready
+? "🟢 Ready"
+: "🟡 Joined";
+
+
+if(
+player.playerId===myPlayerId
+){
+
+if(
+!card.querySelector(
+".you-badge"
+)
+){
+
+const badge=
+document.createElement("span");
+
+badge.className=
+"you-badge";
+
+badge.textContent=
+"YOU";
+
+card.appendChild(badge);
+
+}
+
+}
+
+
+}else{
+
+nameEl.textContent=
+"Player "+n;
+
+stateEl.textContent=
+"Waiting to join…";
+
+
+const badge=
+card.querySelector(
+".you-badge"
+);
+
+
+if(badge)
+badge.remove();
+
+}
+
+});
+
+}
+
+
+
+/* COPY GAME CODE */
+
+async function copyGameCode(){
+
+if(!gameCode)
+return;
+
+
+try{
+
+await navigator.clipboard
+.writeText(gameCode);
+
+
+setLobbyMessage(
+"✅ Game code copied!"
+);
+
+
+}catch(error){
+
+const temp=
+document.createElement("input");
+
+
+temp.value=
+gameCode;
+
+
+document.body.appendChild(
+temp
+);
+
+
+temp.select();
+
+
+document.execCommand(
+"copy"
+);
+
+
+temp.remove();
+
+
+setLobbyMessage(
+"✅ Game code copied!"
+);
+
+}
+
+}
+
+
+
+/* SHARE GAME */
+
+async function shareGame(){
+
+if(!gameCode)
+return;
+
+
+const shareData={
+
+title:"Join my Buildva game",
+
+text:
+"Join my Buildva game with code: "+
+gameCode,
+
+url:window.location.href
+
+};
+
+
+try{
+
+if(navigator.share){
+
+await navigator.share(
+shareData
+);
+
+return;
+
+}
+
+
+await navigator.clipboard
+.writeText(gameCode);
+
+
+setLobbyMessage(
+"📤 Game code copied — send it to your opponent!"
+);
+
+
+}catch(error){
+
+if(
+error &&
+error.name==="AbortError"
+)
+return;
+
+
+setLobbyMessage(
+"📤 Game code: "+gameCode
+);
+
+}
+
+}
+
+
+
+/* LOBBY MESSAGE */
+
+function setLobbyMessage(message){
+
+const waiting=
+document.getElementById(
+"waiting"
+);
+
+
+if(waiting){
+
+waiting.innerHTML=
+'<span class="status-pill">'+
+message+
+'</span>';
+
+}
+
+
+setTimeout(()=>{
+
+if(
+waiting &&
+currentGame &&
+!(
+currentGame.players &&
+currentGame.players.player1 &&
+currentGame.players.player2
+)
+){
+
+waiting.innerHTML=
+'<span class="status-pill">'+
+'🟡 Waiting for another player…'+
+'</span>';
+
+}
+
+},2200);
+
+}
+
+
+
+/* PLAYER ASSIGNMENT */
+
+async function assignMe(){
+
+if(
+!gameRef ||
+!gameCode
+)
+return;
+
+
+const nameInput=
+document.getElementById(
+"playerName"
+);
+
+
+const name=
+(nameInput.value || "")
+.trim();
+
+
+const status=
+document.getElementById(
+"assignmentStatus"
+);
+
+
+const button=
+document.getElementById(
+"assignMeBtn"
+);
+
+
+if(!name){
+
+alert(
+"Please enter your name"
+);
+
+nameInput.focus();
+
+return;
+
+}
+
+
+if(
+currentGame &&
+currentGame.players
+){
+
+if(
+currentGame.players.player1 &&
+currentGame.players.player1.playerId
+===myPlayerId
+){
+
+playerNumber=1;
+
+if(status){
+
+status.innerHTML=
+'<span class="status-pill">'+
+'🟢 You are Player 1'+
+'</span>';
+
+}
+
+return;
+
+}
+
+
+if(
+currentGame.players.player2 &&
+currentGame.players.player2.playerId
+===myPlayerId
+){
+
+playerNumber=2;
+
+if(status){
+
+status.innerHTML=
+'<span class="status-pill">'+
+'🟢 You are Player 2'+
+'</span>';
+
+}
+
+return;
+
+}
+
+}
+
+
+
+if(button){
+
+button.disabled=true;
+
+button.textContent=
+"⏳ Assigning…";
+
+}
+
+
+if(status){
+
+status.innerHTML=
+'<span class="status-pill">'+
+'🔄 Finding an available player slot…'+
+'</span>';
+
+}
+
+
+let assignedSlot=null;
+
+
+try{
+
+const result=
+await gameRef.transaction(game=>{
+
+if(!game)
+return game;
+
+
+if(!game.players){
+
+game.players={
+player1:false,
+player2:false
+};
+
+}
+
+
+if(
+game.players.player1 &&
+game.players.player1.playerId
+===myPlayerId
+){
+
+return game;
+
+}
+
+
+if(
+game.players.player2 &&
+game.players.player2.playerId
+===myPlayerId
+){
+
+return game;
+
+}
+
+
+if(!game.players.player1){
+
+game.players.player1={
+
+playerId:myPlayerId,
+
+name:name,
+
+ready:true
+
+};
+
+
+return game;
+
+}
+
+
+if(!game.players.player2){
+
+game.players.player2={
+
+playerId:myPlayerId,
+
+name:name,
+
+ready:true
+
+};
+
+
+return game;
+
+}
+
+
+return;
+
+});
+
+
+if(!result.committed){
+
+const latest=
+(
+await gameRef.once("value")
+).val();
+
+
+if(
+latest &&
+latest.players &&
+latest.players.player1 &&
+latest.players.player2
+){
+
+if(
+latest.players.player1.playerId
+===myPlayerId
+){
+
+assignedSlot=1;
+
+}
+
+else if(
+latest.players.player2.playerId
+===myPlayerId
+){
+
+assignedSlot=2;
+
+}
+
+else{
+
+if(status){
+
+status.innerHTML=
+'<span class="status-pill">'+
+'🔴 Both player slots are already taken.'+
+'</span>';
+
+}
+
+return;
+
+}
+
+}else{
+
+if(status){
+
+status.innerHTML=
+'<span class="status-pill">'+
+'⚠️ Could not assign player. Please try again.'+
+'</span>';
+
+}
+
+return;
+
+}
+
+}
+
+
+const saved=
+result.snapshot.val();
+
+
+if(saved && saved.players){
+
+if(
+saved.players.player1 &&
+saved.players.player1.playerId
+===myPlayerId
+){
+
+assignedSlot=1;
+
+}
+
+else if(
+saved.players.player2 &&
+saved.players.player2.playerId
+===myPlayerId
+){
+
+assignedSlot=2;
+
+}
+
+}
+
+
+if(!assignedSlot){
+
+const latest=
+(
+await gameRef.once("value")
+).val();
+
+
+if(
+latest &&
+latest.players &&
+latest.players.player1 &&
+latest.players.player1.playerId
+===myPlayerId
+){
+
+assignedSlot=1;
+
+}
+
+else if(
+latest &&
+latest.players &&
+latest.players.player2 &&
+latest.players.player2.playerId
+===myPlayerId
+){
+
+assignedSlot=2;
+
+}
+
+}
+
+
+if(!assignedSlot){
+
+throw new Error(
+"Could not determine assigned player slot."
+);
+
+}
+
+
+playerNumber=
+assignedSlot;
+
+
+localStorage.setItem(
+"buildvaGameCode",
+gameCode
+);
+
+
+localStorage.setItem(
+"buildvaPlayerNumber",
+String(assignedSlot)
+);
+
+
+localStorage.setItem(
+"buildvaPlayerName",
+name
+);
+
+
+if(status){
+
+status.innerHTML=
+'<span class="status-pill">'+
+'🟢 You are Player '+
+assignedSlot+
+'</span>';
+
+}
+
+
+if(button){
+
+button.disabled=true;
+
+button.textContent=
+"✅ Player "+assignedSlot;
+
+}
+
+
+updateLobbyPlayers();
+
+
+}catch(error){
+
+console.error(
+"Buildva player assignment error:",
+error
+);
+
+
+if(status){
+
+status.innerHTML=
+'<span class="status-pill">'+
+'⚠️ Assignment failed. Please try again.'+
+'</span>';
+
+}
+
+
+if(button){
+
+button.disabled=false;
+
+button.textContent=
+"🎯 Assign Me";
+
+}
+
+}
+
+}
+
+
+
+async function choosePlayer(number){
+
+await ensureAuth();
+
+return assignMe();
+
+}
+
+
+
+/* COUNTDOWN */
+
+function hideStartCountdown(){
+
+const popup=
+document.getElementById(
+"startCountdownPopup"
+);
+
+
+if(popup){
+
+popup.style.display="none";
+
+}
+
+
+if(countdownTimer){
+
+clearInterval(
+countdownTimer
+);
+
+countdownTimer=null;
+
+}
+
+}
+
+
+
+function renderCountdownNumber(value){
+
+const popup=
+document.getElementById(
+"startCountdownPopup"
+);
+
+
+const numberEl=
+document.getElementById(
+"countdownPopupNumber"
+);
+
+
+if(
+!popup ||
+!numberEl
+)
+return;
+
+
+numberEl.textContent=
+value;
+
+
+numberEl.style.animation=
+"none";
+
+
+void numberEl.offsetWidth;
+
+
+numberEl.style.animation=
+"countdownPulse .7s ease-in-out";
+
+
+popup.style.display="grid";
+
+}
+
+
+
+async function startCountdown(){
+
+if(
+!gameRef ||
+!currentGame ||
+currentGame.started
+)
+return;
+
+
+if(
+!currentGame.countdownStartedAt
+){
+
+try{
+
+await gameRef.transaction(
+game=>{
+
+if(
+!game ||
+game.started
+)
+return game;
+
+
+if(
+!game.countdownStartedAt
+){
+
+game.countdown=true;
+
+game.countdownStartedAt=
+firebase.database
+.ServerValue
+.TIMESTAMP;
+
+}
+
+
+return game;
+
+});
+
+}catch(error){
+
+console.error(
+"Buildva countdown start error:",
+error
+);
+
+}
+
+}
+
+
+syncCountdown();
+
+}
+
+
+
+function syncCountdown(){
+
+if(
+!currentGame ||
+currentGame.started
+){
+
+hideStartCountdown();
+
+return;
+
+}
+
+
+if(
+!currentGame.countdownStartedAt
+)
+return;
+
+
+if(countdownTimer)
+clearInterval(
+countdownTimer
+);
+
+
+const startedAt=
+Number(
+currentGame.countdownStartedAt
+);
+
+
+const tick=()=>{
+
+if(
+!currentGame ||
+currentGame.started
+){
+
+hideStartCountdown();
+
+return;
+
+}
+
+
+const elapsed=
+Date.now()-startedAt;
+
+
+const secondsLeft=
+3-
+Math.floor(
+elapsed/1000
+);
+
+
+if(secondsLeft>=1){
+
+renderCountdownNumber(
+secondsLeft
+);
+
+return;
+
+}
+
+
+if(elapsed<4000){
+
+renderCountdownNumber(
+"GO!"
+);
+
+return;
+
+}
+
+
+hideStartCountdown();
+
+
+if(gameRef){
+
+gameRef.update({
+started:true
+});
+
+}
+
+};
+
+
+tick();
+
+
+countdownTimer=
+setInterval(
+tick,
+100
+);
+
+}
+
+
+
+/* UPDATE SCREEN */
+
+function updateScreen(){
+
+if(!currentGame)
+return;
+
+
+const playerArea=
+document.getElementById(
+"playerArea"
+);
+
+const gameArea=
+document.getElementById(
+"gameArea"
+);
+
+const notice=
+document.getElementById(
+"playerLeftNotice"
+);
+
+
+document.getElementById(
+"score1"
+).innerHTML=
+currentGame.score1 || 0;
+
+
+document.getElementById(
+"score2"
+).innerHTML=
+currentGame.score2 || 0;
+
+
+
+if(
+currentGame.players &&
+currentGame.players.player1
+){
+
+document.getElementById(
+"name1"
+).innerHTML=
+"👤 "+
+currentGame.players.player1.name;
+
+}
+
+
+
+if(
+currentGame.players &&
+currentGame.players.player2
+){
+
+document.getElementById(
+"name2"
+).innerHTML=
+"👤 "+
+currentGame.players.player2.name;
+
+}
+
+
+
+document.getElementById(
+"target"
+).innerHTML=
+currentGame.target;
+
+
+const scoreOne=
+document.querySelector(
+".scoreboard .score:first-child"
+);
+
+
+const scoreTwo=
+document.querySelector(
+".scoreboard .score:last-child"
+);
+
+
+if(scoreOne){
+
+scoreOne.classList.toggle(
+"active-player",
+playerNumber===1
+);
+
+}
+
+
+if(scoreTwo){
+
+scoreTwo.classList.toggle(
+"active-player",
+playerNumber===2
+);
+
+}
+
+
+
+document.getElementById(
+"remaining"
+).innerHTML=
+
+Math.max(
+0,
+TOTAL_NUMBERS-
+currentGame.target+
+1
+);
+
+
+
+updateLobbyPlayers();
+
+
+
+/* PLAYER LEFT */
+
+if(
+currentGame.lastLeft &&
+currentGame.lastLeft.player &&
+currentGame.lastLeft.player
+!==playerNumber
+){
+
+notice.innerHTML=
+"⚠️ "+
+(
+currentGame.lastLeft.name ||
+"Player "+
+currentGame.lastLeft.player
+)+
+" has left the game.";
+
+
+notice.style.display=
+"block";
+
+
+playerArea.style.display=
+"block";
+
+
+gameArea.style.display=
+"none";
+
+
+hideStartCountdown();
+
+}
+
+
+/* BOTH PLAYERS */
+
+else if(
+
+currentGame.players &&
+currentGame.players.player1 &&
+currentGame.players.player2
+
+){
+
+notice.style.display=
+"none";
+
+
+if(currentGame.started){
+
+playerArea.style.display=
+"none";
+
+gameArea.style.display=
+"block";
+
+}else{
+
+playerArea.style.display=
+"block";
+
+gameArea.style.display=
+"block";
+
+}
+
+
+if(!currentGame.started){
+
+if(
+!currentGame.countdownStartedAt
+){
+
+startCountdown();
+
+}else{
+
+syncCountdown();
+
+}
+
+}else{
+
+hideStartCountdown();
+
+}
+
+
+renderBoard();
+
+}
+
+
+/* WAITING */
+
+else{
+
+playerArea.style.display=
+"block";
+
+gameArea.style.display=
+"none";
+
+}
+
+
+/* WINNER */
+
+if(currentGame.finished){
+
+showWinner();
+
+}
+
+}
+
+
+
+/* RENDER BOARD */
+
+function renderBoard(){
+
+let box=
+document.getElementById(
+"numbers"
+);
+
+
+box.innerHTML="";
+
+
+if(!currentGame.board)
+return;
+
+
+currentGame.board.forEach(
+num=>{
+
+let button=
+document.createElement(
+"button"
+);
+
+
+button.className=
+"number";
+
+
+button.innerHTML=
+num;
+
+
+if(
+num<
+currentGame.target
+){
+
+button.classList.add(
+"used"
+);
+
+}
+
+else if(
+!currentGame.started ||
+currentGame.finished
+){
+
+button.disabled=true;
+
+}
+
+else{
+
+button.onclick=
+function(){
+
+pickNumber(num);
+
+};
+
+}
+
+
+box.appendChild(
+button
+);
+
+});
+
+}
+
+
+
+/* PICK NUMBER */
+
+async function pickNumber(num){
+
+await ensureAuth();
+
+if(!playerNumber){
+
+let savedPlayer=
+localStorage.getItem(
+"buildvaPlayerNumber"
+);
+
+
+if(savedPlayer){
+
+playerNumber=
+Number(savedPlayer);
+
+}
+
+}
+
+
+if(!playerNumber)
+return;
+
+
+await gameRef.transaction(
+game=>{
+
+if(!game)
+return game;
+
+
+if(!game.started)
+return game;
+
+
+if(game.finished)
+return game;
+
+
+if(num!==game.target)
+return game;
+
+
+
+if(playerNumber===1){
+
+game.score1++;
+
+}else{
+
+game.score2++;
+
+}
+
+
+
+if(
+game.target===
+TOTAL_NUMBERS
+){
+
+game.finished=true;
+
+
+if(
+game.score1>
+game.score2
+){
+
+game.winner=1;
+
+}
+
+else if(
+game.score2>
+game.score1
+){
+
+game.winner=2;
+
+}
+
+else{
+
+game.winner=0;
+
+}
+
+}else{
+
+game.target++;
+
+}
+
+
+return game;
+
+});
+
+}
+
+
+
+/* WINNER */
+
+function showWinner(){
+
+let title="";
+
+let icon="🏆";
+
+
+if(
+currentGame.winner===1
+){
+
+title=
+(
+currentGame.players.player1?.name ||
+"Player 1"
+)+
+" Wins!";
+
+}
+
+else if(
+currentGame.winner===2
+){
+
+title=
+(
+currentGame.players.player2?.name ||
+"Player 2"
+)+
+" Wins!";
+
+}
+
+else{
+
+icon="🤝";
+
+title="Draw Game!";
+
+}
+
+
+document.querySelector(
+"#winnerPopup .winner-icon"
+).textContent=
+icon;
+
+
+document.getElementById(
+"popupText"
+).innerHTML=
+
+'<div class="winner-title">'+
+title+
+'</div>'+
+
+'<div class="final-score">'+
+
+'<div class="final-player">'+
+(
+currentGame.players.player1?.name ||
+"Player 1"
+)+
+'<strong>'+
+currentGame.score1+
+'</strong>'+
+'</div>'+
+
+'<div style="font-weight:900;color:var(--muted)">VS</div>'+
+
+'<div class="final-player">'+
+(
+currentGame.players.player2?.name ||
+"Player 2"
+)+
+'<strong>'+
+currentGame.score2+
+'</strong>'+
+'</div>'+
+
+'</div>';
+
+
+document.getElementById(
+"winnerPopup"
+).style.display=
+"block";
+
+}
+
+
+
+/* PLAY AGAIN */
+
+async function playAgain(){
+
+await ensureAuth();
+
+document.getElementById(
+"winnerPopup"
+).style.display=
+"none";
+
+
+let board=[];
+
+
+for(
+let i=1;
+i<=TOTAL_NUMBERS;
+i++
+){
+
+board.push(i);
+
+}
+
+
+shuffle(board);
+
+
+await gameRef.update({
+
+board:board,
+
+target:1,
+
+score1:0,
+
+score2:0,
+
+finished:false,
+
+winner:null,
+
+started:false,
+
+countdown:false,
+
+countdownStartedAt:null,
+
+lastLeft:null
+
+});
+
+
+gameStarted=false;
+
+}
+
+
+
+/* LEAVE GAME */
+
+async function leaveGame(){
+
+await ensureAuth();
+
+if(
+!gameRef ||
+!gameCode
+)
+return;
+
+
+const leavingPlayer=
+playerNumber;
+
+
+const leavingName=
+
+currentGame &&
+currentGame.players &&
+currentGame.players[
+"player"+leavingPlayer
+]
+?
+currentGame.players[
+"player"+leavingPlayer
+].name
+:
+localStorage.getItem(
+"buildvaPlayerName"
+) ||
+("Player "+leavingPlayer);
+
+
+leavingGame=true;
+
+
+
+try{
+
+await gameRef.transaction(
+game=>{
+
+if(!game)
+return game;
+
+
+if(
+leavingPlayer===1 &&
+game.players &&
+game.players.player1 &&
+game.players.player1.playerId
+===myPlayerId
+){
+
+game.players.player1=false;
+
+}
+
+
+if(
+leavingPlayer===2 &&
+game.players &&
+game.players.player2 &&
+game.players.player2.playerId
+===myPlayerId
+){
+
+game.players.player2=false;
+
+}
+
+
+game.lastLeft={
+
+player:leavingPlayer,
+
+name:leavingName,
+
+timestamp:
+firebase.database
+.ServerValue
+.TIMESTAMP
+
+};
+
+
+game.started=false;
+
+game.finished=false;
+
+game.winner=null;
+
+game.countdown=false;
+
+game.countdownStartedAt=null;
+
+game.score1=0;
+
+game.score2=0;
+
+
+return game;
+
+});
+
+}catch(error){
+
+console.error(
+"Buildva leave game error:",
+error
+);
+
+}
+
+
+/* Stop voice */
+
+try{
+
+await endVoiceChat();
+
+}catch(error){
+
+console.error(
+"Voice cleanup error:",
+error
+);
+
+}
+
+
+/* Clear local game identity */
+
+localStorage.removeItem(
+"buildvaGameCode"
+);
+
+localStorage.removeItem(
+"buildvaPlayerNumber"
+);
+
+localStorage.removeItem(
+"buildvaPlayerName"
+);
+
+
+if(gameRef){
+
+gameRef.off();
+
+}
+
+
+gameCode=null;
+
+gameRef=null;
+
+playerNumber=null;
+
+currentGame=null;
+
+gameStarted=false;
+
+leavingGame=false;
+
+
+document.getElementById(
+"playerArea"
+).style.display=
+"none";
+
+
+document.getElementById(
+"gameArea"
+).style.display=
+"none";
+
+
+document.getElementById(
+"playerLeftNotice"
+).style.display=
+"none";
+
+
+document.getElementById(
+"setup"
+).style.display=
+"block";
+
+
+document.getElementById(
+"gameCodeInput"
+).value="";
+
+
+document.getElementById(
+"playerName"
+).value="";
+
+
+document.getElementById(
+"status"
+).innerHTML="";
+
+}
+
+
+
+/* CLOSE WINNER */
+
+function closeWinnerPopup(){
+
+document.getElementById(
+"winnerPopup"
+).style.display=
+"none";
+
+}
+
+
+
+/* DARK MODE */
+
+function toggleDark(){
+
+document.body.classList.toggle(
+"dark"
+);
+
+localStorage.setItem(
+"buildvaDark",
+document.body.classList.contains(
+"dark"
+)
+? "1"
+: "0"
+);
+
+}
+
+
+if(
+localStorage.getItem(
+"buildvaDark"
+)==="1"
+){
+
+document.body.classList.add(
+"dark"
+);
+
+}
+
+
+
+/* =========================================================
+   VOICE CHAT
+========================================================= */
+
+let localStream=null;
+
+let peerConnection=null;
+
+let remoteAudio=null;
+
+let voiceListeners=[];
+
+let voiceStarted=false;
+
+let pendingRemoteCandidates=[];
+
+let remoteDescriptionReady=false;
+
+
+
+const voiceConfig={
+
+iceServers:[
+
+{
+urls:
+"stun:stun.l.google.com:19302"
+},
+
+{
+urls:
+"stun:stun1.l.google.com:19302"
+}
+
+]
+
+};
+
+
+
+function setVoiceStatus(message){
+
+const barStatus=
+document.getElementById(
+"voiceBarStatus"
+);
+
+if(barStatus){
+
+barStatus.textContent=
+message;
+
+}
+
+
+const bar=
+document.getElementById(
+"voiceCallBar"
+);
+
+if(bar){
+
+bar.classList.remove(
+"connected",
+"connecting"
+);
+
+
+if(
+/connected/i.test(message)
+){
+
+bar.classList.add(
+"connected"
+);
+
+}
+
+else if(
+/connecting|waiting|requesting/i.test(message)
+){
+
+bar.classList.add(
+"connecting"
+);
+
+}
+
+}
+
+}
+
+
+
+function setVoiceButtons(active){
+
+const start=
+document.getElementById(
+"voiceBarStart"
+);
+
+const mute=
+document.getElementById(
+"voiceBarMute"
+);
+
+const end=
+document.getElementById(
+"voiceBarEnd"
+);
+
+
+if(start){
+
+start.style.display=
+active
+? "none"
+: "inline-block";
+
+}
+
+
+if(mute){
+
+mute.style.display=
+active
+? "inline-block"
+: "none";
+
+}
+
+
+if(end){
+
+end.style.display=
+active
+? "inline-block"
+: "none";
+
+}
+
+
+if(
+mute &&
+!active
+){
+
+mute.innerHTML=
+"🔇 Mute";
+
+}
+
+}
+
+
+
+function createRemoteAudio(){
+
+if(remoteAudio)
+return;
+
+
+remoteAudio=
+document.createElement(
+"audio"
+);
+
+
+remoteAudio.id=
+"remoteAudio";
+
+
+remoteAudio.autoplay=true;
+
+remoteAudio.playsInline=true;
+
+remoteAudio.style.display=
+"none";
+
+
+document.body.appendChild(
+remoteAudio
+);
+
+}
+
+
+
+function removeVoiceListeners(){
+
+voiceListeners.forEach(
+item=>{
+
+try{
+
+item.ref.off(
+item.event,
+item.callback
+);
+
+}catch(error){}
+
+});
+
+
+voiceListeners=[];
+
+}
+
+
+
+async function flushRemoteCandidates(){
+
+if(
+!peerConnection ||
+!remoteDescriptionReady
+)
+return;
+
+
+const candidates=
+[
+...pendingRemoteCandidates
+];
+
+
+pendingRemoteCandidates=[];
+
+
+for(
+const candidate of candidates
+){
+
+try{
+
+await peerConnection.addIceCandidate(
+new RTCIceCandidate(
+candidate
+)
+);
+
+}catch(error){
+
+console.error(
+"ICE candidate error:",
+error
+);
+
+}
+
+}
+
+}
+
+
+
+function listenForRemoteCandidates(){
+
+if(
+!gameRef ||
+!playerNumber
+)
+return;
+
+
+const otherPlayer=
+playerNumber===1
+?2
+:1;
+
+
+const candidateRef=
+gameRef.child(
+"voice/candidates/player"+
+otherPlayer
+);
+
+
+const callback=
+async snapshot=>{
+
+const candidate=
+snapshot.val();
+
+
+if(
+!candidate ||
+!peerConnection
+)
+return;
+
+
+if(
+!remoteDescriptionReady
+){
+
+pendingRemoteCandidates.push(
+candidate
+);
+
+return;
+
+}
+
+
+try{
+
+await peerConnection.addIceCandidate(
+new RTCIceCandidate(
+candidate
+)
+);
+
+}catch(error){
+
+console.error(
+"ICE candidate error:",
+error
+);
+
+}
+
+};
+
+
+candidateRef.on(
+"child_added",
+callback
+);
+
+
+voiceListeners.push({
+
+ref:candidateRef,
+
+event:"child_added",
+
+callback:callback
+
+});
+
+}
+
+
+
+function setupVoiceConnection(){
+
+peerConnection=
+new RTCPeerConnection(
+voiceConfig
+);
+
+
+localStream
+.getTracks()
+.forEach(
+track=>{
+
+peerConnection.addTrack(
+track,
+localStream
+);
+
+});
+
+
+peerConnection.ontrack=
+event=>{
+
+createRemoteAudio();
+
+
+if(
+event.streams &&
+event.streams[0]
+){
+
+remoteAudio.srcObject=
+event.streams[0];
+
+remoteAudio.play()
+.catch(
+()=>{}
+);
+
+}
+
+
+setVoiceStatus(
+"🟢 Voice connected"
+);
+
+};
+
+
+
+peerConnection.onicecandidate=
+async event=>{
+
+if(
+!event.candidate ||
+!gameRef ||
+!playerNumber
+)
+return;
+
+
+try{
+
+await gameRef
+.child(
+"voice/candidates/player"+
+playerNumber
+)
+.push(
+event.candidate.toJSON()
+);
+
+}catch(error){
+
+console.error(
+"Could not send ICE candidate:",
+error
+);
+
+}
+
+};
+
+
+
+peerConnection.onconnectionstatechange=
+()=>{
+
+if(!peerConnection)
+return;
+
+
+const state=
+peerConnection.connectionState;
+
+
+if(state==="connected"){
+
+setVoiceStatus(
+"🟢 Voice connected"
+);
+
+}
+
+else if(
+state==="connecting"
+){
+
+setVoiceStatus(
+"🟡 Connecting voice..."
+);
+
+}
+
+else if(
+state==="disconnected"
+){
+
+setVoiceStatus(
+"🟠 Voice disconnected"
+);
+
+}
+
+else if(
+state==="failed"
+){
+
+setVoiceStatus(
+"🔴 Voice connection failed"
+);
+
+}
+
+};
+
+}
+
+
+
+async function startVoiceChat(){
+
+if(
+!gameRef ||
+!gameCode
+){
+
+alert(
+"Please join a game first."
+);
+
+return;
+
+}
+
+
+if(!playerNumber){
+
+alert(
+"Please choose Player 1 or Player 2 first."
+);
+
+return;
+
+}
+
+
+if(
+!currentGame ||
+!currentGame.players ||
+!currentGame.players.player1 ||
+!currentGame.players.player2
+){
+
+alert(
+"Both players must join the game before starting voice chat."
+);
+
+return;
+
+}
+
+
+if(voiceStarted)
+return;
+
+
+if(
+!navigator.mediaDevices ||
+!navigator.mediaDevices.getUserMedia
+){
+
+alert(
+"Voice chat needs a secure website (HTTPS or localhost) and a browser with microphone support."
+);
+
+return;
+
+}
+
+
+try{
+
+setVoiceStatus(
+"🎙️ Requesting microphone access..."
+);
+
+
+localStream=
+await navigator.mediaDevices
+.getUserMedia({
+audio:true
+});
+
+
+createRemoteAudio();
+
+
+pendingRemoteCandidates=[];
+
+remoteDescriptionReady=false;
+
+
+setupVoiceConnection();
+
+
+voiceStarted=true;
+
+setVoiceButtons(true);
+
+
+if(playerNumber===1){
+
+await gameRef
+.child("voice")
+.remove();
+
+
+const callId=
+Date.now().toString();
+
+
+await gameRef
+.child("voice/callId")
+.set(callId);
+
+
+await gameRef
+.child("voice/ended")
+.set(false);
+
+
+const offer=
+await peerConnection
+.createOffer();
+
+
+await peerConnection
+.setLocalDescription(
+offer
+);
+
+
+await gameRef
+.child("voice/offer")
+.set({
+
+type:offer.type,
+
+sdp:offer.sdp
+
+});
+
+
+setVoiceStatus(
+"🟡 Waiting for Player 2..."
+);
+
+
+const answerRef=
+gameRef.child(
+"voice/answer"
+);
+
+
+const answerCallback=
+async snapshot=>{
+
+const answer=
+snapshot.val();
+
+
+if(
+!answer ||
+!peerConnection ||
+peerConnection.currentRemoteDescription
+){
+
+return;
+
+}
+
+
+try{
+
+await peerConnection
+.setRemoteDescription(
+new RTCSessionDescription(
+answer
+)
+);
+
+
+remoteDescriptionReady=true;
+
+await flushRemoteCandidates();
+
+
+setVoiceStatus(
+"🟡 Connecting voice..."
+);
+
+}catch(error){
+
+console.error(
+"Answer error:",
+error
+);
+
+setVoiceStatus(
+"🔴 Voice connection error"
+);
+
+}
+
+};
+
+
+answerRef.on(
+"value",
+answerCallback
+);
+
+
+voiceListeners.push({
+
+ref:answerRef,
+
+event:"value",
+
+callback:answerCallback
+
+});
+
+
+}else{
+
+setVoiceStatus(
+"🟡 Waiting for Player 1..."
+);
+
+
+const offerRef=
+gameRef.child(
+"voice/offer"
+);
+
+
+const offerCallback=
+async snapshot=>{
+
+const offer=
+snapshot.val();
+
+
+if(
+!offer ||
+!peerConnection ||
+peerConnection.currentRemoteDescription
+){
+
+return;
+
+}
+
+
+try{
+
+await peerConnection
+.setRemoteDescription(
+new RTCSessionDescription(
+offer
+)
+);
+
+
+remoteDescriptionReady=true;
+
+await flushRemoteCandidates();
+
+
+const answer=
+await peerConnection
+.createAnswer();
+
+
+await peerConnection
+.setLocalDescription(
+answer
+);
+
+
+await gameRef
+.child("voice/answer")
+.set({
+
+type:answer.type,
+
+sdp:answer.sdp
+
+});
+
+
+setVoiceStatus(
+"🟡 Connecting voice..."
+);
+
+}catch(error){
+
+console.error(
+"Offer error:",
+error
+);
+
+setVoiceStatus(
+"🔴 Voice connection error"
+);
+
+}
+
+};
+
+
+offerRef.on(
+"value",
+offerCallback
+);
+
+
+voiceListeners.push({
+
+ref:offerRef,
+
+event:"value",
+
+callback:offerCallback
+
+});
+
+}
+
+
+listenForRemoteCandidates();
+
+
+}catch(error){
+
+console.error(
+"Voice chat error:",
+error
+);
+
+
+voiceStarted=false;
+
+setVoiceButtons(false);
+
+
+if(localStream){
+
+localStream
+.getTracks()
+.forEach(
+track=>track.stop()
+);
+
+localStream=null;
+
+}
+
+
+if(peerConnection){
+
+try{
+
+peerConnection.close();
+
+}catch(error){}
+
+peerConnection=null;
+
+}
+
+
+setVoiceStatus(
+"🔴 Microphone access failed"
+);
+
+
+alert(
+"Could not access your microphone. Please allow microphone access in your browser."
+);
+
+}
+
+}
+
+
+
+function toggleMute(){
+
+if(!localStream)
+return;
+
+
+const audioTracks=
+localStream.getAudioTracks();
+
+
+if(audioTracks.length===0)
+return;
+
+
+const currentlyEnabled=
+audioTracks[0].enabled;
+
+
+audioTracks.forEach(
+track=>{
+
+track.enabled=
+!currentlyEnabled;
+
+});
+
+
+const button=
+document.getElementById(
+"voiceBarMute"
+);
+
+
+if(currentlyEnabled){
+
+button.innerHTML=
+"🔊 Unmute";
+
+
+setVoiceStatus(
+"🔇 Microphone muted"
+);
+
+}else{
+
+button.innerHTML=
+"🔇 Mute";
+
+
+setVoiceStatus(
+"🟢 Voice connected"
+);
+
+}
+
+}
+
+
+
+async function endVoiceChat(){
+
+removeVoiceListeners();
+
+
+if(localStream){
+
+localStream
+.getTracks()
+.forEach(
+track=>track.stop()
+);
+
+localStream=null;
+
+}
+
+
+if(peerConnection){
+
+try{
+
+peerConnection.close();
+
+}catch(error){}
+
+peerConnection=null;
+
+}
+
+
+pendingRemoteCandidates=[];
+
+remoteDescriptionReady=false;
+
+
+if(remoteAudio){
+
+remoteAudio.srcObject=null;
+
+remoteAudio.remove();
+
+remoteAudio=null;
+
+}
+
+
+if(gameRef){
+
+try{
+
+await gameRef
+.child("voice")
+.remove();
+
+}catch(error){
+
+console.error(
+"Could not clear voice data:",
+error
+);
+
+}
+
+}
+
+
+voiceStarted=false;
+
+setVoiceButtons(false);
+
+setVoiceStatus(
+"🔴 Voice chat is off"
+);
+
+}
+
+
+
+/* WATCH FOR VOICE END */
+
+function watchForVoiceEnd(){
+
+if(!gameRef)
+return;
+
+
+const voiceRef=
+gameRef.child("voice");
+
+
+let voiceWasPresent=false;
+
+
+const callback=
+snapshot=>{
+
+if(snapshot.exists()){
+
+voiceWasPresent=true;
+
+return;
+
+}
+
+
+if(
+voiceWasPresent &&
+voiceStarted
+){
+
+removeVoiceListeners();
+
+
+if(localStream){
+
+localStream
+.getTracks()
+.forEach(
+track=>track.stop()
+);
+
+localStream=null;
+
+}
+
+
+if(peerConnection){
+
+try{
+
+peerConnection.close();
+
+}catch(error){}
+
+peerConnection=null;
+
+}
+
+
+pendingRemoteCandidates=[];
+
+remoteDescriptionReady=false;
+
+
+if(remoteAudio){
+
+remoteAudio.srcObject=null;
+
+remoteAudio.remove();
+
+remoteAudio=null;
+
+}
+
+
+voiceStarted=false;
+
+setVoiceButtons(false);
+
+setVoiceStatus(
+"🔴 Other player ended voice chat"
+);
+
+}
+
+};
+
+
+voiceRef.on(
+"value",
+callback
+);
+
+
+voiceListeners.push({
+
+ref:voiceRef,
+
+event:"value",
+
+callback:callback
+
+});
+
+}
+
+
+
+/* BROWSER CLOSE */
+
+window.addEventListener(
+"beforeunload",
+()=>{
+
+if(localStream){
+
+localStream
+.getTracks()
+.forEach(
+track=>track.stop()
+);
+
+}
+
+
+if(peerConnection){
+
+try{
+
+peerConnection.close();
+
+}catch(error){}
+
+}
+
+});
+
+
+</script>
+
+
+</body>
+
+</html>
